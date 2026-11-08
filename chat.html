@@ -9,424 +9,148 @@
 
 <style>
 *{box-sizing:border-box;font-family:Arial,sans-serif}
-
-body{
-  margin:0;
-  background:#eef2f7;
-  color:#17212b;
-}
-
-body>header{
-  background:#0866ff;
-  color:white;
-  padding:15px;
-  box-shadow:0 2px 8px #0002;
-}
-
-body>header a{
-  color:white;
-  text-decoration:none;
-}
-
-main{
-  max-width:850px;
-  margin:auto;
-  padding:12px;
-}
-
-button{
-  border:0;
-  border-radius:9px;
-  padding:12px;
-  background:#0866ff;
-  color:white;
-  font-weight:bold;
-  cursor:pointer;
-}
-
+body{margin:0;background:#eef2f7;color:#17212b}
+body>header{background:#0866ff;color:white;padding:15px;box-shadow:0 2px 8px #0002}
+body>header a{color:white;text-decoration:none}
+main{max-width:850px;margin:auto;padding:12px}
+button{border:0;border-radius:9px;padding:12px;background:#0866ff;color:white;font-weight:bold;cursor:pointer}
 button:disabled{opacity:.5}
-
-.tabs{
-  display:flex;
-  gap:8px;
-  margin:15px 0;
-  flex-wrap:wrap;
-}
-
-.tabs button{
-  flex:1;
-  background:#dce5f2;
-  color:#26364b;
-}
-
-.tabs button.active{
-  background:#0866ff;
-  color:white;
-}
-
-.panel{
-  padding:12px;
-  border-radius:14px;
-  background:white;
-  box-shadow:0 2px 12px #17212b12;
-}
-
+.tabs{display:flex;gap:8px;margin:15px 0;flex-wrap:wrap}
+.tabs button{flex:1;background:#dce5f2;color:#26364b}
+.tabs button.active{background:#0866ff;color:white}
+.panel{padding:12px;border-radius:14px;background:white;box-shadow:0 2px 12px #17212b12}
 .hidden{display:none!important}
 
-/* LARGE CHAT AREAS */
-
-#streamPanel,
-#groupPanel{
+#streamPanel,#groupPanel{
   min-height:calc(100dvh - 175px);
-  display:flex;
-  flex-direction:column;
-  overflow:hidden;
+  display:flex;flex-direction:column;overflow:hidden
 }
-
-#streamPanel h3,
-#groupPanel h3{
-  flex-shrink:0;
-  margin:5px 0 8px;
+#streamPanel h3,#groupPanel h3{flex-shrink:0;margin:5px 0 8px}
+#streamPanel .messages,#groupPanel .messages{
+  flex:1;height:auto;min-height:450px;overflow-y:auto;
+  padding:14px;margin:10px 0
 }
-
-#streamPanel .messages,
-#groupPanel .messages{
-  flex:1;
-  height:auto;
-  min-height:450px;
-  overflow-y:auto;
-  padding:14px;
-  margin:10px 0;
+#streamPanel form,#groupPanel form{
+  flex-shrink:0;padding-bottom:max(5px,env(safe-area-inset-bottom))
 }
-
-#streamPanel form,
-#groupPanel form{
-  flex-shrink:0;
-  padding-bottom:max(5px,env(safe-area-inset-bottom));
-}
-
 .messages{
-  height:350px;
-  overflow-y:auto;
-  padding:14px;
-  background:#f1f4f8;
-  border-radius:12px;
-  margin:12px 0;
+  height:350px;overflow-y:auto;padding:14px;background:#f1f4f8;
+  border-radius:12px;margin:12px 0
 }
 
-/* MESSAGE DESIGN */
-
-.messageRow{
-  display:flex;
-  align-items:flex-end;
-  gap:8px;
-  margin:10px 0;
-}
-
-.messageRow.mine{
-  justify-content:flex-end;
-}
-
+.messageRow{display:flex;align-items:flex-end;gap:8px;margin:10px 0}
+.messageRow.mine{justify-content:flex-end}
 .messageAvatar{
-  width:32px;
-  height:32px;
-  min-width:32px;
-  border-radius:50%;
-  background:#0866ff;
-  color:white;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-weight:bold;
-  font-size:13px;
-  overflow:hidden;
-  flex-shrink:0;
+  width:32px;height:32px;min-width:32px;border-radius:50%;
+  background:#0866ff;color:white;display:flex;align-items:center;
+  justify-content:center;font-weight:bold;font-size:13px;
+  overflow:hidden;flex-shrink:0
 }
-
-.messageAvatarImage{
-  width:100%;
-  height:100%;
-  object-fit:cover;
-  display:block;
-}
-
+.messageAvatarImage{width:100%;height:100%;object-fit:cover;display:block}
 .message{
-  background:white;
-  color:#17212b;
-  padding:9px 12px;
-  border-radius:14px 14px 14px 4px;
-  margin:0;
-  max-width:85%;
-  overflow-wrap:anywhere;
-  box-shadow:0 1px 3px #00000012;
+  background:white;color:#17212b;padding:9px 12px;
+  border-radius:14px 14px 14px 4px;margin:0;max-width:85%;
+  overflow-wrap:anywhere;box-shadow:0 1px 3px #00000012
 }
-
-.message.mine{
-  background:#d9fdd3;
-  color:#17212b;
-  border-radius:14px 14px 4px 14px;
-}
-
-.message strong{
-  font-size:12px;
-  color:#0866ff;
-}
-
-.message p{
-  margin:6px 0;
-  font-size:13px;
-  line-height:1.4;
-  white-space:pre-wrap;
-}
-
+.message.mine{background:#d9fdd3;color:#17212b;border-radius:14px 14px 4px 14px}
+.message strong{font-size:12px;color:#0866ff}
+.message p{margin:6px 0;font-size:13px;line-height:1.4;white-space:pre-wrap}
 .message small{
-  display:block;
-  color:#718096;
-  font-size:10px;
-  text-align:right;
+  display:block;color:#718096;font-size:10px;text-align:right
 }
+.readTicks{font-size:13px;font-weight:bold;letter-spacing:-3px;margin-left:5px}
+.sentTick{color:#b8c7d0}
+.readTick{color:#ff4b5c}
 
-form{
-  display:flex;
-  gap:8px;
-}
-
+form{display:flex;gap:8px}
 input{
-  min-width:0;
-  flex:1;
-  padding:13px;
-  border-radius:22px;
-  border:1px solid #d5dce5;
-  background:white;
-  color:#17212b;
-  font-size:15px;
-  outline:none;
+  min-width:0;flex:1;padding:13px;border-radius:22px;
+  border:1px solid #d5dce5;background:white;color:#17212b;
+  font-size:15px;outline:none
 }
-
 input:focus{border-color:#0866ff}
+#status{color:#d97706;min-height:22px}
 
-#status{
-  color:#d97706;
-  min-height:22px;
-}
-
-/* FACEBOOK STYLE GROUP CHAT */
-
-#groupPanel{
-  background:#fff;
-  border:1px solid #e1e7ef;
-}
-
+#groupPanel{background:#fff;border:1px solid #e1e7ef}
 #groupPanel h3{color:#0866ff}
-
-#groupPanel .messages{
-  background:#f0f2f5;
-}
-
+#groupPanel .messages{background:#f0f2f5}
 #groupPanel .message{
-  background:white;
-  border:1px solid #e4e6eb;
-  border-radius:16px 16px 16px 5px;
+  background:white;border:1px solid #e4e6eb;
+  border-radius:16px 16px 16px 5px
 }
-
 #groupPanel .message.mine{
-  background:#dbeafe;
-  border-color:#c6dcff;
-  border-radius:16px 16px 5px 16px;
+  background:#dbeafe;border-color:#c6dcff;
+  border-radius:16px 16px 5px 16px
 }
-
 #groupPanel .message strong{color:#0866ff}
+#groupPanel form button{background:#0866ff;border-radius:22px;min-width:65px}
 
-#groupPanel form button{
-  background:#0866ff;
-  border-radius:22px;
-  min-width:65px;
-}
-
-/* TELEGRAM STYLE STREAM CHAT */
-
-#streamPanel{
-  background:white;
-  border:1px solid #d9e7f1;
-}
-
+#streamPanel{background:white;border:1px solid #d9e7f1}
 #streamPanel h3{color:#168acd}
-
 #streamPanel .messages{
   background-color:#dcecf5;
   background-image:radial-gradient(#ffffff80 1px,transparent 1px);
-  background-size:22px 22px;
+  background-size:22px 22px
 }
-
-#streamPanel .message{
-  background:white;
-  border-radius:12px 12px 12px 3px;
-  border:1px solid #e5edf2;
-}
-
-#streamPanel .message.mine{
-  background:#c9f3d8;
-  border-radius:12px 12px 3px 12px;
-}
-
+#streamPanel .message{background:white;border-radius:12px 12px 12px 3px;border:1px solid #e5edf2}
+#streamPanel .message.mine{background:#c9f3d8;border-radius:12px 12px 3px 12px}
 #streamPanel .message strong{color:#168acd}
-
-#streamPanel form button{
-  background:#168acd;
-  border-radius:22px;
-}
-
-/* PRIVATE MEMBER LIST */
+#streamPanel form button{background:#168acd;border-radius:22px}
 
 .chatChoice{
-  width:100%;
-  display:flex;
-  align-items:center;
-  gap:12px;
-  margin:7px 0;
-  background:white;
-  color:#17212b;
-  text-align:left;
-  border:1px solid #e5eaf0;
+  width:100%;display:flex;align-items:center;gap:12px;margin:7px 0;
+  background:white;color:#17212b;text-align:left;border:1px solid #e5eaf0
 }
-
 .chatChoice:hover{background:#f1f6ff}
-
 .avatar{
-  width:45px;
-  height:45px;
-  border-radius:50%;
-  object-fit:cover;
-  background:#d5e5f8;
-  color:#0866ff;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  flex-shrink:0;
+  width:45px;height:45px;border-radius:50%;object-fit:cover;
+  background:#d5e5f8;color:#0866ff;display:flex;
+  align-items:center;justify-content:center;flex-shrink:0
 }
-
-.note{
-  color:#718096;
-  font-size:13px;
-}
-
-/* WHATSAPP STYLE PRIVATE CHAT */
+.note{color:#718096;font-size:13px}
 
 #privateScreen{
-  display:none;
-  position:fixed;
-  inset:0;
-  z-index:1000;
-  background:#101522;
-  flex-direction:column;
+  display:none;position:fixed;inset:0;z-index:1000;
+  background:#101522;flex-direction:column
 }
-
 #privateScreen.active{display:flex}
-
 .chatHeader{
-  background:#075e54;
-  color:white;
-  display:flex;
-  align-items:center;
-  gap:12px;
-  padding:12px;
-  min-height:68px;
+  background:#075e54;color:white;display:flex;align-items:center;
+  gap:12px;padding:12px;min-height:68px
 }
-
-.backButton{
-  background:transparent;
-  color:white;
-  font-size:24px;
-  padding:5px 10px;
-}
-
-#recipientAvatar{
-  width:42px;
-  height:42px;
-}
-
-.recipientInfo{
-  flex:1;
-  min-width:0;
-}
-
-.recipientInfo strong{
-  display:block;
-  overflow:hidden;
-  text-overflow:ellipsis;
-  white-space:nowrap;
-}
-
+.backButton{background:transparent;color:white;font-size:24px;padding:5px 10px}
+#recipientAvatar{width:42px;height:42px}
+.recipientInfo{flex:1;min-width:0}
+.recipientInfo strong{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .recipientInfo small{color:#d1e8e4}
-
 #privateMessages{
-  flex:1;
-  overflow-y:auto;
-  padding:14px;
-  background:radial-gradient(circle at center,#182337 0%,#101522 75%);
+  flex:1;overflow-y:auto;padding:14px;
+  background:radial-gradient(circle at center,#182337 0%,#101522 75%)
 }
-
-#privateMessages .message{
-  background:#263249;
-  color:white;
-}
-
-#privateMessages .message.mine{
-  background:#075e54;
-  color:white;
-}
-
+#privateMessages .message{background:#263249;color:white}
+#privateMessages .message.mine{background:#075e54;color:white}
 #privateMessages .message strong{color:#b9e7df}
 #privateMessages .message small{color:#c2d0d8}
-
 #privateStatus{
-  padding:4px 12px;
-  color:#ffbd75;
-  font-size:12px;
-  min-height:20px;
-  background:#101522;
+  padding:4px 12px;color:#ffbd75;font-size:12px;
+  min-height:20px;background:#101522
 }
-
 .privateComposer{
-  display:flex;
-  gap:8px;
-  padding:10px;
-  background:#1b2435;
-  padding-bottom:max(10px,env(safe-area-inset-bottom));
+  display:flex;gap:8px;padding:10px;background:#1b2435;
+  padding-bottom:max(10px,env(safe-area-inset-bottom))
 }
-
 .privateComposer input{
-  border-radius:25px;
-  background:#111a2a;
-  color:white;
-  border-color:#39465e;
+  border-radius:25px;background:#111a2a;color:white;border-color:#39465e
 }
-
 .privateComposer button{
-  background:#128c7e;
-  border-radius:50%;
-  width:48px;
-  height:48px;
-  flex-shrink:0;
+  background:#128c7e;border-radius:50%;width:48px;height:48px;flex-shrink:0
 }
 
 @media(max-width:520px){
   main{padding:8px}
-
-  #streamPanel,#groupPanel{
-    min-height:calc(100dvh - 155px);
-    padding:10px;
-  }
-
-  #streamPanel .messages,
-  #groupPanel .messages{
-    min-height:400px;
-  }
-
-  .tabs button{
-    font-size:12px;
-    padding:11px 5px;
-  }
+  #streamPanel,#groupPanel{min-height:calc(100dvh - 155px);padding:10px}
+  #streamPanel .messages,#groupPanel .messages{min-height:400px}
+  .tabs button{font-size:12px;padding:11px 5px}
 }
 </style>
 </head>
@@ -450,15 +174,11 @@ input:focus{border-color:#0866ff}
 
   <section id="streamPanel" class="panel">
     <h3 id="streamTitle">Stream Chat</h3>
-
     <div id="streamMessages" class="messages">
       <p class="note">Loading messages...</p>
     </div>
-
     <form id="streamForm">
-      <input id="streamInput" maxlength="2000"
-        placeholder="Message your stream..."
-        autocomplete="off" required>
+      <input id="streamInput" maxlength="2000" placeholder="Message your stream..." autocomplete="off" required>
       <button type="submit">Send</button>
     </form>
   </section>
@@ -466,28 +186,19 @@ input:focus{border-color:#0866ff}
   <section id="groupPanel" class="panel hidden">
     <h3>Magunga High School Group</h3>
     <p class="note">Chat with approved school members.</p>
-
     <div id="groupMessages" class="messages">
       <p class="note">Loading messages...</p>
     </div>
-
     <form id="groupForm">
-      <input id="groupInput" maxlength="2000"
-        placeholder="Write a message..."
-        autocomplete="off" required>
+      <input id="groupInput" maxlength="2000" placeholder="Write a message..." autocomplete="off" required>
       <button type="submit">Send</button>
     </form>
   </section>
 
   <section id="privatePanel" class="panel hidden">
     <h3>Private Messages</h3>
-    <input id="memberSearch"
-      placeholder="Search students..."
-      autocomplete="off">
-
-    <div id="chatList">
-      <p class="note">Loading students...</p>
-    </div>
+    <input id="memberSearch" placeholder="Search students..." autocomplete="off">
+    <div id="chatList"><p class="note">Loading students...</p></div>
   </section>
 
   <p id="status"></p>
@@ -496,9 +207,7 @@ input:focus{border-color:#0866ff}
 <div id="privateScreen">
   <div class="chatHeader">
     <button id="backButton" class="backButton" type="button">‹</button>
-
     <div id="recipientAvatar" class="avatar">?</div>
-
     <div class="recipientInfo">
       <strong id="recipientName">Student</strong>
       <small id="recipientStream">Private conversation</small>
@@ -512,9 +221,7 @@ input:focus{border-color:#0866ff}
   <div id="privateStatus"></div>
 
   <form id="privateForm" class="privateComposer">
-    <input id="privateInput" maxlength="2000"
-      placeholder="Message..."
-      autocomplete="off" required>
+    <input id="privateInput" maxlength="2000" placeholder="Message..." autocomplete="off" required>
     <button id="privateSend" type="submit">➤</button>
   </form>
 </div>
@@ -522,21 +229,11 @@ input:focus{border-color:#0866ff}
 <script type="module">
 import {auth,db} from "./assets/js/firebase.js";
 
-import {
-  onAuthStateChanged
-} from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
+import {onAuthStateChanged} from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
 
 import {
-  collection,
-  doc,
-  getDoc,
-  getDocs,
-  setDoc,
-  addDoc,
-  query,
-  where,
-  onSnapshot,
-  serverTimestamp
+  collection,doc,getDoc,getDocs,setDoc,addDoc,
+  query,where,onSnapshot,serverTimestamp
 } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
 
 const $ = id => document.getElementById(id);
@@ -544,7 +241,6 @@ const $ = id => document.getElementById(id);
 let user = null;
 let profile = null;
 let activeRecipient = null;
-
 let approvedMembers = [];
 let membersLoaded = false;
 
@@ -553,6 +249,11 @@ const profilePhotos = new Map();
 let streamUnsub = null;
 let groupUnsub = null;
 let privateUnsub = null;
+let readUnsub = null;
+
+let currentPrivateSnapshot = null;
+let recipientReadAt = 0;
+let activeChatId = null;
 
 function status(message){
   $("status").textContent = message || "";
@@ -564,7 +265,13 @@ function privateStatus(message){
 
 function stopPrivate(){
   if(privateUnsub) privateUnsub();
+  if(readUnsub) readUnsub();
+
   privateUnsub = null;
+  readUnsub = null;
+  currentPrivateSnapshot = null;
+  recipientReadAt = 0;
+  activeChatId = null;
 }
 
 function stopStream(){
@@ -577,7 +284,7 @@ function stopGroup(){
   groupUnsub = null;
 }
 
-/* CREATE AVATAR WITH PROFILE PHOTO OR INITIAL */
+/* AVATARS */
 
 function makeAvatar(name,photoURL=""){
   const avatar = document.createElement("div");
@@ -587,7 +294,6 @@ function makeAvatar(name,photoURL=""){
 
   if(photoURL){
     const image = document.createElement("img");
-
     image.className = "messageAvatarImage";
     image.src = photoURL;
     image.alt = "";
@@ -605,7 +311,7 @@ function makeAvatar(name,photoURL=""){
   return avatar;
 }
 
-/* LOAD APPROVED STUDENT PROFILE PHOTOS */
+/* LOAD APPROVED PROFILE PHOTOS */
 
 async function loadPublicProfiles(){
   try{
@@ -625,41 +331,31 @@ async function loadPublicProfiles(){
         data.profilePic ||
         "";
 
-      if(photo){
-        profilePhotos.set(item.id,photo);
-      }
+      if(photo) profilePhotos.set(item.id,photo);
     });
-
   }catch(error){
-    console.warn(
-      "Profile photos could not be loaded:",
-      error
-    );
+    console.warn("Profile photos could not be loaded:",error);
   }
 }
 
-/* DISPLAY CHAT MESSAGES */
+/* RENDER MESSAGES */
 
-function renderMessages(container,snapshot){
+function renderMessages(container,snapshot,options={}){
+  const {showReceipts=false,readAt=0} = options;
+
   container.replaceChildren();
 
   if(snapshot.empty){
     const empty = document.createElement("p");
     empty.className = "note";
-    empty.textContent =
-      "No messages yet. Send the first message!";
-
+    empty.textContent = "No messages yet. Send the first message!";
     container.appendChild(empty);
     return;
   }
 
   const docs = [...snapshot.docs].sort((a,b)=>{
-    const first =
-      a.data().createdAt?.toMillis?.() || 0;
-
-    const second =
-      b.data().createdAt?.toMillis?.() || 0;
-
+    const first = a.data().createdAt?.toMillis?.() || 0;
+    const second = b.data().createdAt?.toMillis?.() || 0;
     return first-second;
   });
 
@@ -677,50 +373,52 @@ function renderMessages(container,snapshot){
 
     if(dateLabel !== previousDate){
       const separator = document.createElement("div");
-
       separator.className = "note";
       separator.style.textAlign = "center";
       separator.style.margin = "14px 0";
       separator.textContent = dateLabel;
-
       container.appendChild(separator);
       previousDate = dateLabel;
     }
 
     const row = document.createElement("div");
     row.className = "messageRow";
-
-    if(mine){
-      row.classList.add("mine");
-    }
+    if(mine) row.classList.add("mine");
 
     const name = data.senderName || "Student";
-
-    const photoURL =
-      profilePhotos.get(data.senderId) || "";
-
+    const photoURL = profilePhotos.get(data.senderId) || "";
     const avatar = makeAvatar(name,photoURL);
 
     const bubble = document.createElement("div");
     bubble.className = "message";
-
-    if(mine){
-      bubble.classList.add("mine");
-    }
+    if(mine) bubble.classList.add("mine");
 
     const sender = document.createElement("strong");
-
     sender.textContent = mine ? "You" : name;
 
     const messageText = document.createElement("p");
     messageText.textContent = data.text || "";
 
     const time = document.createElement("small");
-
     time.textContent = date.toLocaleTimeString([],{
       hour:"2-digit",
       minute:"2-digit"
     });
+
+    /* PRIVATE CHAT READ RECEIPTS */
+    if(showReceipts && mine){
+      const tick = document.createElement("span");
+      tick.className = "readTicks";
+
+      const messageTime = data.createdAt?.toMillis?.() || 0;
+      const hasBeenRead = messageTime > 0 && readAt >= messageTime;
+
+      tick.classList.add(hasBeenRead ? "readTick" : "sentTick");
+      tick.textContent = "✓✓";
+      tick.title = hasBeenRead ? "Read" : "Sent";
+
+      time.appendChild(tick);
+    }
 
     bubble.append(sender,messageText,time);
 
@@ -743,26 +441,19 @@ function loadStream(){
 
   if(!profile?.stream) return;
 
-  $("streamTitle").textContent =
-    profile.stream + " Stream Chat";
+  $("streamTitle").textContent = profile.stream + " Stream Chat";
 
   const q = query(
     collection(db,"messages"),
     where("stream","==",profile.stream)
   );
 
-  streamUnsub = onSnapshot(
-    q,
-    snapshot=>{
-      renderMessages($("streamMessages"),snapshot);
-    },
-    error=>{
-      $("streamMessages").textContent =
-        "Unable to load stream messages.";
-
-      status(error.message);
-    }
-  );
+  streamUnsub = onSnapshot(q,snapshot=>{
+    renderMessages($("streamMessages"),snapshot);
+  },error=>{
+    $("streamMessages").textContent = "Unable to load stream messages.";
+    status(error.message);
+  });
 }
 
 /* SCHOOL GROUP CHAT */
@@ -776,15 +467,13 @@ function loadGroup(){
       renderMessages($("groupMessages"),snapshot);
     },
     error=>{
-      $("groupMessages").textContent =
-        "Unable to load group messages.";
-
+      $("groupMessages").textContent = "Unable to load group messages.";
       status(error.message);
     }
   );
 }
 
-/* LOAD STUDENTS FOR PRIVATE CHAT */
+/* LOAD PRIVATE CHAT MEMBERS */
 
 async function loadMembers(){
   if(membersLoaded){
@@ -811,43 +500,30 @@ async function loadMembers(){
         data.profilePic ||
         "";
 
-      if(photo){
-        profilePhotos.set(item.id,photo);
-      }
+      if(photo) profilePhotos.set(item.id,photo);
 
-      return {
-        id:item.id,
-        ...data
-      };
+      return {id:item.id,...data};
     }).filter(member=>member.id !== user.uid);
 
     membersLoaded = true;
-
     displayMembers();
 
   }catch(error){
     $("chatList").textContent =
       "Could not load students. Check publicProfiles permissions.";
-
     status(error.message);
   }
 }
 
-/* DISPLAY STUDENT LIST */
+/* DISPLAY MEMBERS */
 
 function displayMembers(search=""){
   const list = $("chatList");
   list.replaceChildren();
 
   const filtered = approvedMembers.filter(member=>{
-    const name =
-      member.name ||
-      member.fullName ||
-      "Student";
-
-    return name.toLowerCase().includes(
-      search.toLowerCase()
-    );
+    const name = member.name || member.fullName || "Student";
+    return name.toLowerCase().includes(search.toLowerCase());
   });
 
   if(!filtered.length){
@@ -857,7 +533,6 @@ function displayMembers(search=""){
 
   filtered.forEach(member=>{
     const button = document.createElement("button");
-
     button.type = "button";
     button.className = "chatChoice";
 
@@ -877,66 +552,69 @@ function displayMembers(search=""){
 
       avatar.onerror = ()=>{
         const fallback = document.createElement("div");
-
         fallback.className = "avatar";
         fallback.textContent =
           (member.name || "S").trim().charAt(0).toUpperCase();
-
         avatar.replaceWith(fallback);
       };
     }else{
       avatar = document.createElement("div");
       avatar.className = "avatar";
-
       avatar.textContent =
         (member.name || "S").trim().charAt(0).toUpperCase();
     }
 
     const details = document.createElement("div");
-
     const name = document.createElement("strong");
-
-    name.textContent =
-      member.name ||
-      member.fullName ||
-      "Student";
+    name.textContent = member.name || member.fullName || "Student";
 
     const stream = document.createElement("div");
-
     stream.className = "note";
-    stream.textContent =
-      member.stream || "Magunga High";
+    stream.textContent = member.stream || "Magunga High";
 
     details.append(name,stream);
     button.append(avatar,details);
 
-    button.addEventListener("click",()=>{
-      openPrivateChat(member);
-    });
+    button.addEventListener("click",()=>openPrivateChat(member));
 
     list.appendChild(button);
   });
 }
 
+/* MARK CONVERSATION AS READ */
+
+async function markPrivateChatRead(chatId){
+  if(!user || !chatId || !$("privateScreen").classList.contains("active")) return;
+
+  try{
+    await setDoc(
+      doc(db,"privateChats",chatId,"readReceipts",user.uid),
+      {
+        readerId:user.uid,
+        lastReadAt:serverTimestamp()
+      },
+      {merge:true}
+    );
+  }catch(error){
+    console.warn("Read receipt could not be saved:",error);
+  }
+}
+
 /* OPEN PRIVATE CHAT */
 
 async function openPrivateChat(member){
-  activeRecipient = member;
-
   stopPrivate();
 
+  activeRecipient = member;
   $("privateScreen").classList.add("active");
 
   $("recipientName").textContent =
-    member.name ||
-    member.fullName ||
-    "Student";
+    member.name || member.fullName || "Student";
 
   $("recipientStream").textContent =
     member.stream || "Magunga High";
 
   const avatar = $("recipientAvatar");
-
   avatar.replaceChildren();
 
   const photo =
@@ -947,7 +625,6 @@ async function openPrivateChat(member){
 
   if(photo){
     const image = document.createElement("img");
-
     image.src = photo;
     image.className = "avatar";
     image.alt = "";
@@ -964,21 +641,15 @@ async function openPrivateChat(member){
   }
 
   privateStatus("Opening conversation...");
+  $("privateMessages").innerHTML =
+    '<p class="note">Loading conversation...</p>';
 
   try{
-    const participants = [
-      user.uid,
-      member.id
-    ].sort();
-
+    const participants = [user.uid,member.id].sort();
     const chatId = participants.join("_");
+    activeChatId = chatId;
 
-    const chatRef = doc(
-      db,
-      "privateChats",
-      chatId
-    );
-
+    const chatRef = doc(db,"privateChats",chatId);
     const chatSnap = await getDoc(chatRef);
 
     if(!chatSnap.exists()){
@@ -988,34 +659,56 @@ async function openPrivateChat(member){
       });
     }
 
+    /* LISTEN FOR THE OTHER PERSON'S READ RECEIPT */
+    readUnsub = onSnapshot(
+      doc(db,"privateChats",chatId,"readReceipts",member.id),
+      receiptSnap=>{
+        recipientReadAt =
+          receiptSnap.data()?.lastReadAt?.toMillis?.() || 0;
+
+        if(currentPrivateSnapshot){
+          renderMessages(
+            $("privateMessages"),
+            currentPrivateSnapshot,
+            {showReceipts:true,readAt:recipientReadAt}
+          );
+        }
+      },
+      error=>{
+        console.warn("Read receipt listener:",error);
+      }
+    );
+
+    /* LISTEN FOR PRIVATE MESSAGES */
     const messagesRef = collection(
-      db,
-      "privateChats",
-      chatId,
-      "messages"
+      db,"privateChats",chatId,"messages"
     );
 
     privateUnsub = onSnapshot(
       messagesRef,
       snapshot=>{
+        if(activeChatId !== chatId) return;
+
+        currentPrivateSnapshot = snapshot;
+
         renderMessages(
           $("privateMessages"),
-          snapshot
+          snapshot,
+          {showReceipts:true,readAt:recipientReadAt}
         );
 
         privateStatus("");
+
+        /* Update this user's read receipt */
+        markPrivateChatRead(chatId);
       },
       error=>{
-        privateStatus(
-          "Unable to load messages: " + error.message
-        );
+        privateStatus("Unable to load messages: " + error.message);
       }
     );
 
   }catch(error){
-    privateStatus(
-      "Could not open chat: " + error.message
-    );
+    privateStatus("Could not open chat: " + error.message);
   }
 }
 
@@ -1023,38 +716,26 @@ async function openPrivateChat(member){
 
 $("backButton").addEventListener("click",()=>{
   stopPrivate();
-
   $("privateScreen").classList.remove("active");
-
   activeRecipient = null;
 });
 
 /* SEND STREAM AND GROUP MESSAGES */
 
-async function sendMessage(
-  collectionName,
-  inputId,
-  extra={}
-){
+async function sendMessage(collectionName,inputId,extra={}){
   const input = $(inputId);
   const text = input.value.trim();
 
   if(!text || !user || !profile) return;
 
   try{
-    await addDoc(
-      collection(db,collectionName),
-      {
-        senderId:user.uid,
-        senderName:
-          profile.name ||
-          user.displayName ||
-          "Student",
-        text,
-        createdAt:serverTimestamp(),
-        ...extra
-      }
-    );
+    await addDoc(collection(db,collectionName),{
+      senderId:user.uid,
+      senderName:profile.name || user.displayName || "Student",
+      text,
+      createdAt:serverTimestamp(),
+      ...extra
+    });
 
     input.value = "";
     status("");
@@ -1064,29 +745,21 @@ async function sendMessage(
   }
 }
 
-/* STREAM MESSAGE FORM */
+/* STREAM FORM */
 
 $("streamForm").addEventListener("submit",event=>{
   event.preventDefault();
 
-  sendMessage(
-    "messages",
-    "streamInput",
-    {
-      stream:profile.stream
-    }
-  );
+  sendMessage("messages","streamInput",{
+    stream:profile.stream
+  });
 });
 
-/* GROUP MESSAGE FORM */
+/* GROUP FORM */
 
 $("groupForm").addEventListener("submit",event=>{
   event.preventDefault();
-
-  sendMessage(
-    "groupMessages",
-    "groupInput"
-  );
+  sendMessage("groupMessages","groupInput");
 });
 
 /* PRIVATE MESSAGE FORM */
@@ -1094,34 +767,19 @@ $("groupForm").addEventListener("submit",event=>{
 $("privateForm").addEventListener("submit",async event=>{
   event.preventDefault();
 
-  if(!activeRecipient) return;
+  if(!activeRecipient || !activeChatId) return;
 
   const input = $("privateInput");
   const text = input.value.trim();
 
   if(!text) return;
 
-  const participants = [
-    user.uid,
-    activeRecipient.id
-  ].sort();
-
-  const chatId = participants.join("_");
-
   try{
     await addDoc(
-      collection(
-        db,
-        "privateChats",
-        chatId,
-        "messages"
-      ),
+      collection(db,"privateChats",activeChatId,"messages"),
       {
         senderId:user.uid,
-        senderName:
-          profile.name ||
-          user.displayName ||
-          "Student",
+        senderName:profile.name || user.displayName || "Student",
         text,
         createdAt:serverTimestamp()
       }
@@ -1131,57 +789,37 @@ $("privateForm").addEventListener("submit",async event=>{
     privateStatus("");
 
   }catch(error){
-    privateStatus(
-      "Message failed: " + error.message
-    );
+    privateStatus("Message failed: " + error.message);
   }
 });
 
-/* CHAT TAB SWITCHING */
+/* CHAT TABS */
 
 document.querySelectorAll("[data-tab]").forEach(button=>{
   button.addEventListener("click",()=>{
     const target = button.dataset.tab;
 
     document.querySelectorAll("[data-tab]").forEach(tab=>{
-      tab.classList.toggle(
-        "active",
-        tab===button
-      );
+      tab.classList.toggle("active",tab===button);
     });
 
-    [
-      "streamPanel",
-      "groupPanel",
-      "privatePanel"
-    ].forEach(id=>{
-      $(id).classList.toggle(
-        "hidden",
-        id!==target
-      );
+    ["streamPanel","groupPanel","privatePanel"].forEach(id=>{
+      $(id).classList.toggle("hidden",id!==target);
     });
 
-    if(target==="streamPanel"){
-      loadStream();
-    }
-
-    if(target==="groupPanel"){
-      loadGroup();
-    }
-
-    if(target==="privatePanel"){
-      loadMembers();
-    }
+    if(target==="streamPanel") loadStream();
+    if(target==="groupPanel") loadGroup();
+    if(target==="privatePanel") loadMembers();
   });
 });
 
-/* SEARCH STUDENTS */
+/* SEARCH MEMBERS */
 
 $("memberSearch").addEventListener("input",event=>{
   displayMembers(event.target.value);
 });
 
-/* AUTHENTICATION AND PROFILE CHECK */
+/* AUTHENTICATION */
 
 onAuthStateChanged(auth,async currentUser=>{
   stopStream();
@@ -1196,9 +834,7 @@ onAuthStateChanged(auth,async currentUser=>{
   user = currentUser;
 
   try{
-    const profileSnap = await getDoc(
-      doc(db,"users",user.uid)
-    );
+    const profileSnap = await getDoc(doc(db,"users",user.uid));
 
     if(!profileSnap.exists()){
       status("Your account profile was not found.");
@@ -1207,7 +843,7 @@ onAuthStateChanged(auth,async currentUser=>{
 
     profile = profileSnap.data();
 
-    if(profile.status!=="approved"){
+    if(profile.status !== "approved"){
       status("Your account is awaiting approval.");
       return;
     }
@@ -1215,20 +851,15 @@ onAuthStateChanged(auth,async currentUser=>{
     $("welcome").textContent =
       "Welcome, " + (profile.name || "Student");
 
-    /* LOAD PHOTOS BEFORE LOADING MESSAGES */
-
     await loadPublicProfiles();
-
     loadStream();
 
   }catch(error){
-    status(
-      "Could not load your account: " + error.message
-    );
+    status("Could not load your account: " + error.message);
   }
 });
 
-/* CLEAN UP LISTENERS */
+/* CLEAN UP */
 
 window.addEventListener("beforeunload",()=>{
   stopStream();
