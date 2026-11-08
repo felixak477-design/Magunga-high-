@@ -14,7 +14,8 @@ header a{color:#e8c45e;text-decoration:none}
 main{max-width:560px;margin:30px auto;padding:20px}
 .profile-card{
  background:#1b2435;border:1px solid #59471f;
- border-radius:18px;padding:25px;text-align:center
+ border-radius:18px;padding:25px;text-align:center;
+ box-shadow:0 0 18px #d5a52b18
 }
 .avatar{
  width:130px;height:130px;border-radius:50%;
@@ -32,8 +33,10 @@ input{
 button{
  width:100%;padding:13px;margin-top:15px;
  background:#d5a52b;color:#171717;
- border:0;border-radius:8px;font-weight:bold
+ border:0;border-radius:8px;font-weight:bold;
+ cursor:pointer
 }
+button:disabled{opacity:.6}
 .hidden{display:none}
 #message{color:#ffbd75}
 </style>
@@ -49,7 +52,6 @@ button{
 <section class="profile-card">
 
 <img id="photo" class="avatar hidden" alt="Profile picture">
-
 <div id="fallback" class="avatar">M</div>
 
 <h1 id="displayName">Loading profile...</h1>
@@ -85,7 +87,7 @@ import {
 } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
 
 import {
- doc,getDoc,updateDoc,serverTimestamp
+ doc,getDoc,writeBatch,serverTimestamp
 } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
 
 import {uploadProfileImage} from "./assets/js/cloudinary.js";
@@ -135,8 +137,11 @@ async function loadProfile(user){
  currentUser=user;
 
  const uid=targetUid||user.uid;
+ const own=uid===user.uid;
 
- const snap=await getDoc(doc(db,"users",uid));
+ const snap=await getDoc(
+  doc(db,"publicProfiles",uid)
+ );
 
  if(!snap.exists() || snap.data().status!=="approved"){
   message.textContent="This profile is unavailable.";
@@ -146,11 +151,11 @@ async function loadProfile(user){
 
  currentData=snap.data();
 
- const own=uid===user.uid;
  const shown=currentData.nickname||currentData.name||"Member";
 
  displayName.textContent=shown;
- realName.textContent=currentData.nickname?currentData.name||"":"";
+ realName.textContent=currentData.nickname?
+  currentData.name||"": "";
  stream.textContent=currentData.stream||"";
 
  showPhoto(currentData.photoURL||"",shown);
@@ -175,31 +180,62 @@ saveButton.addEventListener("click",async()=>{
    throw new Error("Nickname must be 30 characters or fewer.");
   }
 
+  const file=photoFile.files[0];
+
+  if(file){
+
+   if(file.size>3*1024*1024){
+    throw new Error("Choose an image smaller than 3 MB.");
+   }
+
+   if(!["image/jpeg","image/png","image/webp"].includes(file.type)){
+    throw new Error("Choose a JPG, PNG or WEBP image.");
+   }
+
+  }
+
+  let photoURL=currentData.photoURL||"";
+
+  if(file){
+   photoURL=await uploadProfileImage(file);
+  }
+
   const changes={
    nickname,
    profileUpdatedAt:serverTimestamp()
   };
 
-  const file=photoFile.files[0];
-
   if(file){
-   changes.photoURL=await uploadProfileImage(file);
+   changes.photoURL=photoURL;
   }
 
-  await updateDoc(doc(db,"users",currentUser.uid),changes);
+  const batch=writeBatch(db);
 
-  currentData={...currentData,...changes};
+  batch.update(
+   doc(db,"users",currentUser.uid),
+   changes
+  );
+
+  batch.update(
+   doc(db,"publicProfiles",currentUser.uid),
+   changes
+  );
+
+  await batch.commit();
+
+  currentData={...currentData,...changes,photoURL};
 
   displayName.textContent=nickname||currentData.name;
   realName.textContent=nickname?currentData.name||"":"";
 
-  showPhoto(currentData.photoURL||"",nickname||currentData.name);
+  showPhoto(photoURL,nickname||currentData.name);
 
   photoFile.value="";
-  message.textContent="Profile updated.";
+  message.textContent="Profile updated successfully.";
 
  }catch(error){
 
+  console.error(error);
   message.textContent=error.message||"Could not update profile.";
 
  }finally{
