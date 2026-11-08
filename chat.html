@@ -3,42 +3,254 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#101522">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#075e54">
 <title>Chats | The Magunga High</title>
+
 <style>
 *{box-sizing:border-box;font-family:Arial,sans-serif}
-body{margin:0;background:#101522;color:white}
-header{padding:17px;background:#1b2435}
-header a{color:#83b3ff;text-decoration:none}
-main{max-width:900px;margin:auto;padding:18px}
-.tabs{display:flex;gap:8px;flex-wrap:wrap;margin:20px 0}
-.tabs button{flex:1;min-width:100px;background:#263249}
-.tabs button.active{background:#2878ff}
-.panel{background:#1b2435;padding:15px;border-radius:12px}
-.hidden{display:none}
-.messagesArea,#messages{height:350px;overflow-y:auto;background:#111a2a;padding:12px;border-radius:9px;margin:12px 0}
-.message{background:#263249;padding:11px;border-radius:9px;margin-bottom:10px;overflow-wrap:anywhere}
-.message strong{color:#83b3ff}
-.message small{display:block;color:#aab8cd;margin-top:6px}
-form{display:flex;gap:8px}
-input{min-width:0;flex:1;padding:13px;border-radius:8px;border:1px solid #39465e;background:#111a2a;color:white;font-size:15px}
-button{border:0;border-radius:8px;padding:12px;background:#2878ff;color:white;font-weight:bold;cursor:pointer}
+
+body{
+ margin:0;
+ background:#101522;
+ color:white;
+}
+
+header{
+ background:#075e54;
+ padding:16px;
+}
+
+header a{
+ color:white;
+ text-decoration:none;
+}
+
+main{
+ max-width:850px;
+ margin:auto;
+ padding:16px;
+}
+
+button{
+ border:0;
+ border-radius:8px;
+ padding:12px;
+ background:#128c7e;
+ color:white;
+ font-weight:bold;
+ cursor:pointer;
+}
+
 button:disabled{opacity:.5}
-#status{color:#ffbd75;min-height:20px}
-.chatChoice{background:#263249;text-align:left;width:100%;display:flex;align-items:center;gap:12px;margin:6px 0}
-.avatar{width:42px;height:42px;border-radius:50%;object-fit:cover;background:#405574;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0}
-.note{color:#aab8cd;font-size:13px;line-height:1.5}
-@media(max-width:520px){main{padding:12px}.messagesArea,#messages{height:300px}}
+
+.tabs{
+ display:flex;
+ gap:8px;
+ margin:20px 0;
+ flex-wrap:wrap;
+}
+
+.tabs button{flex:1;background:#263249}
+.tabs button.active{background:#128c7e}
+
+.panel{
+ background:#1b2435;
+ padding:15px;
+ border-radius:12px;
+}
+
+.hidden{display:none!important}
+
+.messages{
+ height:350px;
+ overflow-y:auto;
+ padding:12px;
+ background:#111a2a;
+ border-radius:10px;
+ margin:12px 0;
+}
+
+.message{
+ background:#263249;
+ padding:11px;
+ border-radius:10px;
+ margin:8px 0;
+ max-width:85%;
+ overflow-wrap:anywhere;
+}
+
+.message.mine{
+ background:#075e54;
+ margin-left:auto;
+}
+
+.message strong{font-size:13px}
+.message p{margin:7px 0}
+.message small{
+ display:block;
+ color:#c2d0d8;
+ font-size:11px;
+}
+
+form{
+ display:flex;
+ gap:8px;
+}
+
+input{
+ min-width:0;
+ flex:1;
+ padding:13px;
+ border-radius:9px;
+ border:1px solid #39465e;
+ background:#111a2a;
+ color:white;
+ font-size:15px;
+}
+
+#status{
+ color:#ffbd75;
+ min-height:22px;
+}
+
+.chatChoice{
+ width:100%;
+ display:flex;
+ align-items:center;
+ gap:12px;
+ margin:7px 0;
+ background:#263249;
+ text-align:left;
+}
+
+.avatar{
+ width:45px;
+ height:45px;
+ border-radius:50%;
+ object-fit:cover;
+ background:#405574;
+ display:flex;
+ align-items:center;
+ justify-content:center;
+ flex-shrink:0;
+}
+
+.note{
+ color:#aab8cd;
+ font-size:13px;
+}
+
+/* PRIVATE CHAT FULL SCREEN */
+
+#privateScreen{
+ display:none;
+ position:fixed;
+ inset:0;
+ z-index:1000;
+ background:#101522;
+ flex-direction:column;
+}
+
+#privateScreen.active{
+ display:flex;
+}
+
+.chatHeader{
+ background:#075e54;
+ display:flex;
+ align-items:center;
+ gap:12px;
+ padding:12px;
+ min-height:68px;
+}
+
+.backButton{
+ background:transparent;
+ font-size:24px;
+ padding:5px 10px;
+}
+
+#recipientAvatar{
+ width:42px;
+ height:42px;
+}
+
+.recipientInfo{
+ flex:1;
+ min-width:0;
+}
+
+.recipientInfo strong{
+ display:block;
+ overflow:hidden;
+ text-overflow:ellipsis;
+ white-space:nowrap;
+}
+
+.recipientInfo small{
+ color:#d1e8e4;
+}
+
+#privateMessages{
+ flex:1;
+ overflow-y:auto;
+ padding:14px;
+ background:
+ radial-gradient(circle at center,#182337 0%,#101522 75%);
+}
+
+#privateMessages .message{
+ background:#263249;
+}
+
+#privateMessages .message.mine{
+ background:#075e54;
+}
+
+#privateStatus{
+ padding:4px 12px;
+ color:#ffbd75;
+ font-size:12px;
+ min-height:20px;
+ background:#101522;
+}
+
+.privateComposer{
+ display:flex;
+ gap:8px;
+ padding:10px;
+ background:#1b2435;
+ padding-bottom:max(10px,env(safe-area-inset-bottom));
+}
+
+.privateComposer input{
+ border-radius:25px;
+}
+
+.privateComposer button{
+ border-radius:50%;
+ width:48px;
+ height:48px;
+ flex-shrink:0;
+}
+
+@media(max-width:520px){
+ main{padding:12px}
+ .messages{height:300px}
+}
 </style>
 </head>
+
 <body>
+
 <header>
 <h2>THE MAGUNGA HIGH</h2>
 <a href="dashboard.html">← Back to Dashboard</a>
 </header>
 
 <main>
+
 <h1>💬 Student Chats</h1>
 <p id="welcome">Checking your account...</p>
 
@@ -49,48 +261,94 @@ button:disabled{opacity:.5}
 </div>
 
 <section id="streamPanel" class="panel">
-<h3 id="streamTitle">Your Stream</h3>
-<p class="note">Chat with approved students in your own stream.</p>
-<div id="streamMessages" class="messagesArea"></div>
+<h3 id="streamTitle">Stream Chat</h3>
+<div id="streamMessages" class="messages"></div>
+
+<form id="streamForm">
+<input id="streamInput" maxlength="2000"
+placeholder="Write a message..." required>
+<button type="submit">Send</button>
+</form>
 </section>
 
 <section id="groupPanel" class="panel hidden">
 <h3>School-wide Group Chat</h3>
-<p class="note">Chat with approved students from all five streams.</p>
-<div id="groupMessages" class="messagesArea"></div>
+<div id="groupMessages" class="messages"></div>
+
+<form id="groupForm">
+<input id="groupInput" maxlength="2000"
+placeholder="Write a message..." required>
+<button type="submit">Send</button>
+</form>
 </section>
 
 <section id="privatePanel" class="panel hidden">
-<h3>Private Chat</h3>
-<p class="note">Search by member name or nickname and select the correct person.</p>
+<h3>Private Messages</h3>
+
 <input id="memberSearch" type="search"
-placeholder="Search approved members..." autocomplete="off">
+placeholder="Search members by name or nickname..."
+autocomplete="off">
+
 <div id="chatList"></div>
-<p id="privateTitle" class="note">Choose a member to start chatting.</p>
 </section>
 
-<div id="messages" style="display:none"></div>
-
-<form id="messageForm">
-<input id="messageInput" maxlength="2000"
-placeholder="Write a message..." required>
-<button id="sendButton" type="submit">Send</button>
-</form>
-
 <p id="status"></p>
+
 </main>
 
+<!-- FULL SCREEN PRIVATE CHAT -->
+
+<section id="privateScreen">
+
+<div class="chatHeader">
+
+<button class="backButton" id="backButton"
+aria-label="Back to members">←</button>
+
+<div id="recipientAvatar" class="avatar">M</div>
+
+<div class="recipientInfo">
+<strong id="recipientName">Member</strong>
+<small id="recipientStream">Private conversation</small>
+</div>
+
+</div>
+
+<div id="privateMessages">
+<p class="note">Opening conversation...</p>
+</div>
+
+<p id="privateStatus"></p>
+
+<form id="privateForm" class="privateComposer">
+<input id="privateInput" maxlength="2000"
+placeholder="Write a message..." required>
+<button id="privateSend" type="submit">➤</button>
+</form>
+
+</section>
+
 <script type="module">
+
 import {auth,db} from "./assets/js/firebase.js";
 
-import {onAuthStateChanged} from
-"https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
+import {
+onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
 
 import {
-collection,doc,getDoc,getDocs,setDoc,addDoc,
-query,where,onSnapshot,serverTimestamp
-} from
-"https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
+collection,
+doc,
+getDoc,
+getDocs,
+setDoc,
+addDoc,
+query,
+where,
+onSnapshot,
+serverTimestamp
+} from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
+
 
 const $=id=>document.getElementById(id);
 
@@ -98,350 +356,598 @@ let user=null;
 let profile=null;
 let activeChatType="stream";
 let activeChatId=null;
-let unsubMessages=null;
+let activeRecipient=null;
 let approvedMembers=[];
 let membersLoaded=false;
 
-function showStatus(message){
-$("status").textContent=message;
+let streamUnsub=null;
+let groupUnsub=null;
+let privateUnsub=null;
+
+
+function status(message){
+ $("status").textContent=message;
 }
 
-function stopMessages(){
-if(unsubMessages){
-unsubMessages();
-unsubMessages=null;
-}
+function privateStatus(message){
+ $("privateStatus").textContent=message;
 }
 
-function sortDocs(docs){
-return [...docs].sort((a,b)=>
-(a.data().createdAt?.toMillis?.()||0)-
-(b.data().createdAt?.toMillis?.()||0)
-);
+
+function stopPrivate(){
+ if(privateUnsub){
+  privateUnsub();
+  privateUnsub=null;
+ }
 }
 
-function renderMessages(container,docs){
-container.replaceChildren();
-
-if(!docs.length){
-container.textContent="No messages yet. Start the conversation!";
-return;
+function stopStream(){
+ if(streamUnsub){
+  streamUnsub();
+  streamUnsub=null;
+ }
 }
 
-docs.forEach(item=>{
-const data=item.data();
-const card=document.createElement("div");
-card.className="message";
-
-const name=document.createElement("strong");
-name.textContent=data.senderName||"Student";
-
-const text=document.createElement("p");
-text.textContent=data.text||"";
-
-const time=document.createElement("small");
-time.textContent=data.createdAt?.toDate
-?data.createdAt.toDate().toLocaleString()
-:"Just now";
-
-card.append(name,text,time);
-container.appendChild(card);
-});
-
-container.scrollTop=container.scrollHeight;
+function stopGroup(){
+ if(groupUnsub){
+  groupUnsub();
+  groupUnsub=null;
+ }
 }
 
-function watchMessages(reference,container){
-stopMessages();
 
-unsubMessages=onSnapshot(reference,snapshot=>{
-renderMessages(container,sortDocs(snapshot.docs));
-},error=>{
-console.error(error);
-showStatus("Could not load messages: "+error.message);
-});
+function renderMessages(container,snapshot){
+
+ container.replaceChildren();
+
+ if(snapshot.empty){
+  const empty=document.createElement("p");
+  empty.className="note";
+  empty.textContent="No messages yet. Send the first message!";
+  container.appendChild(empty);
+  return;
+ }
+
+ const docs=[...snapshot.docs].sort((a,b)=>{
+  const first=a.data().createdAt?.toMillis?.()||0;
+  const second=b.data().createdAt?.toMillis?.()||0;
+  return first-second;
+ });
+
+ docs.forEach(item=>{
+
+  const data=item.data();
+
+  const bubble=document.createElement("div");
+
+  bubble.className="message";
+
+  if(data.senderId===user.uid){
+   bubble.classList.add("mine");
+  }
+
+  const name=document.createElement("strong");
+
+  name.textContent=data.senderId===user.uid
+   ?"You"
+   :(data.senderName||"Student");
+
+  const text=document.createElement("p");
+  text.textContent=data.text||"";
+
+  const time=document.createElement("small");
+
+  time.textContent=data.createdAt?.toDate
+   ?data.createdAt.toDate().toLocaleString()
+   :"Just now";
+
+  bubble.append(name,text,time);
+  container.appendChild(bubble);
+
+ });
+
+ container.scrollTop=container.scrollHeight;
 }
 
-function loadStreamChat(){
-if(!profile)return;
 
-activeChatType="stream";
-activeChatId=null;
+function loadStream(){
 
-$("streamTitle").textContent=profile.stream+" Stream Chat";
-$("messages").style.display="none";
-$("messageForm").style.display="flex";
+ stopStream();
 
-watchMessages(
-query(collection(db,"messages"),
-where("stream","==",profile.stream)),
-$("streamMessages")
-);
+ activeChatType="stream";
+
+ $("streamTitle").textContent=profile.stream+" Stream Chat";
+
+ const reference=query(
+  collection(db,"messages"),
+  where("stream","==",profile.stream)
+ );
+
+ streamUnsub=onSnapshot(reference,snapshot=>{
+  renderMessages($("streamMessages"),snapshot);
+ },error=>{
+  console.error(error);
+  status("Stream chat error: "+error.message);
+ });
 }
 
-function loadGroupChat(){
-activeChatType="group";
-activeChatId=null;
 
-$("messages").style.display="none";
-$("messageForm").style.display="flex";
+function loadGroup(){
 
-watchMessages(
-collection(db,"groupMessages"),
-$("groupMessages")
-);
+ stopGroup();
+
+ activeChatType="group";
+
+ groupUnsub=onSnapshot(
+  collection(db,"groupMessages"),
+  snapshot=>{
+   renderMessages($("groupMessages"),snapshot);
+  },
+  error=>{
+   console.error(error);
+   status("Group chat error: "+error.message);
+  }
+ );
+
 }
 
-async function loadApprovedMembers(){
-if(membersLoaded)return;
 
-showStatus("Loading approved members...");
+async function loadMembers(){
 
-const result=await getDocs(query(
-collection(db,"users"),
-where("status","==","approved")
-));
+ if(membersLoaded){
+  displayMembers();
+  return;
+ }
 
-approvedMembers=result.docs
-.filter(item=>item.id!==user.uid)
-.map(item=>({id:item.id,...item.data()}));
+ status("Loading approved members...");
 
-membersLoaded=true;
-showStatus("");
-displayMemberMatches();
+ const result=await getDocs(query(
+  collection(db,"users"),
+  where("status","==","approved")
+ ));
+
+ approvedMembers=result.docs
+  .filter(item=>item.id!==user.uid)
+  .map(item=>({
+   id:item.id,
+   ...item.data()
+  }));
+
+ membersLoaded=true;
+
+ status("");
+
+ displayMembers();
 }
 
-function makeInitial(member){
-const span=document.createElement("span");
-span.className="avatar";
-span.textContent=(member.nickname||member.name||"M")
-.charAt(0).toUpperCase();
-return span;
+
+function avatarFor(member){
+
+ const element=document.createElement("div");
+ element.className="avatar";
+
+ const photo=member.photoURL||member.photoUrl||"";
+
+ if(/^https?:\/\//i.test(photo)){
+  const img=document.createElement("img");
+  img.src=photo;
+  img.alt="";
+  img.className="avatar";
+  img.onerror=()=>{
+   element.textContent=(member.name||"M").charAt(0);
+  };
+  return img;
+ }
+
+ element.textContent=
+  (member.nickname||member.name||"M")
+  .charAt(0).toUpperCase();
+
+ return element;
 }
 
-function displayMemberMatches(){
-const list=$("chatList");
-list.replaceChildren();
 
-const term=$("memberSearch").value.trim().toLowerCase();
+function displayMembers(){
 
-const matches=approvedMembers.filter(member=>{
-const name=(member.name||"").toLowerCase();
-const nickname=(member.nickname||"").toLowerCase();
+ const list=$("chatList");
+ list.replaceChildren();
 
-return !term||name.includes(term)||nickname.includes(term);
-}).slice(0,40);
+ const term=$("memberSearch").value.trim().toLowerCase();
 
-if(!matches.length){
-list.textContent=term
-?"No matching approved members found."
-:"No other approved members found.";
-return;
+ const matches=approvedMembers.filter(member=>{
+
+  const name=(member.name||"").toLowerCase();
+  const nickname=(member.nickname||"").toLowerCase();
+
+  return !term||
+   name.includes(term)||
+   nickname.includes(term);
+
+ });
+
+ if(!matches.length){
+  list.textContent="No approved members found.";
+  return;
+ }
+
+ matches.forEach(member=>{
+
+  const button=document.createElement("button");
+
+  button.type="button";
+  button.className="chatChoice";
+
+  const label=document.createElement("span");
+
+  const name=document.createElement("strong");
+  name.textContent=member.nickname||member.name||"Member";
+
+  const details=document.createElement("small");
+  details.style.display="block";
+  details.style.color="#aab8cd";
+
+  details.textContent=
+   (member.nickname&&member.name
+    ?member.name+" · ":"")+
+   (member.stream||"");
+
+  label.append(name,details);
+
+  button.append(avatarFor(member),label);
+
+  button.addEventListener("click",()=>{
+   openPrivateChat(member);
+  });
+
+  list.appendChild(button);
+
+ });
+
 }
 
-matches.forEach(member=>{
-const button=document.createElement("button");
-button.type="button";
-button.className="chatChoice";
 
-const photo=member.photoURL||member.photoUrl||"";
-let avatar=makeInitial(member);
-
-if(/^https?:\/\//i.test(photo)){
-const img=document.createElement("img");
-img.src=photo;
-img.alt="";
-img.className="avatar";
-img.onerror=()=>img.replaceWith(makeInitial(member));
-avatar=img;
-}
-
-const label=document.createElement("span");
-
-const displayName=document.createElement("strong");
-displayName.textContent=member.nickname||member.name||"Member";
-
-const detail=document.createElement("small");
-detail.style.display="block";
-detail.style.color="#aab8cd";
-detail.textContent=
-(member.nickname&&member.name?member.name+" · ":"")+
-(member.stream||"");
-
-label.append(displayName,detail);
-button.append(avatar,label);
-
-button.addEventListener("click",()=>openPrivateChat(member));
-list.appendChild(button);
-});
-}
+// OPEN A NEW PRIVATE CHAT SCREEN
 
 async function openPrivateChat(member){
-if(!user||!member?.id)return;
 
-try{
-showStatus("Opening conversation...");
+ if(!member||!member.id||!user)return;
 
-const participants=[user.uid,member.id].sort();
-const chatId=participants.join("_");
-const chatRef=doc(db,"privateChats",chatId);
+ stopPrivate();
 
-const chatSnap=await getDoc(chatRef);
+ activeRecipient=member;
 
-if(!chatSnap.exists()){
-await setDoc(chatRef,{
-participants,
-createdAt:serverTimestamp()
+ $("privateScreen").classList.add("active");
+
+ $("recipientName").textContent=
+  member.nickname||member.name||"Member";
+
+ $("recipientStream").textContent=
+  member.stream||"Member";
+
+ const avatar=avatarFor(member);
+
+ $("recipientAvatar").replaceWith(avatar);
+
+ avatar.id="recipientAvatar";
+
+ $("privateMessages").innerHTML=
+  '<p class="note">Opening conversation...</p>';
+
+ privateStatus("Connecting...");
+
+ $("privateInput").value="";
+
+ try{
+
+  // Both UIDs create one shared conversation ID.
+
+  const participants=[
+   user.uid,
+   member.id
+  ].sort();
+
+  const chatId=participants.join("_");
+
+  activeChatId=chatId;
+
+  const chatRef=doc(db,"privateChats",chatId);
+
+  // Create the conversation if it does not exist.
+
+  const chatSnapshot=await getDoc(chatRef);
+
+  if(!chatSnapshot.exists()){
+
+   await setDoc(chatRef,{
+    participants:participants,
+    createdAt:serverTimestamp()
+   });
+
+  }
+
+  // Listen to this conversation's messages.
+
+  const messagesRef=collection(
+   db,
+   "privateChats",
+   chatId,
+   "messages"
+  );
+
+  privateUnsub=onSnapshot(
+   messagesRef,
+   snapshot=>{
+    renderMessages($("privateMessages"),snapshot);
+    privateStatus("");
+   },
+   error=>{
+    console.error(error);
+    privateStatus("Could not load messages: "+error.message);
+   }
+  );
+
+ }catch(error){
+
+  console.error(error);
+
+  privateStatus(
+   "Could not open chat: "+error.message
+  );
+
+ }
+
+}
+
+
+// RETURN TO MEMBER LIST
+
+$("backButton").addEventListener("click",()=>{
+
+ stopPrivate();
+
+ activeChatId=null;
+ activeRecipient=null;
+
+ $("privateScreen").classList.remove("active");
+
 });
-}
 
-activeChatId=chatId;
-activeChatType="private";
 
-$("privateTitle").textContent=
-"Private conversation with "+
-(member.nickname||member.name||"Member");
+// PRIVATE MESSAGE SENDING
 
-$("messages").style.display="block";
-$("messageForm").style.display="flex";
+$("privateForm").addEventListener("submit",async event=>{
 
-watchMessages(
-collection(db,"privateChats",chatId,"messages"),
-$("messages")
-);
+ event.preventDefault();
 
-showStatus("");
+ const text=$("privateInput").value.trim();
 
-}catch(error){
-console.error(error);
-showStatus("Could not open private chat: "+error.message);
-}
-}
+ if(!text||!activeChatId||!activeRecipient||!user){
+  privateStatus("Select a member first.");
+  return;
+ }
+
+ $("privateSend").disabled=true;
+
+ privateStatus("Sending...");
+
+ try{
+
+  const reference=collection(
+   db,
+   "privateChats",
+   activeChatId,
+   "messages"
+  );
+
+  await addDoc(reference,{
+
+   senderId:user.uid,
+
+   senderName:
+    profile.nickname||profile.name||"Student",
+
+   text:text,
+
+   createdAt:serverTimestamp()
+
+  });
+
+  $("privateInput").value="";
+
+  privateStatus("");
+
+ }catch(error){
+
+  console.error(error);
+
+  privateStatus(
+   "Message failed: "+error.message
+  );
+
+ }finally{
+
+  $("privateSend").disabled=false;
+
+ }
+
+});
+
+
+// STREAM MESSAGE SENDING
+
+$("streamForm").addEventListener("submit",async event=>{
+
+ event.preventDefault();
+
+ const text=$("streamInput").value.trim();
+
+ if(!text)return;
+
+ try{
+
+  await addDoc(collection(db,"messages"),{
+
+   senderId:user.uid,
+   senderName:profile.nickname||profile.name,
+   stream:profile.stream,
+   text:text,
+   createdAt:serverTimestamp()
+
+  });
+
+  $("streamInput").value="";
+  status("");
+
+ }catch(error){
+
+  console.error(error);
+  status("Message failed: "+error.message);
+
+ }
+
+});
+
+
+// SCHOOL GROUP MESSAGE SENDING
+
+$("groupForm").addEventListener("submit",async event=>{
+
+ event.preventDefault();
+
+ const text=$("groupInput").value.trim();
+
+ if(!text)return;
+
+ try{
+
+  await addDoc(collection(db,"groupMessages"),{
+
+   senderId:user.uid,
+   senderName:profile.nickname||profile.name,
+   text:text,
+   createdAt:serverTimestamp()
+
+  });
+
+  $("groupInput").value="";
+  status("");
+
+ }catch(error){
+
+  console.error(error);
+  status("Message failed: "+error.message);
+
+ }
+
+});
+
+
+// TABS
 
 document.querySelectorAll("[data-tab]").forEach(button=>{
-button.addEventListener("click",async()=>{
-document.querySelectorAll("[data-tab]")
-.forEach(item=>item.classList.remove("active"));
 
-button.classList.add("active");
+ button.addEventListener("click",async()=>{
 
-const tab=button.dataset.tab;
+  document.querySelectorAll("[data-tab]")
+   .forEach(item=>item.classList.remove("active"));
 
-["streamPanel","groupPanel","privatePanel"].forEach(id=>{
-$(id).classList.toggle("hidden",id!==tab);
+  button.classList.add("active");
+
+  const tab=button.dataset.tab;
+
+  ["streamPanel","groupPanel","privatePanel"]
+   .forEach(id=>{
+    $(id).classList.toggle("hidden",id!==tab);
+   });
+
+  if(tab==="streamPanel"){
+   loadStream();
+  }
+
+  if(tab==="groupPanel"){
+   loadGroup();
+  }
+
+  if(tab==="privatePanel"){
+
+   stopStream();
+   stopGroup();
+
+   activeChatType="private";
+
+   try{
+    await loadMembers();
+   }catch(error){
+    console.error(error);
+    status("Could not load members: "+error.message);
+   }
+
+  }
+
+ });
+
 });
 
-stopMessages();
 
-if(tab==="streamPanel")loadStreamChat();
-
-if(tab==="groupPanel")loadGroupChat();
-
-if(tab==="privatePanel"){
-activeChatType="private";
-activeChatId=null;
-
-$("messages").style.display="none";
-$("messageForm").style.display="none";
-
-$("privateTitle").textContent=
-"Choose a member to start a private conversation.";
-
-try{
-await loadApprovedMembers();
-}catch(error){
-console.error(error);
-showStatus("Could not load members: "+error.message);
-}
-}
-});
-});
-
-$("memberSearch").addEventListener("input",displayMemberMatches);
-
-$("messageForm").addEventListener("submit",async event=>{
-event.preventDefault();
-
-const text=$("messageInput").value.trim();
-
-if(!text||!user||!profile)return;
-
-let target;
-
-if(activeChatType==="stream"){
-target=collection(db,"messages");
-}else if(activeChatType==="group"){
-target=collection(db,"groupMessages");
-}else{
-if(!activeChatId){
-showStatus("Select a member before sending a private message.");
-return;
-}
-
-target=collection(
-db,"privateChats",activeChatId,"messages"
+$("memberSearch").addEventListener(
+ "input",
+ displayMembers
 );
-}
 
-$("sendButton").disabled=true;
 
-try{
-const message={
-senderId:user.uid,
-senderName:profile.nickname||profile.name||"Student",
-text,
-createdAt:serverTimestamp()
-};
-
-if(activeChatType==="stream"){
-message.stream=profile.stream;
-}
-
-await addDoc(target,message);
-
-$("messageInput").value="";
-showStatus("");
-
-}catch(error){
-console.error(error);
-showStatus("Message failed: "+error.message);
-}finally{
-$("sendButton").disabled=false;
-}
-});
+// AUTHENTICATION
 
 onAuthStateChanged(auth,async currentUser=>{
-if(!currentUser){
-location.href="login.html";
-return;
-}
 
-user=currentUser;
+ if(!currentUser){
+  location.href="login.html";
+  return;
+ }
 
-try{
-const profileSnap=await getDoc(doc(db,"users",user.uid));
+ user=currentUser;
 
-if(!profileSnap.exists()||
-profileSnap.data().status!=="approved"){
-location.href="login.html";
-return;
-}
+ try{
 
-profile=profileSnap.data();
+  const profileSnapshot=await getDoc(
+   doc(db,"users",user.uid)
+  );
 
-$("welcome").textContent=
-"Welcome, "+(profile.nickname||profile.name||"Student")+
-" · "+profile.stream;
+  if(!profileSnapshot.exists()){
+   location.href="login.html";
+   return;
+  }
 
-loadStreamChat();
+  profile=profileSnapshot.data();
 
-}catch(error){
-console.error(error);
-showStatus("Could not load your profile: "+error.message);
-}
+  if(profile.status!=="approved"){
+   location.href="login.html";
+   return;
+  }
+
+  $("welcome").textContent=
+   "Welcome, "+
+   (profile.nickname||profile.name||"Student");
+
+  loadStream();
+
+ }catch(error){
+
+  console.error(error);
+
+  status("Profile error: "+error.message);
+
+ }
+
 });
 
-window.addEventListener("beforeunload",stopMessages);
+
+window.addEventListener("beforeunload",()=>{
+ stopPrivate();
+ stopStream();
+ stopGroup();
+});
+
 </script>
+
 </body>
 </html>
