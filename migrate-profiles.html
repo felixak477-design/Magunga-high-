@@ -1,0 +1,322 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Profile Migration | Magunga High</title>
+
+<style>
+*{box-sizing:border-box;font-family:Arial,sans-serif}
+body{
+ margin:0;background:#080b12;color:white;
+ min-height:100vh;padding:20px
+}
+main{
+ max-width:650px;margin:45px auto;
+ background:#12101a;border:1px solid #65203a;
+ border-radius:15px;padding:25px;
+ box-shadow:0 0 20px #d5003f22
+}
+h1{color:#ff5274;font-size:23px}
+p{color:#c4b5bf;line-height:1.6}
+button{
+ width:100%;padding:15px;margin-top:15px;
+ border:0;border-radius:9px;
+ background:#d5a52b;color:#171717;
+ font-weight:bold;font-size:15px;
+ cursor:pointer
+}
+button:disabled{opacity:.5;cursor:not-allowed}
+#status{
+ margin-top:20px;padding:15px;
+ background:#1b121c;border-radius:9px;
+ overflow-wrap:anywhere;line-height:1.7
+}
+a{color:#ff6684;text-decoration:none}
+.success{color:#61dfa0}
+.error{color:#ff718a}
+</style>
+</head>
+
+<body>
+
+<main>
+
+<h1>Magunga High</h1>
+<h2>Existing Member Profile Migration</h2>
+
+<p>
+This tool creates missing public profiles for existing
+approved and pending student accounts.
+</p>
+
+<p>
+Private information such as email addresses and account
+roles will not be copied.
+</p>
+
+<button id="migrateButton" disabled>
+Checking administrator...
+</button>
+
+<div id="status">Please wait...</div>
+
+<p><a href="admin.html">← Return to Admin Dashboard</a></p>
+
+</main>
+
+<script type="module">
+
+import {auth,db} from "./assets/js/firebase.js";
+
+import {
+ onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
+
+import {
+ doc,
+ getDoc,
+ collection,
+ getDocs,
+ writeBatch
+} from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
+
+const button=document.getElementById("migrateButton");
+const statusBox=document.getElementById("status");
+
+let authorized=false;
+let running=false;
+
+const allowedStreams=[
+ "Victors",
+ "Heroes",
+ "Winners",
+ "Champions",
+ "Archivers"
+];
+
+function showStatus(message,type=""){
+
+ statusBox.textContent=message;
+ statusBox.className=type;
+
+}
+
+onAuthStateChanged(auth,async user=>{
+
+ button.disabled=true;
+ authorized=false;
+
+ if(!user){
+  showStatus("Please log in first.","error");
+  location.href="login.html";
+  return;
+ }
+
+ try{
+
+  const adminSnap=await getDoc(
+   doc(db,"users",user.uid)
+  );
+
+  if(!adminSnap.exists()){
+   showStatus("Administrator profile not found.","error");
+   return;
+  }
+
+  const admin=adminSnap.data();
+
+  if(
+   admin.status!=="approved" ||
+   admin.role!=="superadmin"
+  ){
+   showStatus(
+    "Access denied. Only an approved Super Admin can run this migration.",
+    "error"
+   );
+   return;
+  }
+
+  authorized=true;
+
+  button.disabled=false;
+  button.textContent="Start Profile Migration";
+
+  showStatus(
+   "Administrator verified. Ready to migrate existing profiles."
+  );
+
+ }catch(error){
+
+  console.error(error);
+  showStatus(
+   "Could not verify administrator: "+error.message,
+   "error"
+  );
+
+ }
+
+});
+
+button.addEventListener("click",async()=>{
+
+ if(!authorized || running)return;
+
+ if(!confirm(
+  "Create missing public profiles for existing approved and pending students?"
+ ))return;
+
+ running=true;
+ button.disabled=true;
+ button.textContent="Migration running...";
+
+ try{
+
+  showStatus("Reading existing student accounts...");
+
+  const usersSnapshot=await getDocs(
+   collection(db,"users")
+  );
+
+  const publicSnapshot=await getDocs(
+   collection(db,"publicProfiles")
+  );
+
+  const existingIds=new Set(
+   publicSnapshot.docs.map(item=>item.id)
+  );
+
+  const profiles=[];
+
+  let alreadyExists=0;
+  let rejected=0;
+  let invalid=0;
+
+  usersSnapshot.forEach(userDoc=>{
+
+   const user=userDoc.data();
+
+   if(existingIds.has(userDoc.id)){
+    alreadyExists++;
+    return;
+   }
+
+   if(user.status==="rejected"){
+    rejected++;
+    return;
+   }
+
+   if(
+    !["approved","pending"].includes(user.status) ||
+    typeof user.name!=="string" ||
+    !user.name.trim() ||
+    !allowedStreams.includes(user.stream)
+   ){
+    invalid++;
+    return;
+   }
+
+   const profile={
+    name:user.name,
+    stream:user.stream,
+    status:user.status
+   };
+
+   if(typeof user.nickname==="string"){
+    profile.nickname=user.nickname;
+   }
+
+   if(typeof user.photoURL==="string" && user.photoURL){
+    profile.photoURL=user.photoURL;
+   }
+
+   if(user.createdAt){
+    profile.createdAt=user.createdAt;
+   }
+
+   profiles.push({
+    id:userDoc.id,
+    data:profile
+   });
+
+  });
+
+  if(profiles.length===0){
+
+   showStatus(
+    "No missing profiles were found.\n"+
+    "Already existing: "+alreadyExists+
+    "\nRejected skipped: "+rejected+
+    "\nInvalid records skipped: "+invalid,
+    "success"
+   );
+
+   button.textContent="Migration Complete";
+   return;
+
+  }
+
+  let migrated=0;
+
+  for(let i=0;i<profiles.length;i+=400){
+
+   const batch=writeBatch(db);
+
+   const group=profiles.slice(i,i+400);
+
+   group.forEach(profile=>{
+
+    batch.set(
+     doc(db,"publicProfiles",profile.id),
+     profile.data
+    );
+
+   });
+
+   await batch.commit();
+
+   migrated+=group.length;
+
+   showStatus(
+    "Migrated "+migrated+" of "+profiles.length+" profiles..."
+   );
+
+  }
+
+  showStatus(
+   "Migration completed successfully!\n\n"+
+   "New profiles created: "+migrated+
+   "\nAlready existing: "+alreadyExists+
+   "\nRejected skipped: "+rejected+
+   "\nInvalid records skipped: "+invalid,
+   "success"
+  );
+
+  button.textContent="Migration Complete";
+
+ }catch(error){
+
+  console.error(error);
+
+  showStatus(
+   "Migration failed: "+error.message+
+   "\n\nCheck Firestore rules and try again.",
+   "error"
+  );
+
+  button.disabled=false;
+  button.textContent="Retry Migration";
+
+ }finally{
+
+  running=false;
+
+ }
+
+});
+
+</script>
+
+</body>
+</html>
