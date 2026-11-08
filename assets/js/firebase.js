@@ -8,12 +8,12 @@ import { getFirestore } from
 "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
 
 const firebaseConfig = {
-  apiKey: "PASTE_YOUR_API_KEY",
-  authDomain: "PASTE_YOUR_AUTH_DOMAIN",
-  projectId: "PASTE_YOUR_PROJECT_ID",
-  storageBucket: "PASTE_YOUR_STORAGE_BUCKET",
-  messagingSenderId: "PASTE_YOUR_SENDER_ID",
-  appId: "PASTE_YOUR_APP_ID"
+  apiKey: "YOUR_REAL_API_KEY",
+  authDomain: "YOUR_REAL_AUTH_DOMAIN",
+  projectId: "YOUR_REAL_PROJECT_ID",
+  storageBucket: "YOUR_REAL_STORAGE_BUCKET",
+  messagingSenderId: "YOUR_REAL_SENDER_ID",
+  appId: "YOUR_REAL_APP_ID"
 };
 
 const app = initializeApp(firebaseConfig);
