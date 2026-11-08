@@ -9,16 +9,16 @@ module.exports = async function handler(req, res) {
   }
 
   try {
-    // Check the Gemini API key
     const geminiKey = process.env.GEMINI_API_KEY;
+    const firebaseKey = process.env.FIREBASE_WEB_API_KEY;
 
-    if (!geminiKey) {
+    if (!geminiKey || !firebaseKey) {
       return res.status(500).json({
-        error: "AI service has not been configured yet."
+        error: "AI service configuration is incomplete. Check Vercel environment variables."
       });
     }
 
-    // Check Firebase login token
+    // Verify login
     const authorization = req.headers.authorization || "";
 
     if (!authorization.startsWith("Bearer ")) {
@@ -28,32 +28,37 @@ module.exports = async function handler(req, res) {
     }
 
     const idToken = authorization.slice(7);
-    const tokenParts = idToken.split(".");
 
-    if (tokenParts.length !== 3) {
-      return res.status(401).json({
-        error: "Invalid login session."
-      });
-    }
-
-    const token = JSON.parse(
-      Buffer.from(tokenParts[1], "base64url").toString("utf8")
+    const verifyResponse = await fetch(
+      "https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=" +
+      encodeURIComponent(firebaseKey),
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ idToken })
+      }
     );
 
-    if (
-      token.aud !== "magunga-high" ||
-      token.iss !== "https://securetoken.google.com/magunga-high" ||
-      !token.sub ||
-      token.exp * 1000 < Date.now()
-    ) {
+    if (!verifyResponse.ok) {
       return res.status(401).json({
-        error: "Your login session has expired."
+        error: "Your login session is invalid. Please log in again."
       });
     }
 
-    const uid = token.sub;
+    const verified = await verifyResponse.json();
+    const firebaseUser = verified.users?.[0];
 
-    // Check the student's Firestore profile using their own token.
+    if (!firebaseUser || !firebaseUser.localId) {
+      return res.status(401).json({
+        error: "Student account could not be verified."
+      });
+    }
+
+    const uid = firebaseUser.localId;
+
+    // Check student approval
     const profileResponse = await fetch(
       "https://firestore.googleapis.com/v1/projects/magunga-high/databases/(default)/documents/users/" +
       encodeURIComponent(uid),
@@ -66,52 +71,62 @@ module.exports = async function handler(req, res) {
 
     if (!profileResponse.ok) {
       return res.status(403).json({
-        error: "Unable to verify your student account."
+        error: "Unable to verify your student profile."
       });
     }
 
     const profile = await profileResponse.json();
-    const status = profile.fields?.status?.stringValue;
 
-    if (status !== "approved") {
+    if (profile.fields?.status?.stringValue !== "approved") {
       return res.status(403).json({
         error: "Only approved students can use Magunga AI."
       });
     }
 
-    // Validate conversation
+    // Validate messages
     const messages = req.body?.messages;
 
-    if (!Array.isArray(messages) || messages.length === 0) {
+    if (
+      !Array.isArray(messages) ||
+      messages.length === 0 ||
+      messages.length > 12
+    ) {
       return res.status(400).json({
-        error: "Enter a question first."
+        error: "Invalid conversation."
       });
     }
 
-    const contents = messages.slice(-12).map((message) => {
+    const contents = [];
+
+    for (const message of messages) {
       if (
+        !message ||
         !["user", "model"].includes(message.role) ||
         typeof message.text !== "string" ||
         !message.text.trim() ||
         message.text.length > 4000
       ) {
-        throw new Error("Invalid message.");
+        return res.status(400).json({
+          error: "Invalid message."
+        });
       }
 
-      return {
+      contents.push({
         role: message.role,
-        parts: [{ text: message.text.trim() }]
-      };
-    });
-
-    if (contents[contents.length - 1].role !== "user") {
-      return res.status(400).json({
-        error: "Your latest message must be a question."
+        parts: [
+          { text: message.text.trim() }
+        ]
       });
     }
 
-    // Ask Gemini
-    const geminiResponse = await fetch(
+    if (contents[contents.length - 1].role !== "user") {
+      return res.status(400).json({
+        error: "Send a question first."
+      });
+    }
+
+    // Connect to Gemini
+    const aiResponse = await fetch(
       "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent",
       {
         method: "POST",
@@ -126,23 +141,22 @@ module.exports = async function handler(req, res) {
 You are Magunga AI, the educational study assistant
 for The Magunga High.
 
-Your purpose is to help students learn and understand
-their school subjects.
+Your purpose is to help students understand school
+subjects and prepare for Form 4 and KCSE examinations.
 
-RULES:
-1. Explain difficult topics in simple language.
-2. Show mathematical steps when solving problems.
-3. Help with Form 4 and KCSE revision.
-4. Generate practice questions and quizzes.
-5. Explain why an answer is correct or incorrect.
-6. Use examples where helpful.
-7. Be patient and respectful.
-8. Do not invent facts or pretend to know information
-   you are uncertain about.
-9. Ask for clarification when a question is unclear.
-10. Keep answers organised and easy to read.
+Teaching guidelines:
+- Explain difficult topics in simple language.
+- Show mathematical steps clearly.
+- Give examples where useful.
+- Generate revision questions and quizzes.
+- Explain mistakes and correct answers.
+- Be patient and respectful.
+- Never invent facts or pretend certainty.
+- Ask for clarification when a question is unclear.
+- Organise answers with headings and numbered steps.
+- Encourage students to understand, not just copy answers.
 
-You are a tutor, not a replacement for teachers.
+You are a learning assistant, not a replacement for teachers.
               `.trim()
             }]
           },
@@ -154,16 +168,21 @@ You are a tutor, not a replacement for teachers.
       }
     );
 
-    if (!geminiResponse.ok) {
-      const errorData = await geminiResponse.json().catch(() => ({}));
-      console.error("Gemini error:", errorData);
+    // Show the actual Gemini error for diagnosis
+    if (!aiResponse.ok) {
+      const details = await aiResponse.json().catch(() => ({}));
+
+      console.error("Gemini API error:", details);
 
       return res.status(503).json({
-        error: "Magunga AI is temporarily unavailable. Please try again."
+        error:
+          "Gemini error: " +
+          (details.error?.message || "Unknown API error") +
+          " (HTTP " + aiResponse.status + ")"
       });
     }
 
-    const result = await geminiResponse.json();
+    const result = await aiResponse.json();
 
     const answer = result.candidates?.[0]?.content?.parts
       ?.map(part => part.text || "")
@@ -172,11 +191,13 @@ You are a tutor, not a replacement for teachers.
 
     if (!answer) {
       return res.status(502).json({
-        error: "AI did not return an answer. Please try again."
+        error: "No answer received. Please try again."
       });
     }
 
-    return res.status(200).json({ answer });
+    return res.status(200).json({
+      answer: answer
+    });
 
   } catch (error) {
     console.error("Magunga AI error:", error);
