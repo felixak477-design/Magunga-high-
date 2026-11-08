@@ -2,327 +2,90 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#101827">
-  <title>The Magunga High | Student Community</title>
-  <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    body {
-      font-family: Arial, sans-serif;
-      background: #0b1120;
-      color: white;
-      line-height: 1.6;
-    }
-
-    header {
-      padding: 18px 6%;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background: #121c30;
-      border-bottom: 1px solid #26344b;
-    }
-
-    .logo {
-      font-size: 21px;
-      font-weight: bold;
-      color: #8bbcff;
-    }
-
-    nav a {
-      color: white;
-      text-decoration: none;
-      margin-left: 18px;
-      font-size: 14px;
-    }
-
-    .hero {
-      padding: 85px 7%;
-      background: linear-gradient(135deg, #14243d, #0b1120);
-    }
-
-    .hero small {
-      color: #8bbcff;
-      letter-spacing: 2px;
-      font-weight: bold;
-    }
-
-    .hero h1 {
-      font-size: clamp(38px, 7vw, 65px);
-      line-height: 1.1;
-      margin: 18px 0;
-    }
-
-    .hero h1 span {
-      color: #8bbcff;
-    }
-
-    .hero p {
-      color: #b8c5d9;
-      max-width: 550px;
-      margin-bottom: 25px;
-    }
-
-    .btn {
-      display: inline-block;
-      padding: 12px 20px;
-      background: #8bbcff;
-      color: #101827;
-      border-radius: 8px;
-      text-decoration: none;
-      font-weight: bold;
-    }
-
-    section {
-      padding: 55px 7%;
-    }
-
-    .section-title {
-      font-size: 30px;
-      margin-bottom: 8px;
-    }
-
-    .section-description {
-      color: #9aabc4;
-      margin-bottom: 25px;
-    }
-
-    .streams {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-      gap: 16px;
-    }
-
-    .stream {
-      padding: 23px;
-      border-radius: 15px;
-      background: #121c30;
-      border: 1px solid #26344b;
-      transition: 0.2s;
-    }
-
-    .stream:hover {
-      transform: translateY(-5px);
-    }
-
-    .stream h3 {
-      margin: 12px 0 5px;
-    }
-
-    .stream p {
-      color: #aab9ce;
-      font-size: 13px;
-    }
-
-    .icon {
-      width: 42px;
-      height: 42px;
-      display: grid;
-      place-items: center;
-      border-radius: 12px;
-      font-weight: bold;
-      color: #101827;
-      font-size: 20px;
-    }
-
-    .victors { border-color: #60a5fa; }
-    .victors .icon { background: #60a5fa; }
-
-    .heroes { border-color: #4ade80; }
-    .heroes .icon { background: #4ade80; }
-
-    .winners { border-color: #fbbf24; }
-    .winners .icon { background: #fbbf24; }
-
-    .champions { border-color: #c084fc; }
-    .champions .icon { background: #c084fc; }
-
-    .archivers { border-color: #fb7185; }
-    .archivers .icon { background: #fb7185; }
-
-    .features {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 16px;
-    }
-
-    .feature {
-      padding: 23px;
-      background: #121c30;
-      border: 1px solid #26344b;
-      border-radius: 14px;
-    }
-
-    .feature p {
-      color: #9aabc4;
-      font-size: 14px;
-      margin-top: 8px;
-    }
-
-    .notice {
-      background: #14243a;
-      border: 1px solid #34517a;
-      border-radius: 14px;
-      padding: 22px;
-    }
-
-    .notice p {
-      color: #b8c5d9;
-      margin-top: 7px;
-    }
-
-    footer {
-      padding: 25px 7%;
-      border-top: 1px solid #26344b;
-      color: #9aabc4;
-      text-align: center;
-      font-size: 13px;
-    }
-
-    @media(max-width: 600px) {
-      header {
-        flex-direction: column;
-        gap: 12px;
-      }
-
-      nav a {
-        margin: 0 7px;
-      }
-
-      .hero {
-        padding: 60px 7%;
-      }
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#101827">
+<title>The Magunga High | Student Portal</title>
+<style>
+*{box-sizing:border-box}
+body{
+ margin:0;min-height:100vh;font-family:Arial,sans-serif;
+ background:linear-gradient(145deg,#101827,#14243d);
+ color:white;display:flex;flex-direction:column
+}
+header{
+ padding:20px 7%;background:#121c30;
+ border-bottom:1px solid #26344b;
+ font-weight:bold;color:#8bbcff;letter-spacing:1px
+}
+main{
+ width:min(900px,92%);margin:auto;padding:55px 0;
+ text-align:center
+}
+.tag{color:#8bbcff;letter-spacing:2px;font-size:12px;font-weight:bold}
+h1{font-size:clamp(36px,7vw,62px);line-height:1.1;margin:18px 0}
+h1 span{color:#8bbcff}
+.intro{
+ color:#b8c5d9;max-width:600px;
+ margin:0 auto 30px;line-height:1.7
+}
+.actions{
+ display:flex;justify-content:center;gap:14px;flex-wrap:wrap
+}
+.btn{
+ display:inline-block;min-width:155px;padding:14px 22px;
+ border-radius:9px;text-decoration:none;font-weight:bold
+}
+.login{background:#2878ff;color:white}
+.register{background:#1b2b45;color:white;border:1px solid #6384b5}
+.streams{
+ margin-top:48px;display:grid;
+ grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px
+}
+.stream{
+ padding:16px 10px;border-radius:10px;
+ background:#17243a;border:1px solid #34445e
+}
+.stream p{margin:5px 0 0;color:#aebbd0;font-size:12px}
+footer{text-align:center;padding:22px;color:#8e9db4;font-size:13px}
+</style>
 </head>
-
 <body>
 
-<header>
-  <div class="logo">THE MAGUNGA HIGH</div>
-
-  <nav>
-    <a href="#streams">Streams</a>
-    <a href="#learning">Learning</a>
-    <a href="#community">Community</a>
-  </nav>
-</header>
+<header>THE MAGUNGA HIGH</header>
 
 <main>
+ <div class="tag">ONE SCHOOL · FIVE STREAMS · ONE COMMUNITY</div>
 
-  <div class="hero">
-    <small>ONE SCHOOL · FIVE STREAMS · ONE COMMUNITY</small>
+ <h1>Welcome to<br><span>The Magunga High</span></h1>
 
-    <h1>
-      Learn Together.<br>
-      <span>Rise Together.</span>
-    </h1>
+ <p class="intro">
+ Your student community portal. Sign in to access your stream,
+ announcements, learning materials and student discussions.
+ New here? Create your student account to get started.
+ </p>
 
-    <p>
-      Welcome to The Magunga High community platform.
-      Connect with your stream, share ideas, receive announcements
-      and access learning materials.
-    </p>
+ <div class="actions">
+  <a class="btn login" href="login.html">Student Login</a>
+  <a class="btn register" href="register.html">Create Account</a>
+ </div>
 
-    <a href="#streams" class="btn">Explore Our Streams</a>
-  </div>
-
-  <section id="streams">
-    <h2 class="section-title">Our Five Streams</h2>
-
-    <p class="section-description">
-      Five identities. One united school.
-    </p>
-
-    <div class="streams">
-
-      <div class="stream victors">
-        <div class="icon">V</div>
-        <h3>Victors</h3>
-        <p>Blue · Focus and determination</p>
-      </div>
-
-      <div class="stream heroes">
-        <div class="icon">H</div>
-        <h3>Heroes</h3>
-        <p>Green · Courage and teamwork</p>
-      </div>
-
-      <div class="stream winners">
-        <div class="icon">W</div>
-        <h3>Winners</h3>
-        <p>Gold · Ambition and excellence</p>
-      </div>
-
-      <div class="stream champions">
-        <div class="icon">C</div>
-        <h3>Champions</h3>
-        <p>Purple · Discipline and resilience</p>
-      </div>
-
-      <div class="stream archivers">
-        <div class="icon">A</div>
-        <h3>Archivers</h3>
-        <p>Red · Progress and achievement</p>
-      </div>
-
-    </div>
-  </section>
-
-  <section id="learning">
-    <h2 class="section-title">Learning Centre</h2>
-
-    <p class="section-description">
-      Knowledge is the real competition.
-    </p>
-
-    <div class="features">
-
-      <div class="feature">
-        <h3>📚 Form 4 Notes</h3>
-        <p>Access organised learning materials and revision notes.</p>
-      </div>
-
-      <div class="feature">
-        <h3>📝 Revision Resources</h3>
-        <p>Find useful revision links and practice materials.</p>
-      </div>
-
-      <div class="feature">
-        <h3>📢 Announcements</h3>
-        <p>Stay updated with important school information.</p>
-      </div>
-
-    </div>
-  </section>
-
-  <section id="community">
-    <div class="notice">
-      <h2>Our Community Portal</h2>
-      <p>
-        Student accounts, private stream areas, group chats,
-        direct messages and administrator dashboards
-        will be activated in the next development stages.
-      </p>
-    </div>
-  </section>
-
+ <div class="streams">
+  <div class="stream"><strong>Victors</strong><p>Blue stream</p></div>
+  <div class="stream"><strong>Heroes</strong><p>Green stream</p></div>
+  <div class="stream"><strong>Winners</strong><p>Gold stream</p></div>
+  <div class="stream"><strong>Champions</strong><p>Purple stream</p></div>
+  <div class="stream"><strong>Archivers</strong><p>Red stream</p></div>
+ </div>
 </main>
 
 <footer>
-  © <span id="year"></span> The Magunga High.
-  Learn Together. Rise Together.
+ © <span id="year"></span> The Magunga High · Learn Together. Rise Together.
 </footer>
 
 <script>
-  document.getElementById("year").textContent =
-    new Date().getFullYear();
+document.getElementById("year").textContent =
+ new Date().getFullYear();
 </script>
 
 </body>
