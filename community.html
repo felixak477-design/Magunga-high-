@@ -3,202 +3,222 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Member Directory | Magunga High</title>
-
 <style>
 *{box-sizing:border-box;font-family:Arial,sans-serif}
 body{margin:0;background:#101522;color:white}
-header{background:#1b2435;padding:18px;display:flex;justify-content:space-between;align-items:center}
-header a{color:white;text-decoration:none}
+header{background:#1b2435;padding:18px;display:flex;justify-content:space-between}
+header a{color:#e8c45e;text-decoration:none}
 main{max-width:950px;margin:auto;padding:20px}
-h1{margin-bottom:5px}
 .muted{color:#aab6c8}
 input,select{width:100%;padding:14px;margin:8px 0;background:#1b2435;color:white;border:1px solid #344158;border-radius:9px}
 .members{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:15px;margin-top:20px}
-.member{background:#1b2435;padding:18px;border-radius:13px;text-align:center}
-.avatar{width:85px;height:85px;border-radius:50%;object-fit:cover;background:#2878ff;margin:auto;display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:bold}
+.member{background:#1b2435;padding:18px;border:1px solid #59471f;border-radius:13px;text-align:center;cursor:pointer}
+.member:hover{border-color:#d5a52b}
+.avatar{width:85px;height:85px;border-radius:50%;object-fit:cover;background:#293b59;margin:auto;display:flex;align-items:center;justify-content:center;font-size:28px;color:#e8c45e}
 .member h3{margin:12px 0 5px}
-.member p{color:#aab6c8;margin:6px}
+.member p{color:#aab6c8}
 .stream{display:inline-block;background:#293b59;padding:6px 12px;border-radius:20px;font-size:12px}
-#message{color:#ffbd75;margin-top:15px}
-button{padding:11px 16px;background:#2878ff;color:white;border:0;border-radius:8px}
+#message{color:#ffbd75}
 </style>
 </head>
 
 <body>
 
 <header>
-  <a href="dashboard.html"><strong>← Magunga High</strong></a>
-  <a href="dashboard.html">Dashboard</a>
+<a href="dashboard.html">← Magunga High</a>
+<a href="profile.html">My Profile</a>
 </header>
 
 <main>
-  <h1>👥 Member Directory</h1>
-  <p class="muted">Discover approved members of The Magunga High.</p>
 
-  <input id="search" type="search"
-    placeholder="Search by name or nickname...">
+<h1>👥 Member Directory</h1>
+<p class="muted">Discover approved members.</p>
 
-  <select id="streamFilter">
-    <option value="all">All streams</option>
-    <option value="Victors">Victors</option>
-    <option value="Heroes">Heroes</option>
-    <option value="Winners">Winners</option>
-    <option value="Champions">Champions</option>
-    <option value="Archivers">Archivers</option>
-  </select>
+<input id="search" type="search" placeholder="Search members...">
 
-  <p id="message">Loading members...</p>
-  <section class="members" id="members"></section>
+<select id="streamFilter">
+<option value="all">All streams</option>
+<option>Victors</option>
+<option>Heroes</option>
+<option>Winners</option>
+<option>Champions</option>
+<option>Archivers</option>
+</select>
+
+<p id="message">Loading members...</p>
+
+<section class="members" id="members"></section>
+
 </main>
 
 <script type="module">
-import { auth, db } from "./assets/js/firebase.js";
+
+import {auth,db} from "./assets/js/firebase.js";
 
 import {
-  onAuthStateChanged
+ onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
 
 import {
-  collection,
-  getDoc,
-  doc,
-  getDocs,
-  query,
-  where
+ collection,getDoc,doc,getDocs,query,where
 } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
 
-const membersBox = document.getElementById("members");
-const message = document.getElementById("message");
-const search = document.getElementById("search");
-const streamFilter = document.getElementById("streamFilter");
+const membersBox=document.getElementById("members");
+const message=document.getElementById("message");
+const search=document.getElementById("search");
+const streamFilter=document.getElementById("streamFilter");
 
-let members = [];
+let members=[];
 
-function makeMemberCard(member) {
-  const card = document.createElement("article");
-  card.className = "member";
+function makeMemberCard(member){
 
-  const avatar = document.createElement("div");
-  avatar.className = "avatar";
+ const card=document.createElement("article");
+ card.className="member";
+ card.tabIndex=0;
 
-  const photo = member.photoURL || member.photoUrl || "";
+ const photo=member.photoURL||"";
 
-  if (/^https?:\/\//i.test(photo)) {
-    const img = document.createElement("img");
-    img.src = photo;
-    img.alt = "Profile picture";
-    img.className = "avatar";
-    img.onerror = () => {
-      img.replaceWith(avatar);
-      avatar.textContent = (member.nickname || member.name || "M")
-        .charAt(0).toUpperCase();
-    };
-    avatar.replaceWith(img);
-  } else {
-    avatar.textContent = (member.nickname || member.name || "M")
-      .charAt(0).toUpperCase();
-    card.appendChild(avatar);
+ if(photo){
+
+  const img=document.createElement("img");
+  img.className="avatar";
+  img.src=photo;
+  img.alt="Profile picture";
+
+  img.onerror=()=>{
+   img.remove();
+   addFallback();
+  };
+
+  card.appendChild(img);
+
+ }else{
+
+  addFallback();
+
+ }
+
+ function addFallback(){
+  const avatar=document.createElement("div");
+  avatar.className="avatar";
+  avatar.textContent=(member.nickname||member.name||"M").charAt(0).toUpperCase();
+  card.prepend(avatar);
+ }
+
+ const heading=document.createElement("h3");
+ heading.textContent=member.nickname||member.name||"Member";
+
+ const realName=document.createElement("p");
+ realName.textContent=member.nickname&&member.name?member.name:"";
+
+ const stream=document.createElement("span");
+ stream.className="stream";
+ stream.textContent=member.stream||"No stream";
+
+ card.append(heading,realName,stream);
+
+ const open=()=>{
+  location.href="profile.html?uid="+encodeURIComponent(member.id);
+ };
+
+ card.addEventListener("click",open);
+
+ card.addEventListener("keydown",e=>{
+  if(e.key==="Enter"){
+   open();
   }
+ });
 
-  const heading = document.createElement("h3");
-  heading.textContent = member.nickname || member.name || "Member";
-
-  const realName = document.createElement("p");
-  realName.textContent = member.nickname && member.name
-    ? member.name
-    : "";
-
-  const stream = document.createElement("span");
-  stream.className = "stream";
-  stream.textContent = member.stream || "No stream";
-
-  card.append(heading, realName, stream);
-  return card;
+ return card;
 }
 
-function displayMembers() {
-  membersBox.replaceChildren();
+function displayMembers(){
 
-  const term = search.value.trim().toLowerCase();
-  const selectedStream = streamFilter.value;
+ membersBox.replaceChildren();
 
-  const filtered = members.filter(member => {
-    const name = (member.name || "").toLowerCase();
-    const nickname = (member.nickname || "").toLowerCase();
-    const stream = (member.stream || "").toLowerCase();
+ const term=search.value.trim().toLowerCase();
+ const selected=streamFilter.value;
 
-    const matchesSearch =
-      name.includes(term) || nickname.includes(term);
+ const filtered=members.filter(m=>
+  (m.name||"").toLowerCase().includes(term)||
+  (m.nickname||"").toLowerCase().includes(term)
+ ).filter(m=>
+  selected==="all"||
+  (m.stream||"").toLowerCase()===selected.toLowerCase()
+ );
 
-    const matchesStream =
-      selectedStream === "all" ||
-      stream === selectedStream.toLowerCase();
+ if(!filtered.length){
+  message.textContent="No matching members found.";
+  return;
+ }
 
-    return matchesSearch && matchesStream;
-  });
+ message.textContent=filtered.length+" approved member(s) found.";
 
-  if (!filtered.length) {
-    message.textContent = "No matching members found.";
-    return;
-  }
+ filtered.forEach(m=>{
+  membersBox.appendChild(makeMemberCard(m));
+ });
 
-  message.textContent = filtered.length + " approved member(s) found.";
-
-  filtered.forEach(member => {
-    membersBox.appendChild(makeMemberCard(member));
-  });
 }
 
-async function loadMembers() {
-  try {
-    const result = await getDocs(
-      query(
-        collection(db, "users"),
-        where("status", "==", "approved")
-      )
-    );
+async function loadMembers(){
 
-    members = result.docs.map(item => ({
-      id: item.id,
-      ...item.data()
-    }));
+ try{
 
-    displayMembers();
+  const result=await getDocs(
+   query(
+    collection(db,"users"),
+    where("status","==","approved")
+   )
+  );
 
-  } catch (error) {
-    console.error(error);
-    message.textContent =
-      "Unable to load members. Check your Firestore security rules.";
-  }
+  members=result.docs.map(item=>({
+   id:item.id,
+   ...item.data()
+  }));
+
+  displayMembers();
+
+ }catch(error){
+
+  console.error(error);
+  message.textContent="Unable to load members. Check Firestore rules.";
+
+ }
+
 }
 
-onAuthStateChanged(auth, async user => {
-  if (!user) {
-    location.href = "login.html";
-    return;
+onAuthStateChanged(auth,async user=>{
+
+ if(!user){
+  location.href="login.html";
+  return;
+ }
+
+ try{
+
+  const p=await getDoc(doc(db,"users",user.uid));
+
+  if(!p.exists()||p.data().status!=="approved"){
+   location.href="login.html";
+   return;
   }
 
-  try {
-    const profile = await getDoc(doc(db, "users", user.uid));
+  loadMembers();
 
-    if (!profile.exists() ||
-        profile.data().status !== "approved") {
-      location.href = "login.html";
-      return;
-    }
+ }catch(error){
 
-    loadMembers();
+  console.error(error);
+  message.textContent="Unable to verify your account.";
 
-  } catch (error) {
-    console.error(error);
-    message.textContent = "Unable to verify your account.";
-  }
+ }
+
 });
 
-search.addEventListener("input", displayMembers);
-streamFilter.addEventListener("change", displayMembers);
+search.addEventListener("input",displayMembers);
+streamFilter.addEventListener("change",displayMembers);
+
 </script>
 
 </body>
