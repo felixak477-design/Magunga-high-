@@ -139,12 +139,21 @@ button:disabled{opacity:.5}
   justify-content:center;
   font-weight:bold;
   font-size:13px;
+  overflow:hidden;
+  flex-shrink:0;
+}
+
+.messageAvatarImage{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  display:block;
 }
 
 .message{
   background:white;
   color:#17212b;
-  padding:11px 13px;
+  padding:9px 12px;
   border-radius:14px 14px 14px 4px;
   margin:0;
   max-width:85%;
@@ -159,12 +168,13 @@ button:disabled{opacity:.5}
 }
 
 .message strong{
-  font-size:13px;
+  font-size:12px;
   color:#0866ff;
 }
 
 .message p{
-  margin:7px 0;
+  margin:6px 0;
+  font-size:13px;
   line-height:1.4;
   white-space:pre-wrap;
 }
@@ -172,7 +182,7 @@ button:disabled{opacity:.5}
 .message small{
   display:block;
   color:#718096;
-  font-size:11px;
+  font-size:10px;
   text-align:right;
 }
 
@@ -402,14 +412,17 @@ input:focus{border-color:#0866ff}
 
 @media(max-width:520px){
   main{padding:8px}
+
   #streamPanel,#groupPanel{
     min-height:calc(100dvh - 155px);
     padding:10px;
   }
+
   #streamPanel .messages,
   #groupPanel .messages{
     min-height:400px;
   }
+
   .tabs button{
     font-size:12px;
     padding:11px 5px;
@@ -437,11 +450,15 @@ input:focus{border-color:#0866ff}
 
   <section id="streamPanel" class="panel">
     <h3 id="streamTitle">Stream Chat</h3>
+
     <div id="streamMessages" class="messages">
       <p class="note">Loading messages...</p>
     </div>
+
     <form id="streamForm">
-      <input id="streamInput" maxlength="2000" placeholder="Message your stream..." autocomplete="off" required>
+      <input id="streamInput" maxlength="2000"
+        placeholder="Message your stream..."
+        autocomplete="off" required>
       <button type="submit">Send</button>
     </form>
   </section>
@@ -449,18 +466,25 @@ input:focus{border-color:#0866ff}
   <section id="groupPanel" class="panel hidden">
     <h3>Magunga High School Group</h3>
     <p class="note">Chat with approved school members.</p>
+
     <div id="groupMessages" class="messages">
       <p class="note">Loading messages...</p>
     </div>
+
     <form id="groupForm">
-      <input id="groupInput" maxlength="2000" placeholder="Write a message..." autocomplete="off" required>
+      <input id="groupInput" maxlength="2000"
+        placeholder="Write a message..."
+        autocomplete="off" required>
       <button type="submit">Send</button>
     </form>
   </section>
 
   <section id="privatePanel" class="panel hidden">
     <h3>Private Messages</h3>
-    <input id="memberSearch" placeholder="Search students..." autocomplete="off">
+    <input id="memberSearch"
+      placeholder="Search students..."
+      autocomplete="off">
+
     <div id="chatList">
       <p class="note">Loading students...</p>
     </div>
@@ -472,7 +496,9 @@ input:focus{border-color:#0866ff}
 <div id="privateScreen">
   <div class="chatHeader">
     <button id="backButton" class="backButton" type="button">‹</button>
+
     <div id="recipientAvatar" class="avatar">?</div>
+
     <div class="recipientInfo">
       <strong id="recipientName">Student</strong>
       <small id="recipientStream">Private conversation</small>
@@ -486,7 +512,9 @@ input:focus{border-color:#0866ff}
   <div id="privateStatus"></div>
 
   <form id="privateForm" class="privateComposer">
-    <input id="privateInput" maxlength="2000" placeholder="Message..." autocomplete="off" required>
+    <input id="privateInput" maxlength="2000"
+      placeholder="Message..."
+      autocomplete="off" required>
     <button id="privateSend" type="submit">➤</button>
   </form>
 </div>
@@ -494,7 +522,9 @@ input:focus{border-color:#0866ff}
 <script type="module">
 import {auth,db} from "./assets/js/firebase.js";
 
-import {onAuthStateChanged} from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
+import {
+  onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
 
 import {
   collection,
@@ -514,8 +544,11 @@ const $ = id => document.getElementById(id);
 let user = null;
 let profile = null;
 let activeRecipient = null;
+
 let approvedMembers = [];
 let membersLoaded = false;
+
+const profilePhotos = new Map();
 
 let streamUnsub = null;
 let groupUnsub = null;
@@ -544,12 +577,68 @@ function stopGroup(){
   groupUnsub = null;
 }
 
-function makeAvatar(name){
+/* CREATE AVATAR WITH PROFILE PHOTO OR INITIAL */
+
+function makeAvatar(name,photoURL=""){
   const avatar = document.createElement("div");
   avatar.className = "messageAvatar";
-  avatar.textContent = (name || "S").trim().charAt(0).toUpperCase();
+
+  const initial = (name || "S").trim().charAt(0).toUpperCase();
+
+  if(photoURL){
+    const image = document.createElement("img");
+
+    image.className = "messageAvatarImage";
+    image.src = photoURL;
+    image.alt = "";
+
+    image.onerror = ()=>{
+      avatar.replaceChildren();
+      avatar.textContent = initial;
+    };
+
+    avatar.appendChild(image);
+  }else{
+    avatar.textContent = initial;
+  }
+
   return avatar;
 }
+
+/* LOAD APPROVED STUDENT PROFILE PHOTOS */
+
+async function loadPublicProfiles(){
+  try{
+    const q = query(
+      collection(db,"publicProfiles"),
+      where("status","==","approved")
+    );
+
+    const snapshot = await getDocs(q);
+
+    snapshot.docs.forEach(item=>{
+      const data = item.data();
+
+      const photo =
+        data.photoURL ||
+        data.photoUrl ||
+        data.profilePic ||
+        "";
+
+      if(photo){
+        profilePhotos.set(item.id,photo);
+      }
+    });
+
+  }catch(error){
+    console.warn(
+      "Profile photos could not be loaded:",
+      error
+    );
+  }
+}
+
+/* DISPLAY CHAT MESSAGES */
 
 function renderMessages(container,snapshot){
   container.replaceChildren();
@@ -557,14 +646,20 @@ function renderMessages(container,snapshot){
   if(snapshot.empty){
     const empty = document.createElement("p");
     empty.className = "note";
-    empty.textContent = "No messages yet. Send the first message!";
+    empty.textContent =
+      "No messages yet. Send the first message!";
+
     container.appendChild(empty);
     return;
   }
 
   const docs = [...snapshot.docs].sort((a,b)=>{
-    const first = a.data().createdAt?.toMillis?.() || 0;
-    const second = b.data().createdAt?.toMillis?.() || 0;
+    const first =
+      a.data().createdAt?.toMillis?.() || 0;
+
+    const second =
+      b.data().createdAt?.toMillis?.() || 0;
+
     return first-second;
   });
 
@@ -573,6 +668,7 @@ function renderMessages(container,snapshot){
   docs.forEach(item=>{
     const data = item.data();
     const mine = data.senderId === user.uid;
+
     const date = data.createdAt?.toDate
       ? data.createdAt.toDate()
       : new Date();
@@ -581,41 +677,58 @@ function renderMessages(container,snapshot){
 
     if(dateLabel !== previousDate){
       const separator = document.createElement("div");
+
       separator.className = "note";
       separator.style.textAlign = "center";
       separator.style.margin = "14px 0";
       separator.textContent = dateLabel;
+
       container.appendChild(separator);
       previousDate = dateLabel;
     }
 
     const row = document.createElement("div");
     row.className = "messageRow";
-    if(mine) row.classList.add("mine");
+
+    if(mine){
+      row.classList.add("mine");
+    }
 
     const name = data.senderName || "Student";
-    const avatar = makeAvatar(name);
+
+    const photoURL =
+      profilePhotos.get(data.senderId) || "";
+
+    const avatar = makeAvatar(name,photoURL);
 
     const bubble = document.createElement("div");
     bubble.className = "message";
-    if(mine) bubble.classList.add("mine");
+
+    if(mine){
+      bubble.classList.add("mine");
+    }
 
     const sender = document.createElement("strong");
+
     sender.textContent = mine ? "You" : name;
 
-    const text = document.createElement("p");
-    text.textContent = data.text || "";
+    const messageText = document.createElement("p");
+    messageText.textContent = data.text || "";
 
     const time = document.createElement("small");
+
     time.textContent = date.toLocaleTimeString([],{
       hour:"2-digit",
       minute:"2-digit"
     });
 
-    bubble.append(sender,text,time);
+    bubble.append(sender,messageText,time);
 
-    if(mine) row.append(bubble,avatar);
-    else row.append(avatar,bubble);
+    if(mine){
+      row.append(bubble,avatar);
+    }else{
+      row.append(avatar,bubble);
+    }
 
     container.appendChild(row);
   });
@@ -623,25 +736,36 @@ function renderMessages(container,snapshot){
   container.scrollTop = container.scrollHeight;
 }
 
+/* STREAM CHAT */
+
 function loadStream(){
   stopStream();
 
   if(!profile?.stream) return;
 
-  $("streamTitle").textContent = profile.stream + " Stream Chat";
+  $("streamTitle").textContent =
+    profile.stream + " Stream Chat";
 
   const q = query(
     collection(db,"messages"),
     where("stream","==",profile.stream)
   );
 
-  streamUnsub = onSnapshot(q,snapshot=>{
-    renderMessages($("streamMessages"),snapshot);
-  },error=>{
-    $("streamMessages").textContent = "Unable to load stream messages.";
-    status(error.message);
-  });
+  streamUnsub = onSnapshot(
+    q,
+    snapshot=>{
+      renderMessages($("streamMessages"),snapshot);
+    },
+    error=>{
+      $("streamMessages").textContent =
+        "Unable to load stream messages.";
+
+      status(error.message);
+    }
+  );
 }
+
+/* SCHOOL GROUP CHAT */
 
 function loadGroup(){
   stopGroup();
@@ -652,11 +776,15 @@ function loadGroup(){
       renderMessages($("groupMessages"),snapshot);
     },
     error=>{
-      $("groupMessages").textContent = "Unable to load group messages.";
+      $("groupMessages").textContent =
+        "Unable to load group messages.";
+
       status(error.message);
     }
   );
 }
+
+/* LOAD STUDENTS FOR PRIVATE CHAT */
 
 async function loadMembers(){
   if(membersLoaded){
@@ -674,27 +802,52 @@ async function loadMembers(){
 
     const snapshot = await getDocs(q);
 
-    approvedMembers = snapshot.docs
-      .filter(item=>item.id !== user.uid)
-      .map(item=>({id:item.id,...item.data()}));
+    approvedMembers = snapshot.docs.map(item=>{
+      const data = item.data();
+
+      const photo =
+        data.photoURL ||
+        data.photoUrl ||
+        data.profilePic ||
+        "";
+
+      if(photo){
+        profilePhotos.set(item.id,photo);
+      }
+
+      return {
+        id:item.id,
+        ...data
+      };
+    }).filter(member=>member.id !== user.uid);
 
     membersLoaded = true;
+
     displayMembers();
 
   }catch(error){
     $("chatList").textContent =
       "Could not load students. Check publicProfiles permissions.";
+
     status(error.message);
   }
 }
+
+/* DISPLAY STUDENT LIST */
 
 function displayMembers(search=""){
   const list = $("chatList");
   list.replaceChildren();
 
   const filtered = approvedMembers.filter(member=>{
-    const name = member.name || member.fullName || "Student";
-    return name.toLowerCase().includes(search.toLowerCase());
+    const name =
+      member.name ||
+      member.fullName ||
+      "Student";
+
+    return name.toLowerCase().includes(
+      search.toLowerCase()
+    );
   });
 
   if(!filtered.length){
@@ -704,68 +857,106 @@ function displayMembers(search=""){
 
   filtered.forEach(member=>{
     const button = document.createElement("button");
+
     button.type = "button";
     button.className = "chatChoice";
 
-    const avatar = document.createElement("div");
-    avatar.className = "avatar";
+    const photo =
+      member.photoURL ||
+      member.photoUrl ||
+      member.profilePic ||
+      "";
 
-    const photo = member.photoURL || member.photoUrl || member.profilePic;
+    let avatar;
 
     if(photo){
-      const image = document.createElement("img");
-      image.src = photo;
-      image.alt = "";
-      image.className = "avatar";
-      image.onerror = ()=>{
-        image.replaceWith(makeAvatar(member.name || "S"));
+      avatar = document.createElement("img");
+      avatar.src = photo;
+      avatar.alt = "";
+      avatar.className = "avatar";
+
+      avatar.onerror = ()=>{
+        const fallback = document.createElement("div");
+
+        fallback.className = "avatar";
+        fallback.textContent =
+          (member.name || "S").trim().charAt(0).toUpperCase();
+
+        avatar.replaceWith(fallback);
       };
-      avatar.replaceWith(image);
     }else{
+      avatar = document.createElement("div");
+      avatar.className = "avatar";
+
       avatar.textContent =
         (member.name || "S").trim().charAt(0).toUpperCase();
     }
 
     const details = document.createElement("div");
+
     const name = document.createElement("strong");
-    name.textContent = member.name || member.fullName || "Student";
+
+    name.textContent =
+      member.name ||
+      member.fullName ||
+      "Student";
 
     const stream = document.createElement("div");
+
     stream.className = "note";
-    stream.textContent = member.stream || "Magunga High";
+    stream.textContent =
+      member.stream || "Magunga High";
 
     details.append(name,stream);
     button.append(avatar,details);
 
-    button.addEventListener("click",()=>openPrivateChat(member));
+    button.addEventListener("click",()=>{
+      openPrivateChat(member);
+    });
 
     list.appendChild(button);
   });
 }
 
+/* OPEN PRIVATE CHAT */
+
 async function openPrivateChat(member){
   activeRecipient = member;
+
   stopPrivate();
 
   $("privateScreen").classList.add("active");
+
   $("recipientName").textContent =
-    member.name || member.fullName || "Student";
-  $("recipientStream").textContent = member.stream || "Magunga High";
+    member.name ||
+    member.fullName ||
+    "Student";
+
+  $("recipientStream").textContent =
+    member.stream || "Magunga High";
 
   const avatar = $("recipientAvatar");
+
   avatar.replaceChildren();
 
-  const photo = member.photoURL || member.photoUrl || member.profilePic;
+  const photo =
+    member.photoURL ||
+    member.photoUrl ||
+    member.profilePic ||
+    "";
 
   if(photo){
     const image = document.createElement("img");
+
     image.src = photo;
     image.className = "avatar";
     image.alt = "";
+
     image.onerror = ()=>{
       avatar.textContent =
         (member.name || "S").trim().charAt(0).toUpperCase();
     };
+
     avatar.appendChild(image);
   }else{
     avatar.textContent =
@@ -775,9 +966,19 @@ async function openPrivateChat(member){
   privateStatus("Opening conversation...");
 
   try{
-    const participants = [user.uid,member.id].sort();
+    const participants = [
+      user.uid,
+      member.id
+    ].sort();
+
     const chatId = participants.join("_");
-    const chatRef = doc(db,"privateChats",chatId);
+
+    const chatRef = doc(
+      db,
+      "privateChats",
+      chatId
+    );
+
     const chatSnap = await getDoc(chatRef);
 
     if(!chatSnap.exists()){
@@ -788,61 +989,107 @@ async function openPrivateChat(member){
     }
 
     const messagesRef = collection(
-      db,"privateChats",chatId,"messages"
+      db,
+      "privateChats",
+      chatId,
+      "messages"
     );
 
-    privateUnsub = onSnapshot(messagesRef,snapshot=>{
-      renderMessages($("privateMessages"),snapshot);
-      privateStatus("");
-    },error=>{
-      privateStatus("Unable to load messages: "+error.message);
-    });
+    privateUnsub = onSnapshot(
+      messagesRef,
+      snapshot=>{
+        renderMessages(
+          $("privateMessages"),
+          snapshot
+        );
+
+        privateStatus("");
+      },
+      error=>{
+        privateStatus(
+          "Unable to load messages: " + error.message
+        );
+      }
+    );
 
   }catch(error){
-    privateStatus("Could not open chat: "+error.message);
+    privateStatus(
+      "Could not open chat: " + error.message
+    );
   }
 }
 
+/* CLOSE PRIVATE CHAT */
+
 $("backButton").addEventListener("click",()=>{
   stopPrivate();
+
   $("privateScreen").classList.remove("active");
+
   activeRecipient = null;
 });
 
-async function sendMessage(collectionName,inputId,extra={}){
+/* SEND STREAM AND GROUP MESSAGES */
+
+async function sendMessage(
+  collectionName,
+  inputId,
+  extra={}
+){
   const input = $(inputId);
   const text = input.value.trim();
 
   if(!text || !user || !profile) return;
 
   try{
-    await addDoc(collection(db,collectionName),{
-      senderId:user.uid,
-      senderName:profile.name || user.displayName || "Student",
-      text,
-      createdAt:serverTimestamp(),
-      ...extra
-    });
+    await addDoc(
+      collection(db,collectionName),
+      {
+        senderId:user.uid,
+        senderName:
+          profile.name ||
+          user.displayName ||
+          "Student",
+        text,
+        createdAt:serverTimestamp(),
+        ...extra
+      }
+    );
 
     input.value = "";
     status("");
 
   }catch(error){
-    status("Message failed: "+error.message);
+    status("Message failed: " + error.message);
   }
 }
 
+/* STREAM MESSAGE FORM */
+
 $("streamForm").addEventListener("submit",event=>{
   event.preventDefault();
-  sendMessage("messages","streamInput",{
-    stream:profile.stream
-  });
+
+  sendMessage(
+    "messages",
+    "streamInput",
+    {
+      stream:profile.stream
+    }
+  );
 });
+
+/* GROUP MESSAGE FORM */
 
 $("groupForm").addEventListener("submit",event=>{
   event.preventDefault();
-  sendMessage("groupMessages","groupInput");
+
+  sendMessage(
+    "groupMessages",
+    "groupInput"
+  );
 });
+
+/* PRIVATE MESSAGE FORM */
 
 $("privateForm").addEventListener("submit",async event=>{
   event.preventDefault();
@@ -854,15 +1101,27 @@ $("privateForm").addEventListener("submit",async event=>{
 
   if(!text) return;
 
-  const participants = [user.uid,activeRecipient.id].sort();
+  const participants = [
+    user.uid,
+    activeRecipient.id
+  ].sort();
+
   const chatId = participants.join("_");
 
   try{
     await addDoc(
-      collection(db,"privateChats",chatId,"messages"),
+      collection(
+        db,
+        "privateChats",
+        chatId,
+        "messages"
+      ),
       {
         senderId:user.uid,
-        senderName:profile.name || user.displayName || "Student",
+        senderName:
+          profile.name ||
+          user.displayName ||
+          "Student",
         text,
         createdAt:serverTimestamp()
       }
@@ -872,31 +1131,57 @@ $("privateForm").addEventListener("submit",async event=>{
     privateStatus("");
 
   }catch(error){
-    privateStatus("Message failed: "+error.message);
+    privateStatus(
+      "Message failed: " + error.message
+    );
   }
 });
+
+/* CHAT TAB SWITCHING */
 
 document.querySelectorAll("[data-tab]").forEach(button=>{
   button.addEventListener("click",()=>{
     const target = button.dataset.tab;
 
     document.querySelectorAll("[data-tab]").forEach(tab=>{
-      tab.classList.toggle("active",tab===button);
+      tab.classList.toggle(
+        "active",
+        tab===button
+      );
     });
 
-    ["streamPanel","groupPanel","privatePanel"].forEach(id=>{
-      $(id).classList.toggle("hidden",id!==target);
+    [
+      "streamPanel",
+      "groupPanel",
+      "privatePanel"
+    ].forEach(id=>{
+      $(id).classList.toggle(
+        "hidden",
+        id!==target
+      );
     });
 
-    if(target==="streamPanel") loadStream();
-    if(target==="groupPanel") loadGroup();
-    if(target==="privatePanel") loadMembers();
+    if(target==="streamPanel"){
+      loadStream();
+    }
+
+    if(target==="groupPanel"){
+      loadGroup();
+    }
+
+    if(target==="privatePanel"){
+      loadMembers();
+    }
   });
 });
+
+/* SEARCH STUDENTS */
 
 $("memberSearch").addEventListener("input",event=>{
   displayMembers(event.target.value);
 });
+
+/* AUTHENTICATION AND PROFILE CHECK */
 
 onAuthStateChanged(auth,async currentUser=>{
   stopStream();
@@ -928,14 +1213,22 @@ onAuthStateChanged(auth,async currentUser=>{
     }
 
     $("welcome").textContent =
-      "Welcome, "+(profile.name || "Student");
+      "Welcome, " + (profile.name || "Student");
+
+    /* LOAD PHOTOS BEFORE LOADING MESSAGES */
+
+    await loadPublicProfiles();
 
     loadStream();
 
   }catch(error){
-    status("Could not load your account: "+error.message);
+    status(
+      "Could not load your account: " + error.message
+    );
   }
 });
+
+/* CLEAN UP LISTENERS */
 
 window.addEventListener("beforeunload",()=>{
   stopStream();
