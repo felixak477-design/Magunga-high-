@@ -2,161 +2,231 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Announcements | The Magunga High</title>
-
-  <style>
-    * {
-      box-sizing: border-box;
-      font-family: Arial, sans-serif;
-    }
-
-    body {
-      margin: 0;
-      background: #101522;
-      color: white;
-    }
-
-    header {
-      background: #1b2435;
-      padding: 18px;
-    }
-
-    main {
-      max-width: 850px;
-      margin: auto;
-      padding: 22px;
-    }
-
-    .announcement {
-      background: #1b2435;
-      padding: 20px;
-      border-radius: 12px;
-      margin-bottom: 15px;
-    }
-
-    .announcement h3 {
-      margin-top: 0;
-    }
-
-    .meta {
-      color: #9eacc2;
-      font-size: 13px;
-    }
-
-    a {
-      color: #83b3ff;
-      text-decoration: none;
-    }
-
-    #message {
-      color: #ffbd75;
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Announcements | Magunga High</title>
+<style>
+*{box-sizing:border-box;font-family:Arial,sans-serif}
+body{margin:0;background:#101522;color:white}
+header{background:#1b2435;padding:18px;display:flex;justify-content:space-between;align-items:center}
+main{max-width:850px;margin:auto;padding:22px}
+.panel,.announcement{background:#1b2435;padding:20px;border-radius:12px;margin-bottom:18px}
+input,textarea,select{width:100%;padding:13px;margin:8px 0 15px;background:#111a2a;color:white;border:1px solid #39465e;border-radius:8px}
+textarea{min-height:130px;resize:vertical}
+button{padding:13px 18px;border:0;border-radius:8px;background:#2878ff;color:white;font-weight:bold;cursor:pointer}
+button:disabled{opacity:.6}
+label{display:block}
+.meta{color:#9eacc2;font-size:13px}
+a{color:#83b3ff;text-decoration:none}
+#message{color:#ffbd75}
+</style>
 </head>
-
 <body>
 
 <header>
-  <h2>The Magunga High</h2>
-  <a href="dashboard.html">← Back to Dashboard</a>
+<h2>The Magunga High</h2>
+<a href="admin.html">Admin Dashboard</a>
 </header>
 
 <main>
-  <h1>📢 Announcements</h1>
-  <p>Stay updated with your stream and school news.</p>
+<h1>📢 Announcements</h1>
+<p>School and stream announcements.</p>
 
-  <p id="message">Loading announcements...</p>
-  <div id="announcements"></div>
+<section class="panel" id="publishPanel" hidden>
+<h2>Publish Announcement</h2>
+
+<form id="announcementForm">
+<label>Announcement title</label>
+<input id="title" required maxlength="100" placeholder="Enter announcement title">
+
+<label>Message</label>
+<textarea id="body" required maxlength="5000" placeholder="Write your announcement"></textarea>
+
+<label>Audience</label>
+<select id="audience"></select>
+
+<button id="publishButton" type="submit">Publish Announcement</button>
+</form>
+</section>
+
+<p id="message">Loading announcements...</p>
+<div id="announcements"></div>
 </main>
 
 <script type="module">
-  import { auth, db } from "./assets/js/firebase.js";
+import {auth,db} from "./assets/js/firebase.js";
 
-  import {
-    onAuthStateChanged
-  } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
+import {
+onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
 
-  import {
-    collection,
-    getDocs,
-    query,
-    where
-  } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
+import {
+doc,getDoc,collection,addDoc,getDocs,query,where,
+serverTimestamp
+} from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
 
-  const message = document.getElementById("message");
-  const container = document.getElementById("announcements");
+const $=id=>document.getElementById(id);
+const streams=["Victors","Heroes","Winners","Champions","Archivers"];
 
-  onAuthStateChanged(auth, async (user) => {
-    if (!user) {
-      window.location.href = "login.html";
-      return;
-    }
+let currentUser=null;
+let profile=null;
 
-    try {
-      const { doc, getDoc } = await import(
-        "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js"
-      );
+onAuthStateChanged(auth,async user=>{
+if(!user){
+location.href="login.html";
+return;
+}
 
-      const profile = await getDoc(doc(db, "users", user.uid));
+currentUser=user;
 
-      if (!profile.exists() || profile.data().status !== "approved") {
-        window.location.href = "login.html";
-        return;
-      }
+try{
+const profileSnap=await getDoc(doc(db,"users",user.uid));
 
-      const stream = profile.data().stream;
+if(!profileSnap.exists()){
+$("message").textContent="Your account profile was not found.";
+return;
+}
 
-      const announcementQuery = query(
-        collection(db, "announcements"),
-        where("stream", "in", [stream, "All"])
-      );
+profile=profileSnap.data();
 
-      const results = await getDocs(announcementQuery);
+if(profile.status!=="approved"){
+$("message").textContent="Your account is not approved.";
+return;
+}
 
-      container.replaceChildren();
+const isSuper=profile.role==="superadmin";
+const isStreamAdmin=profile.role==="streamAdmin";
 
-      if (results.empty) {
-        message.textContent = "No announcements yet.";
-        return;
-      }
+if(isSuper||isStreamAdmin){
+$("publishPanel").hidden=false;
+}
 
-      const items = results.docs.map(item => item.data());
+const audience=$("audience");
 
-      items.sort((a, b) => {
-        const dateA = a.createdAt?.toMillis?.() || 0;
-        const dateB = b.createdAt?.toMillis?.() || 0;
-        return dateB - dateA;
-      });
+if(isSuper){
+audience.innerHTML='<option value="All">All students</option>';
+streams.forEach(stream=>{
+const option=document.createElement("option");
+option.value=stream;
+option.textContent=stream;
+audience.appendChild(option);
+});
+}else if(isStreamAdmin){
+audience.innerHTML="";
+const option=document.createElement("option");
+option.value=profile.stream;
+option.textContent=profile.stream+" students";
+audience.appendChild(option);
+}else{
+$("publishPanel").hidden=true;
+}
 
-      items.forEach(item => {
-        const card = document.createElement("article");
-        card.className = "announcement";
+await loadAnnouncements();
 
-        const title = document.createElement("h3");
-        title.textContent = item.title || "Announcement";
+}catch(error){
+console.error(error);
+$("message").textContent="Error: "+error.message;
+}
+});
 
-        const body = document.createElement("p");
-        body.textContent = item.message || "";
+$("announcementForm").addEventListener("submit",async event=>{
+event.preventDefault();
 
-        const meta = document.createElement("p");
-        meta.className = "meta";
-        meta.textContent = "Stream: " + (item.stream || "");
+const button=$("publishButton");
+button.disabled=true;
+button.textContent="Publishing...";
 
-        card.append(title, body, meta);
-        container.appendChild(card);
-      });
+try{
+if(!currentUser||!profile||
+!["superadmin","streamAdmin"].includes(profile.role)||
+profile.status!=="approved"){
+throw new Error("You are not authorized to publish.");
+}
 
-      message.textContent = "";
+const title=$("title").value.trim();
+const message=$("body").value.trim();
+const stream=$("audience").value;
 
-    } catch (error) {
-      message.textContent =
-        "Could not load announcements. Please try again.";
-      console.error(error);
-    }
-  });
+if(!title||!message)throw new Error("Complete all fields.");
+
+if(profile.role==="streamAdmin"&&stream!==profile.stream){
+throw new Error("You can only publish to your own stream.");
+}
+
+if(profile.role==="superadmin"&&
+stream!=="All"&&!streams.includes(stream)){
+throw new Error("Invalid audience.");
+}
+
+await addDoc(collection(db,"announcements"),{
+title,
+message,
+stream,
+authorId:currentUser.uid,
+authorName:profile.name||currentUser.email,
+createdAt:serverTimestamp()
+});
+
+$("announcementForm").reset();
+$("message").textContent="Announcement published successfully.";
+
+await loadAnnouncements();
+
+}catch(error){
+console.error(error);
+$("message").textContent="Publishing failed: "+error.message;
+}finally{
+button.disabled=false;
+button.textContent="Publish Announcement";
+}
+});
+
+async function loadAnnouncements(){
+const container=$("announcements");
+container.replaceChildren();
+
+const stream=profile.stream;
+
+const announcementQuery=query(
+collection(db,"announcements"),
+where("stream","in",[stream,"All"])
+);
+
+const results=await getDocs(announcementQuery);
+
+if(results.empty){
+$("message").textContent="No announcements yet.";
+return;
+}
+
+const items=results.docs.map(item=>item.data());
+
+items.sort((a,b)=>
+(b.createdAt?.toMillis?.()||0)-
+(a.createdAt?.toMillis?.()||0)
+);
+
+items.forEach(item=>{
+const card=document.createElement("article");
+card.className="announcement";
+
+const heading=document.createElement("h3");
+heading.textContent=item.title||"Announcement";
+
+const body=document.createElement("p");
+body.textContent=item.message||"";
+
+const meta=document.createElement("p");
+meta.className="meta";
+meta.textContent="Audience: "+item.stream+
+" | By: "+(item.authorName||"Administrator");
+
+card.append(heading,body,meta);
+container.appendChild(card);
+});
+
+$("message").textContent="";
+}
 </script>
-
 </body>
 </html>
