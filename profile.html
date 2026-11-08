@@ -1,0 +1,229 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Member Profile | Magunga High</title>
+
+<style>
+*{box-sizing:border-box;font-family:Arial,sans-serif}
+body{margin:0;background:#101522;color:white}
+header{padding:18px;background:#1b2435}
+header a{color:#e8c45e;text-decoration:none}
+main{max-width:560px;margin:30px auto;padding:20px}
+.profile-card{
+ background:#1b2435;border:1px solid #59471f;
+ border-radius:18px;padding:25px;text-align:center
+}
+.avatar{
+ width:130px;height:130px;border-radius:50%;
+ object-fit:cover;background:#293b59;
+ border:3px solid #d5a52b;margin:8px auto;
+ display:flex;align-items:center;justify-content:center;
+ font-size:42px;color:#e8c45e
+}
+.muted{color:#aab6c8}
+label{display:block;text-align:left;margin:16px 0 7px}
+input{
+ width:100%;padding:12px;border:1px solid #39465e;
+ border-radius:8px;background:#111a2a;color:white
+}
+button{
+ width:100%;padding:13px;margin-top:15px;
+ background:#d5a52b;color:#171717;
+ border:0;border-radius:8px;font-weight:bold
+}
+.hidden{display:none}
+#message{color:#ffbd75}
+</style>
+</head>
+
+<body>
+
+<header>
+<a href="community.html">← Member Directory</a>
+</header>
+
+<main>
+<section class="profile-card">
+
+<img id="photo" class="avatar hidden" alt="Profile picture">
+
+<div id="fallback" class="avatar">M</div>
+
+<h1 id="displayName">Loading profile...</h1>
+<p id="realName" class="muted"></p>
+<p id="stream" class="muted"></p>
+
+<div id="editArea" class="hidden">
+
+<label>Nickname</label>
+<input id="nickname" maxlength="30" placeholder="Choose nickname">
+
+<label>Change profile picture</label>
+<input id="photoFile" type="file"
+ accept="image/png,image/jpeg,image/webp">
+
+<p class="muted">Maximum 3 MB.</p>
+
+<button id="saveButton">Save Profile</button>
+
+</div>
+
+<p id="message"></p>
+
+</section>
+</main>
+
+<script type="module">
+
+import {auth,db} from "./assets/js/firebase.js";
+
+import {
+ onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
+
+import {
+ doc,getDoc,updateDoc,serverTimestamp
+} from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
+
+import {uploadProfileImage} from "./assets/js/cloudinary.js";
+
+const photo=document.getElementById("photo");
+const fallback=document.getElementById("fallback");
+const displayName=document.getElementById("displayName");
+const realName=document.getElementById("realName");
+const stream=document.getElementById("stream");
+const editArea=document.getElementById("editArea");
+const nicknameInput=document.getElementById("nickname");
+const photoFile=document.getElementById("photoFile");
+const saveButton=document.getElementById("saveButton");
+const message=document.getElementById("message");
+
+const targetUid=new URLSearchParams(location.search).get("uid");
+
+let currentUser=null;
+let currentData=null;
+
+function showPhoto(url,name){
+
+ if(url && /^https:\/\//i.test(url)){
+
+  photo.src=url;
+  photo.classList.remove("hidden");
+  fallback.classList.add("hidden");
+
+  photo.onerror=()=>{
+   photo.classList.add("hidden");
+   fallback.classList.remove("hidden");
+   fallback.textContent=(name||"M").charAt(0).toUpperCase();
+  };
+
+ }else{
+
+  photo.classList.add("hidden");
+  fallback.classList.remove("hidden");
+  fallback.textContent=(name||"M").charAt(0).toUpperCase();
+
+ }
+
+}
+
+async function loadProfile(user){
+
+ currentUser=user;
+
+ const uid=targetUid||user.uid;
+
+ const snap=await getDoc(doc(db,"users",uid));
+
+ if(!snap.exists() || snap.data().status!=="approved"){
+  message.textContent="This profile is unavailable.";
+  displayName.textContent="Profile not found";
+  return;
+ }
+
+ currentData=snap.data();
+
+ const own=uid===user.uid;
+ const shown=currentData.nickname||currentData.name||"Member";
+
+ displayName.textContent=shown;
+ realName.textContent=currentData.nickname?currentData.name||"":"";
+ stream.textContent=currentData.stream||"";
+
+ showPhoto(currentData.photoURL||"",shown);
+
+ if(own){
+  editArea.classList.remove("hidden");
+  nicknameInput.value=currentData.nickname||"";
+ }
+
+}
+
+saveButton.addEventListener("click",async()=>{
+
+ saveButton.disabled=true;
+ message.textContent="Saving profile...";
+
+ try{
+
+  const nickname=nicknameInput.value.trim();
+
+  if(nickname.length>30){
+   throw new Error("Nickname must be 30 characters or fewer.");
+  }
+
+  const changes={
+   nickname,
+   profileUpdatedAt:serverTimestamp()
+  };
+
+  const file=photoFile.files[0];
+
+  if(file){
+   changes.photoURL=await uploadProfileImage(file);
+  }
+
+  await updateDoc(doc(db,"users",currentUser.uid),changes);
+
+  currentData={...currentData,...changes};
+
+  displayName.textContent=nickname||currentData.name;
+  realName.textContent=nickname?currentData.name||"":"";
+
+  showPhoto(currentData.photoURL||"",nickname||currentData.name);
+
+  photoFile.value="";
+  message.textContent="Profile updated.";
+
+ }catch(error){
+
+  message.textContent=error.message||"Could not update profile.";
+
+ }finally{
+
+  saveButton.disabled=false;
+
+ }
+
+});
+
+onAuthStateChanged(auth,user=>{
+
+ if(!user){
+  location.href="login.html";
+  return;
+ }
+
+ loadProfile(user).catch(error=>{
+  console.error(error);
+  message.textContent="Could not load profile. Check Firestore rules.";
+ });
+
+});
+
+</script>
+</body>
+</html>
