@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -14,92 +13,174 @@
 
     body {
       margin: 0;
-      background: #101522;
-      color: white;
+      background: #090d16;
+      color: #fff;
     }
 
     header {
-      background: #1b2435;
-      padding: 18px 22px;
+      background: #111827;
+      padding: 13px 18px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      gap: 12px;
-      flex-wrap: wrap;
+      gap: 10px;
+      border-bottom: 1px solid rgba(255, 204, 92, .35);
+      box-shadow: 0 3px 18px rgba(255, 190, 60, .08);
     }
 
     header h2 {
       margin: 0;
+      color: #ffd36a;
+      font-size: 20px;
+      text-shadow: 0 0 10px rgba(255, 190, 60, .5);
     }
 
     button {
-      border: 0;
-      padding: 11px 16px;
+      border: 1px solid #d9a93e;
+      padding: 9px 13px;
       border-radius: 7px;
       cursor: pointer;
       font-weight: bold;
+      font-size: 12px;
+      transition: .2s;
+    }
+
+    button:hover {
+      box-shadow: 0 0 13px rgba(255, 193, 70, .55);
+      transform: translateY(-1px);
     }
 
     .logout {
-      background: #e64b4b;
-      color: white;
+      background: #281b19;
+      color: #ffb5a8;
+      border-color: #a94d3e;
     }
 
     main {
-      max-width: 1000px;
+      max-width: 950px;
       margin: auto;
-      padding: 22px;
+      padding: 17px;
     }
 
     .welcome {
-      background: #1b2435;
-      padding: 24px;
-      border-radius: 14px;
-      margin-bottom: 20px;
+      background: linear-gradient(135deg, #171c29, #111827);
+      padding: 17px;
+      border: 1px solid rgba(255, 204, 92, .55);
+      border-radius: 12px;
+      margin-bottom: 17px;
+      box-shadow:
+        0 0 12px rgba(255, 190, 60, .12),
+        inset 0 0 12px rgba(255, 190, 60, .025);
+    }
+
+    .welcome h1 {
+      margin: 0 0 8px;
+      color: #ffdc87;
+      font-size: clamp(21px, 4vw, 29px);
+      text-shadow: 0 0 10px rgba(255, 190, 60, .35);
+    }
+
+    .welcome p {
+      color: #bfc6d2;
+      font-size: 13px;
+      margin: 7px 0;
     }
 
     .stream {
       display: inline-block;
-      padding: 8px 15px;
+      padding: 6px 13px;
       border-radius: 20px;
       font-weight: bold;
-      background: #2878ff;
+      font-size: 12px;
+      color: #ffe3a0;
+      background: #302511;
+      border: 1px solid #d5a83e;
+      box-shadow: 0 0 10px rgba(255, 190, 60, .2);
     }
 
     .cards {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
-      gap: 16px;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 11px;
     }
 
     .card {
-      background: #1b2435;
-      padding: 22px;
-      border-radius: 12px;
+      background: linear-gradient(145deg, #171d2a, #101622);
+      padding: 14px;
+      border-radius: 10px;
+      border: 1px solid rgba(255, 204, 92, .45);
+      box-shadow:
+        0 0 10px rgba(255, 190, 60, .09),
+        inset 0 0 8px rgba(255, 190, 60, .025);
+      transition: .2s;
+      min-width: 0;
+    }
+
+    .card:hover {
+      border-color: #ffd36a;
+      box-shadow:
+        0 0 16px rgba(255, 190, 60, .2),
+        inset 0 0 10px rgba(255, 190, 60, .04);
+      transform: translateY(-2px);
     }
 
     .card h3 {
-      margin-top: 0;
+      margin: 0 0 8px;
+      color: #ffda80;
+      font-size: 15px;
+      text-shadow: 0 0 8px rgba(255, 190, 60, .25);
     }
 
     .card p {
-      color: #b7c2d4;
-      line-height: 1.5;
+      color: #aeb9ca;
+      line-height: 1.45;
+      font-size: 12px;
+      min-height: 35px;
+      margin: 0 0 12px;
     }
 
     .card button {
-      background: #2878ff;
-      color: white;
+      background: linear-gradient(135deg, #d6a83e, #a87920);
+      color: #17120a;
+      border: 0;
+      padding: 9px 11px;
+      width: 100%;
+      font-size: 11px;
+      border-radius: 6px;
     }
 
     #statusMessage {
       color: #ffbd75;
+      font-size: 12px;
     }
 
     footer {
       text-align: center;
-      padding: 25px;
+      padding: 22px 12px;
       color: #8995a8;
+      font-size: 11px;
+    }
+
+    @media (max-width: 380px) {
+      main {
+        padding: 12px;
+      }
+
+      .cards {
+        gap: 8px;
+      }
+
+      .card {
+        padding: 11px;
+      }
+
+      .card h3 {
+        font-size: 13px;
+      }
+
+      .card p {
+        font-size: 11px;
+      }
     }
   </style>
 </head>
@@ -107,7 +188,7 @@
 <body>
 
 <header>
-  <h2>Magunga High</h2>
+  <h2>THE MAGUNGA HIGH</h2>
   <button class="logout" id="logoutButton">Logout</button>
 </header>
 
@@ -141,7 +222,7 @@
 
     <div class="card">
       <h3>💬 Stream Chat</h3>
-      <p>Communicate with members of your stream.</p>
+      <p>Communicate privately with members of your stream and school community.</p>
       <button onclick="location.href='chat.html'">
         Open Chat
       </button>
@@ -149,7 +230,7 @@
 
     <div class="card">
       <h3>👥 Community</h3>
-      <p>Connect with other students across the five streams.</p>
+      <p>Discover and connect with approved students across the five streams.</p>
       <button onclick="location.href='community.html'">
         Explore Community
       </button>
@@ -203,8 +284,8 @@
         return;
       }
 
-      welcomeName.textContent = "Welcome, " + data.name;
-      streamName.textContent = data.stream;
+      welcomeName.textContent = "Welcome, " + (data.name || "Student");
+      streamName.textContent = data.stream || "Not assigned";
 
     } catch (error) {
       statusMessage.textContent =
