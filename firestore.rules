@@ -1,0 +1,99 @@
+
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function myProfile() {
+      return get(
+        /databases/$(database)/documents/users/$(request.auth.uid)
+      ).data;
+    }
+
+    function isApproved() {
+      return signedIn()
+        && myProfile().status == "approved";
+    }
+
+    function isSuperAdmin() {
+      return signedIn()
+        && myProfile().role == "superadmin";
+    }
+
+    function isStreamAdmin(stream) {
+      return signedIn()
+        && myProfile().role == "streamAdmin"
+        && myProfile().stream == stream;
+    }
+
+    function canManageStream(stream) {
+      return isSuperAdmin() || isStreamAdmin(stream);
+    }
+
+    match /users/{userId} {
+
+      allow create: if signedIn()
+        && request.auth.uid == userId
+        && request.resource.data.role == "member"
+        && request.resource.data.status == "pending"
+        && request.resource.data.email == request.auth.token.email
+        && request.resource.data.stream in [
+          "Victors",
+          "Heroes",
+          "Winners",
+          "Champions",
+          "Archivers"
+        ];
+
+      allow read: if signedIn()
+        && (
+          request.auth.uid == userId
+          || isSuperAdmin()
+          || (
+            isStreamAdmin(resource.data.stream)
+          )
+        );
+
+      allow update: if isSuperAdmin()
+        || (
+          signedIn()
+          && isStreamAdmin(resource.data.stream)
+          && request.resource.data.role == resource.data.role
+          && request.resource.data.stream == resource.data.stream
+        );
+
+      allow delete: if isSuperAdmin();
+    }
+
+    match /announcements/{announcementId} {
+
+      allow read: if isApproved();
+
+      allow create: if isApproved()
+        && canManageStream(request.resource.data.stream);
+
+      allow update, delete: if isApproved()
+        && canManageStream(resource.data.stream);
+    }
+
+    match /messages/{messageId} {
+
+      allow read: if isApproved()
+        && resource.data.stream == myProfile().stream;
+
+      allow create: if isApproved()
+        && request.resource.data.senderId == request.auth.uid
+        && request.resource.data.stream == myProfile().stream;
+
+      allow update, delete: if false;
+    }
+
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
