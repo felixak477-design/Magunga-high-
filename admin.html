@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,94 +6,349 @@
 <title>Admin Dashboard | Magunga High</title>
 
 <style>
-*{box-sizing:border-box;font-family:Arial,sans-serif}
-body{margin:0;background:#0d1422;color:#fff}
-header{background:#18243a;padding:18px 5%;display:flex;justify-content:space-between;align-items:center;gap:12px}
-header h2{margin:0;font-size:20px}
-button{border:0;padding:11px 15px;border-radius:7px;cursor:pointer;font-weight:bold}
-.logout{background:#e34d58;color:white}
-main{max-width:1150px;margin:auto;padding:25px 18px}
-.welcome{background:linear-gradient(120deg,#174b91,#263b68);padding:25px;border-radius:14px;margin-bottom:22px}
-.welcome h1{margin:0 0 8px}
-.muted{color:#b7c4d8}
-.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:15px;margin-bottom:25px}
-.stat{background:#19263b;padding:20px;border-radius:12px;border:1px solid #2b3b55}
-.stat p{color:#aebbd0;margin:0 0 12px}
-.stat h2{font-size:30px;margin:0}
-.panel{background:#19263b;padding:22px;border-radius:13px;margin-bottom:22px}
-.streams{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px}
-.stream{padding:16px;border-radius:10px;background:#26364e}
-.stream h3{margin:0 0 8px}
-.student{background:#26364e;padding:16px;border-radius:10px;margin-top:12px}
-.student p{color:#bdc9da;overflow-wrap:anywhere}
-.approve{background:#159b62;color:white}
-.reject{background:#d74747;color:white}
-#message{overflow-wrap:anywhere}
-.success{color:#61dfa0}
-.error{color:#ff7777}
-nav{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:22px}
-nav a{background:#24344d;color:#fff;text-decoration:none;padding:11px 15px;border-radius:8px}
-nav a:hover{background:#31517b}
-[hidden]{display:none!important}
+*{
+  box-sizing:border-box;
+  font-family:Arial,sans-serif;
+}
+
+body{
+  margin:0;
+  background:#080b12;
+  color:#fff;
+}
+
+/* HEADER */
+header{
+  background:#100d15;
+  padding:17px 5%;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:12px;
+  border-bottom:1px solid #7d142b;
+  box-shadow:0 3px 20px #a9003033;
+}
+
+header h2{
+  margin:0;
+  font-size:19px;
+  color:#ff4568;
+  text-shadow:0 0 12px #ff1744;
+  letter-spacing:1px;
+}
+
+button{
+  border:0;
+  padding:11px 15px;
+  border-radius:8px;
+  cursor:pointer;
+  font-weight:bold;
+  transition:.25s;
+}
+
+button:hover{
+  transform:translateY(-2px);
+  filter:brightness(1.2);
+}
+
+button:disabled{
+  opacity:.5;
+  cursor:not-allowed;
+}
+
+.logout{
+  background:#c5163d;
+  color:white;
+  box-shadow:0 0 12px #e91e6344;
+}
+
+main{
+  max-width:1150px;
+  margin:auto;
+  padding:25px 18px;
+}
+
+/* WELCOME */
+.welcome{
+  background:linear-gradient(125deg,#280b19,#160e19,#35101f);
+  padding:25px;
+  border-radius:14px;
+  margin-bottom:22px;
+  border:1px solid #b51c46;
+  box-shadow:0 0 18px #d5003f33,
+             inset 0 0 20px #8b123322;
+}
+
+.welcome h1{
+  margin:0 0 8px;
+  color:#ff5274;
+  text-shadow:0 0 13px #ff1744;
+  font-size:25px;
+}
+
+.welcome p{
+  margin:8px 0;
+}
+
+.muted{
+  color:#b9aeb8;
+}
+
+/* NAVIGATION */
+nav{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+  margin-bottom:22px;
+}
+
+nav a{
+  background:#1c111b;
+  color:#ff6684;
+  text-decoration:none;
+  padding:11px 15px;
+  border-radius:8px;
+  border:1px solid #7d1837;
+  font-size:14px;
+  transition:.25s;
+}
+
+nav a:hover{
+  background:#9e1237;
+  color:white;
+  box-shadow:0 0 15px #ff1744;
+}
+
+/* STATISTICS */
+.stats{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(145px,1fr));
+  gap:13px;
+  margin-bottom:25px;
+}
+
+.stat{
+  background:#15111b;
+  padding:18px;
+  border-radius:12px;
+  border:1px solid #642039;
+  box-shadow:0 0 12px #d5003f18;
+  transition:.25s;
+}
+
+.stat:hover{
+  border-color:#ff315d;
+  box-shadow:0 0 17px #ff174455;
+  transform:translateY(-3px);
+}
+
+.stat p{
+  color:#c1aeb8;
+  margin:0 0 12px;
+  font-size:13px;
+}
+
+.stat h2{
+  font-size:29px;
+  margin:0;
+  color:#ff4568;
+  text-shadow:0 0 10px #ff174477;
+}
+
+/* PANELS */
+.panel{
+  background:#12101a;
+  padding:21px;
+  border-radius:13px;
+  margin-bottom:22px;
+  border:1px solid #65203a;
+  box-shadow:0 0 15px #d5003f18;
+}
+
+.panel h2{
+  color:#ff5274;
+  margin-top:0;
+  font-size:19px;
+}
+
+/* STREAMS */
+.streams{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
+  gap:12px;
+}
+
+.stream{
+  padding:16px;
+  border-radius:10px;
+  background:#21131e;
+  border:1px solid #8a2043;
+}
+
+.stream h3{
+  margin:0 0 8px;
+  color:#ff6684;
+}
+
+.stream strong{
+  color:#eee0e7;
+  font-size:13px;
+}
+
+/* STUDENTS */
+.student{
+  background:#1b121c;
+  padding:16px;
+  border-radius:10px;
+  margin-top:12px;
+  border:1px solid #632039;
+  box-shadow:0 0 10px #d5003f15;
+}
+
+.student h3{
+  margin-top:0;
+  color:#ff6684;
+}
+
+.student p{
+  color:#c4b5bf;
+  overflow-wrap:anywhere;
+  font-size:13px;
+  line-height:1.6;
+}
+
+.student button{
+  margin:5px 7px 0 0;
+}
+
+.approve{
+  background:#128b58;
+  color:white;
+  box-shadow:0 0 10px #00d08433;
+}
+
+.reject{
+  background:#c5163d;
+  color:white;
+  box-shadow:0 0 10px #ff174433;
+}
+
+/* MESSAGES */
+#message{
+  overflow-wrap:anywhere;
+  padding:10px 0;
+}
+
+.success{
+  color:#61dfa0;
+}
+
+.error{
+  color:#ff718a;
+}
+
+[hidden]{
+  display:none!important;
+}
+
+@media(max-width:500px){
+  header{
+    padding:15px 4%;
+  }
+
+  header h2{
+    font-size:15px;
+  }
+
+  .welcome{
+    padding:20px;
+  }
+
+  .welcome h1{
+    font-size:21px;
+  }
+
+  .panel{
+    padding:16px;
+  }
+
+  .stat{
+    padding:15px;
+  }
+
+  .stat h2{
+    font-size:25px;
+  }
+
+  nav a{
+    padding:10px 12px;
+    font-size:13px;
+  }
+}
 </style>
 </head>
 
 <body>
 
 <header>
-<h2>MAGUNGA HIGH | ADMIN</h2>
-<button class="logout" id="logoutButton">Logout</button>
+  <h2>MAGUNGA HIGH | ADMIN</h2>
+  <button class="logout" id="logoutButton">Logout</button>
 </header>
 
 <main>
 
 <section class="welcome">
-<h1>Administration Dashboard</h1>
-<p id="adminName" class="muted">Checking administrator...</p>
-<p>Managing: <strong id="streamName">Loading...</strong></p>
+  <h1>Administration Dashboard</h1>
+  <p id="adminName" class="muted">Checking administrator...</p>
+  <p>Managing: <strong id="streamName">Loading...</strong></p>
 </section>
 
 <nav>
-<a href="admin.html">Dashboard</a>
-<a href="announcements.html">Announcements</a>
-<a href="index.html">Website Home</a>
+  <a href="admin.html">Dashboard</a>
+  <a href="announcements.html">Announcements</a>
+  <a href="index.html">Website Home</a>
 </nav>
 
 <section class="stats">
-<div class="stat">
-<p>Total Students</p>
-<h2 id="totalStudents">...</h2>
-</div>
-<div class="stat">
-<p>Approved Students</p>
-<h2 id="approvedStudents">...</h2>
-</div>
-<div class="stat">
-<p>Pending Registrations</p>
-<h2 id="pendingCount">...</h2>
-</div>
-<div class="stat">
-<p>Rejected Registrations</p>
-<h2 id="rejectedStudents">...</h2>
-</div>
+
+  <div class="stat">
+    <p>Total Students</p>
+    <h2 id="totalStudents">...</h2>
+  </div>
+
+  <div class="stat">
+    <p>Approved Students</p>
+    <h2 id="approvedStudents">...</h2>
+  </div>
+
+  <div class="stat">
+    <p>Pending Registrations</p>
+    <h2 id="pendingCount">...</h2>
+  </div>
+
+  <div class="stat">
+    <p>Rejected Registrations</p>
+    <h2 id="rejectedStudents">...</h2>
+  </div>
+
 </section>
 
 <section class="panel" id="streamPanel" hidden>
-<h2>Stream Overview</h2>
-<p class="muted">Student distribution across the five streams.</p>
-<div class="streams" id="streamStats"></div>
+  <h2>Stream Overview</h2>
+  <p class="muted">Student distribution across the five streams.</p>
+  <div class="streams" id="streamStats"></div>
 </section>
 
 <section class="panel">
-<h2>Pending Student Registrations</h2>
-<p class="muted">Review new student accounts.</p>
-<div id="pendingStudents">Loading registrations...</div>
+  <h2>Pending Student Registrations</h2>
+  <p class="muted">Review new student accounts.</p>
+  <div id="pendingStudents">Loading registrations...</div>
 </section>
 
 <section class="panel" id="superAdminPanel" hidden>
-<h2>Super Admin Controls</h2>
-<p class="muted">Full school administration access.</p>
-<p>Stream administrator management will be added next.</p>
+  <h2>Super Admin Controls</h2>
+  <p class="muted">Full school administration access.</p>
+  <p>Stream administrator management will be added next.</p>
 </section>
 
 <p id="message"></p>
@@ -105,22 +359,22 @@ nav a:hover{background:#31517b}
 import {auth,db} from "./assets/js/firebase.js";
 
 import {
-onAuthStateChanged,
-signOut
+  onAuthStateChanged,
+  signOut
 } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
 
 import {
-collection,
-query,
-where,
-getCountFromServer
+  collection,
+  query,
+  where,
+  getCountFromServer
 } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
 
 import {
-getAdminProfile,
-getPendingStudents,
-approveStudent,
-rejectStudent
+  getAdminProfile,
+  getPendingStudents,
+  approveStudent,
+  rejectStudent
 } from "./assets/js/admin.js";
 
 const $ = id => document.getElementById(id);
@@ -128,164 +382,249 @@ const $ = id => document.getElementById(id);
 let admin = null;
 
 const streams = [
-"Victors","Heroes","Winners","Champions","Archivers"
+  "Victors",
+  "Heroes",
+  "Winners",
+  "Champions",
+  "Archivers"
 ];
 
 onAuthStateChanged(auth, async user => {
-if(!user){
-location.href="login.html";
-return;
-}
 
-try{
-admin=await getAdminProfile();
+  if(!user){
+    location.href="login.html";
+    return;
+  }
 
-$("adminName").textContent="Administrator: "+(admin.name||user.email);
-$("streamName").textContent=
-admin.role==="superadmin"?"All Streams":admin.stream;
+  try{
 
-if(admin.role==="superadmin"){
-$("superAdminPanel").hidden=false;
-$("streamPanel").hidden=false;
-}
+    admin=await getAdminProfile();
 
-await loadStatistics();
-await loadPending();
+    $("adminName").textContent=
+      "Administrator: "+(admin.name||user.email);
 
-}catch(error){
-console.error(error);
-$("message").textContent=error.message;
-$("message").className="error";
-}
+    $("streamName").textContent=
+      admin.role==="superadmin"?"All Streams":admin.stream;
+
+    if(admin.role==="superadmin"){
+      $("superAdminPanel").hidden=false;
+      $("streamPanel").hidden=false;
+    }
+
+    await loadStatistics();
+    await loadPending();
+
+  }catch(error){
+
+    console.error(error);
+
+    $("message").textContent=error.message;
+    $("message").className="error";
+
+  }
+
 });
 
 function studentQuery(status,stream=null){
-const conditions=[where("status","==",status)];
 
-if(admin.role!=="superadmin"){
-conditions.push(where("stream","==",admin.stream));
-}else if(stream){
-conditions.push(where("stream","==",stream));
-}
+  const conditions=[
+    where("status","==",status)
+  ];
 
-return query(collection(db,"users"),...conditions);
+  if(admin.role!=="superadmin"){
+    conditions.push(
+      where("stream","==",admin.stream)
+    );
+  }else if(stream){
+    conditions.push(
+      where("stream","==",stream)
+    );
+  }
+
+  return query(
+    collection(db,"users"),
+    ...conditions
+  );
+
 }
 
 async function countStudents(status,stream=null){
-const result=await getCountFromServer(studentQuery(status,stream));
-return result.data().count;
+
+  const result=await getCountFromServer(
+    studentQuery(status,stream)
+  );
+
+  return result.data().count;
+
 }
 
 async function loadStatistics(){
-const [approved,pending,rejected]=await Promise.all([
-countStudents("approved"),
-countStudents("pending"),
-countStudents("rejected")
-]);
 
-$("approvedStudents").textContent=approved;
-$("pendingCount").textContent=pending;
-$("rejectedStudents").textContent=rejected;
-$("totalStudents").textContent=approved+pending+rejected;
+  const [approved,pending,rejected]=await Promise.all([
 
-if(admin.role==="superadmin"){
-$("streamStats").replaceChildren();
+    countStudents("approved"),
+    countStudents("pending"),
+    countStudents("rejected")
 
-for(const stream of streams){
-const count=await countStudents("approved",stream);
-const card=document.createElement("div");
-card.className="stream";
+  ]);
 
-const title=document.createElement("h3");
-title.textContent=stream;
+  $("approvedStudents").textContent=approved;
+  $("pendingCount").textContent=pending;
+  $("rejectedStudents").textContent=rejected;
 
-const number=document.createElement("strong");
-number.textContent=count+" approved students";
+  $("totalStudents").textContent=
+    approved+pending+rejected;
 
-card.append(title,number);
-$("streamStats").append(card);
-}
-}
+  if(admin.role==="superadmin"){
+
+    $("streamStats").replaceChildren();
+
+    for(const stream of streams){
+
+      const count=await countStudents("approved",stream);
+
+      const card=document.createElement("div");
+      card.className="stream";
+
+      const title=document.createElement("h3");
+      title.textContent=stream;
+
+      const number=document.createElement("strong");
+      number.textContent=count+" approved students";
+
+      card.append(title,number);
+
+      $("streamStats").append(card);
+
+    }
+
+  }
+
 }
 
 async function loadPending(){
-const container=$("pendingStudents");
-container.textContent="Loading registrations...";
 
-try{
-const students=await getPendingStudents();
-container.replaceChildren();
+  const container=$("pendingStudents");
 
-if(!students.length){
-container.textContent="No pending registrations.";
-return;
-}
+  container.textContent="Loading registrations...";
 
-students.forEach(student=>{
-const card=document.createElement("div");
-card.className="student";
+  try{
 
-const name=document.createElement("h3");
-name.textContent=student.name||"Unnamed student";
+    const students=await getPendingStudents();
 
-const details=document.createElement("p");
-details.textContent=
-(student.email||"No email")+" | Stream: "+(student.stream||"Unknown");
+    container.replaceChildren();
 
-const approve=document.createElement("button");
-approve.className="approve";
-approve.textContent="Approve";
+    if(!students.length){
+      container.textContent="No pending registrations.";
+      return;
+    }
 
-const reject=document.createElement("button");
-reject.className="reject";
-reject.textContent="Reject";
+    students.forEach(student=>{
 
-approve.onclick=()=>review(student.id,"approve",approve,reject);
-reject.onclick=()=>review(student.id,"reject",approve,reject);
+      const card=document.createElement("div");
+      card.className="student";
 
-card.append(name,details,approve,reject);
-container.append(card);
-});
+      const name=document.createElement("h3");
+      name.textContent=student.name||"Unnamed student";
 
-}catch(error){
-console.error(error);
-container.textContent="Could not load registrations: "+error.message;
-}
+      const details=document.createElement("p");
+
+      details.textContent=
+        (student.email||"No email")+
+        " | Stream: "+
+        (student.stream||"Unknown");
+
+      const approve=document.createElement("button");
+      approve.className="approve";
+      approve.textContent="Approve";
+
+      const reject=document.createElement("button");
+      reject.className="reject";
+      reject.textContent="Reject";
+
+      approve.onclick=()=>{
+        review(student.id,"approve",approve,reject);
+      };
+
+      reject.onclick=()=>{
+        review(student.id,"reject",approve,reject);
+      };
+
+      card.append(name,details,approve,reject);
+
+      container.append(card);
+
+    });
+
+  }catch(error){
+
+    console.error(error);
+
+    container.textContent=
+      "Could not load registrations: "+error.message;
+
+  }
+
 }
 
 async function review(id,action,approve,reject){
-if(!confirm(action==="approve"?"Approve this student?":"Reject this registration?"))return;
 
-approve.disabled=true;
-reject.disabled=true;
+  if(!confirm(
+    action==="approve"
+      ?"Approve this student?"
+      :"Reject this registration?"
+  ))return;
 
-try{
-if(action==="approve"){
-await approveStudent(id);
-$("message").textContent="Student approved successfully.";
-}else{
-await rejectStudent(id);
-$("message").textContent="Registration rejected.";
-}
+  approve.disabled=true;
+  reject.disabled=true;
 
-$("message").className="success";
+  try{
 
-await loadStatistics();
-await loadPending();
+    if(action==="approve"){
 
-}catch(error){
-console.error(error);
-$("message").textContent="Action failed: "+error.message;
-$("message").className="error";
-approve.disabled=false;
-reject.disabled=false;
-}
+      await approveStudent(id);
+
+      $("message").textContent=
+        "Student approved successfully.";
+
+    }else{
+
+      await rejectStudent(id);
+
+      $("message").textContent=
+        "Registration rejected.";
+
+    }
+
+    $("message").className="success";
+
+    await loadStatistics();
+    await loadPending();
+
+  }catch(error){
+
+    console.error(error);
+
+    $("message").textContent=
+      "Action failed: "+error.message;
+
+    $("message").className="error";
+
+    approve.disabled=false;
+    reject.disabled=false;
+
+  }
+
 }
 
 $("logoutButton").addEventListener("click",async()=>{
-await signOut(auth);
-location.href="login.html";
+
+  await signOut(auth);
+
+  location.href="login.html";
+
 });
+
 </script>
 
 </body>
