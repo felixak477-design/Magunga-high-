@@ -1,0 +1,289 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Stream Chat | The Magunga High</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      margin: 0;
+      background: #101522;
+      color: white;
+    }
+
+    header {
+      background: #1b2435;
+      padding: 18px;
+    }
+
+    header a {
+      color: #83b3ff;
+      text-decoration: none;
+    }
+
+    main {
+      max-width: 850px;
+      margin: auto;
+      padding: 20px;
+    }
+
+    .chat-box {
+      background: #1b2435;
+      border-radius: 12px;
+      padding: 18px;
+    }
+
+    #messages {
+      height: 420px;
+      overflow-y: auto;
+      padding: 10px;
+      background: #111a2a;
+      border-radius: 9px;
+      margin-bottom: 15px;
+    }
+
+    .message {
+      background: #263249;
+      padding: 12px;
+      border-radius: 9px;
+      margin-bottom: 10px;
+      overflow-wrap: anywhere;
+    }
+
+    .message strong {
+      color: #83b3ff;
+    }
+
+    .message small {
+      display: block;
+      color: #9eacc2;
+      margin-top: 6px;
+    }
+
+    form {
+      display: flex;
+      gap: 8px;
+    }
+
+    input {
+      flex: 1;
+      min-width: 0;
+      padding: 13px;
+      border: 1px solid #39465e;
+      border-radius: 8px;
+      background: #111a2a;
+      color: white;
+      font-size: 16px;
+    }
+
+    button {
+      padding: 12px 18px;
+      border: none;
+      border-radius: 8px;
+      background: #2878ff;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    button:disabled {
+      opacity: 0.6;
+    }
+
+    #status {
+      color: #ffbd75;
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <h2>The Magunga High</h2>
+  <a href="dashboard.html">← Back to Dashboard</a>
+</header>
+
+<main>
+  <h1>💬 Stream Chat</h1>
+  <p id="streamName">Loading your stream...</p>
+
+  <section class="chat-box">
+    <div id="messages" aria-live="polite">
+      Loading messages...
+    </div>
+
+    <form id="messageForm">
+      <input
+        id="messageInput"
+        type="text"
+        maxlength="1000"
+        placeholder="Write a message..."
+        required
+      >
+      <button id="sendButton" type="submit">Send</button>
+    </form>
+
+    <p id="status"></p>
+  </section>
+</main>
+
+<script type="module">
+  import { auth, db } from "./assets/js/firebase.js";
+
+  import {
+    onAuthStateChanged
+  } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
+
+  import {
+    collection,
+    doc,
+    getDoc,
+    addDoc,
+    query,
+    where,
+    onSnapshot,
+    serverTimestamp
+  } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
+
+  const messagesBox = document.getElementById("messages");
+  const messageForm = document.getElementById("messageForm");
+  const messageInput = document.getElementById("messageInput");
+  const sendButton = document.getElementById("sendButton");
+  const status = document.getElementById("status");
+  const streamName = document.getElementById("streamName");
+
+  let currentUser = null;
+  let currentStream = null;
+  let unsubscribe = null;
+
+  onAuthStateChanged(auth, async (user) => {
+    if (!user) {
+      window.location.href = "login.html";
+      return;
+    }
+
+    currentUser = user;
+
+    try {
+      const profile = await getDoc(doc(db, "users", user.uid));
+
+      if (!profile.exists() ||
+          profile.data().status !== "approved") {
+        window.location.href = "login.html";
+        return;
+      }
+
+      currentStream = profile.data().stream;
+      streamName.textContent = "Stream: " + currentStream;
+
+      loadMessages();
+
+    } catch (error) {
+      status.textContent = "Could not load your student profile.";
+      console.error(error);
+    }
+  });
+
+  function loadMessages() {
+    const messagesQuery = query(
+      collection(db, "messages"),
+      where("stream", "==", currentStream)
+    );
+
+    unsubscribe = onSnapshot(messagesQuery, (snapshot) => {
+      messagesBox.replaceChildren();
+
+      const messages = snapshot.docs.map(item => ({
+        id: item.id,
+        ...item.data()
+      }));
+
+      messages.sort((a, b) => {
+        const timeA = a.createdAt?.toMillis?.() || 0;
+        const timeB = b.createdAt?.toMillis?.() || 0;
+        return timeA - timeB;
+      });
+
+      if (messages.length === 0) {
+        messagesBox.textContent = "No messages yet. Start the conversation!";
+        return;
+      }
+
+      messages.forEach(item => {
+        const card = document.createElement("div");
+        card.className = "message";
+
+        const name = document.createElement("strong");
+        name.textContent = item.senderName || "Student";
+
+        const content = document.createElement("p");
+        content.textContent = item.text || "";
+
+        const time = document.createElement("small");
+        time.textContent = item.createdAt?.toDate
+          ? item.createdAt.toDate().toLocaleString()
+          : "Just now";
+
+        card.append(name, content, time);
+        messagesBox.appendChild(card);
+      });
+
+      messagesBox.scrollTop = messagesBox.scrollHeight;
+
+    }, (error) => {
+      status.textContent = "Unable to load chat messages.";
+      console.error(error);
+    });
+  }
+
+  messageForm.addEventListener("submit", async (event) => {
+    event.preventDefault();
+
+    const text = messageInput.value.trim();
+
+    if (!text || !currentUser || !currentStream) return;
+
+    sendButton.disabled = true;
+
+    try {
+      const profile = await getDoc(
+        doc(db, "users", currentUser.uid)
+      );
+
+      if (!profile.exists() ||
+          profile.data().status !== "approved") {
+        throw new Error("Your account is not approved.");
+      }
+
+      await addDoc(collection(db, "messages"), {
+        senderId: currentUser.uid,
+        senderName: profile.data().name || "Student",
+        stream: currentStream,
+        text: text,
+        createdAt: serverTimestamp()
+      });
+
+      messageInput.value = "";
+      status.textContent = "";
+
+    } catch (error) {
+      status.textContent = error.message || "Message could not be sent.";
+    } finally {
+      sendButton.disabled = false;
+    }
+  });
+
+  window.addEventListener("beforeunload", () => {
+    if (unsubscribe) unsubscribe();
+  });
+</script>
+
+</body>
+</html>
