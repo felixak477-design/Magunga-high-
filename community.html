@@ -2,185 +2,203 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Community | The Magunga High</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Member Directory | Magunga High</title>
 
-  <style>
-    * {
-      box-sizing: border-box;
-      font-family: Arial, sans-serif;
-    }
-
-    body {
-      margin: 0;
-      background: #101522;
-      color: white;
-    }
-
-    header {
-      background: #1b2435;
-      padding: 20px;
-    }
-
-    header a {
-      color: #83b3ff;
-      text-decoration: none;
-    }
-
-    main {
-      max-width: 1000px;
-      margin: auto;
-      padding: 22px;
-    }
-
-    .intro {
-      background: #1b2435;
-      padding: 22px;
-      border-radius: 12px;
-      margin-bottom: 20px;
-    }
-
-    .streams {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 15px;
-    }
-
-    .stream {
-      padding: 22px;
-      border-radius: 12px;
-      background: #1b2435;
-      border-left: 5px solid var(--stream-color);
-    }
-
-    .stream h3 {
-      margin-top: 0;
-    }
-
-    .victors { --stream-color: #2878ff; }
-    .heroes { --stream-color: #18a66a; }
-    .winners { --stream-color: #e5b323; }
-    .champions { --stream-color: #9865ee; }
-    .archivers { --stream-color: #e34c4c; }
-
-    .rules {
-      margin-top: 22px;
-      padding: 22px;
-      background: #1b2435;
-      border-radius: 12px;
-      line-height: 1.7;
-    }
-
-    #status {
-      color: #ffbd75;
-    }
-  </style>
+<style>
+*{box-sizing:border-box;font-family:Arial,sans-serif}
+body{margin:0;background:#101522;color:white}
+header{background:#1b2435;padding:18px;display:flex;justify-content:space-between;align-items:center}
+header a{color:white;text-decoration:none}
+main{max-width:950px;margin:auto;padding:20px}
+h1{margin-bottom:5px}
+.muted{color:#aab6c8}
+input,select{width:100%;padding:14px;margin:8px 0;background:#1b2435;color:white;border:1px solid #344158;border-radius:9px}
+.members{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:15px;margin-top:20px}
+.member{background:#1b2435;padding:18px;border-radius:13px;text-align:center}
+.avatar{width:85px;height:85px;border-radius:50%;object-fit:cover;background:#2878ff;margin:auto;display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:bold}
+.member h3{margin:12px 0 5px}
+.member p{color:#aab6c8;margin:6px}
+.stream{display:inline-block;background:#293b59;padding:6px 12px;border-radius:20px;font-size:12px}
+#message{color:#ffbd75;margin-top:15px}
+button{padding:11px 16px;background:#2878ff;color:white;border:0;border-radius:8px}
+</style>
 </head>
 
 <body>
 
 <header>
-  <h2>The Magunga High</h2>
-  <a href="dashboard.html">← Back to Dashboard</a>
+  <a href="dashboard.html"><strong>← Magunga High</strong></a>
+  <a href="dashboard.html">Dashboard</a>
 </header>
 
 <main>
+  <h1>👥 Member Directory</h1>
+  <p class="muted">Discover approved members of The Magunga High.</p>
 
-  <section class="intro">
-    <h1>👥 Student Community</h1>
-    <p>
-      Five streams. One school community.
-      Connect, learn and support one another.
-    </p>
-    <p id="status">Checking your account...</p>
-  </section>
+  <input id="search" type="search"
+    placeholder="Search by name or nickname...">
 
-  <section class="streams">
+  <select id="streamFilter">
+    <option value="all">All streams</option>
+    <option value="Victors">Victors</option>
+    <option value="Heroes">Heroes</option>
+    <option value="Winners">Winners</option>
+    <option value="Champions">Champions</option>
+    <option value="Archivers">Archivers</option>
+  </select>
 
-    <article class="stream victors">
-      <h3>Victors</h3>
-      <p>Blue stream</p>
-      <p>Focused on teamwork and achievement.</p>
-    </article>
-
-    <article class="stream heroes">
-      <h3>Heroes</h3>
-      <p>Green stream</p>
-      <p>Focused on courage and cooperation.</p>
-    </article>
-
-    <article class="stream winners">
-      <h3>Winners</h3>
-      <p>Gold stream</p>
-      <p>Focused on effort and success.</p>
-    </article>
-
-    <article class="stream champions">
-      <h3>Champions</h3>
-      <p>Purple stream</p>
-      <p>Focused on discipline and excellence.</p>
-    </article>
-
-    <article class="stream archivers">
-      <h3>Archivers</h3>
-      <p>Red stream</p>
-      <p>Focused on progress and determination.</p>
-    </article>
-
-  </section>
-
-  <section class="rules">
-    <h2>Community Guidelines</h2>
-    <ul>
-      <li>Respect every member, regardless of stream.</li>
-      <li>Keep conversations friendly and constructive.</li>
-      <li>Do not share another student's private information.</li>
-      <li>Avoid spam and unnecessary arguments.</li>
-      <li>Use the community to support learning.</li>
-    </ul>
-  </section>
-
+  <p id="message">Loading members...</p>
+  <section class="members" id="members"></section>
 </main>
 
 <script type="module">
-  import { auth, db } from "./assets/js/firebase.js";
+import { auth, db } from "./assets/js/firebase.js";
 
-  import {
-    onAuthStateChanged
-  } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
+import {
+  onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
 
-  import {
-    doc,
-    getDoc
-  } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
+import {
+  collection,
+  getDoc,
+  doc,
+  getDocs,
+  query,
+  where
+} from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
 
-  const status = document.getElementById("status");
+const membersBox = document.getElementById("members");
+const message = document.getElementById("message");
+const search = document.getElementById("search");
+const streamFilter = document.getElementById("streamFilter");
 
-  onAuthStateChanged(auth, async (user) => {
-    if (!user) {
-      window.location.href = "login.html";
+let members = [];
+
+function makeMemberCard(member) {
+  const card = document.createElement("article");
+  card.className = "member";
+
+  const avatar = document.createElement("div");
+  avatar.className = "avatar";
+
+  const photo = member.photoURL || member.photoUrl || "";
+
+  if (/^https?:\/\//i.test(photo)) {
+    const img = document.createElement("img");
+    img.src = photo;
+    img.alt = "Profile picture";
+    img.className = "avatar";
+    img.onerror = () => {
+      img.replaceWith(avatar);
+      avatar.textContent = (member.nickname || member.name || "M")
+        .charAt(0).toUpperCase();
+    };
+    avatar.replaceWith(img);
+  } else {
+    avatar.textContent = (member.nickname || member.name || "M")
+      .charAt(0).toUpperCase();
+    card.appendChild(avatar);
+  }
+
+  const heading = document.createElement("h3");
+  heading.textContent = member.nickname || member.name || "Member";
+
+  const realName = document.createElement("p");
+  realName.textContent = member.nickname && member.name
+    ? member.name
+    : "";
+
+  const stream = document.createElement("span");
+  stream.className = "stream";
+  stream.textContent = member.stream || "No stream";
+
+  card.append(heading, realName, stream);
+  return card;
+}
+
+function displayMembers() {
+  membersBox.replaceChildren();
+
+  const term = search.value.trim().toLowerCase();
+  const selectedStream = streamFilter.value;
+
+  const filtered = members.filter(member => {
+    const name = (member.name || "").toLowerCase();
+    const nickname = (member.nickname || "").toLowerCase();
+    const stream = (member.stream || "").toLowerCase();
+
+    const matchesSearch =
+      name.includes(term) || nickname.includes(term);
+
+    const matchesStream =
+      selectedStream === "all" ||
+      stream === selectedStream.toLowerCase();
+
+    return matchesSearch && matchesStream;
+  });
+
+  if (!filtered.length) {
+    message.textContent = "No matching members found.";
+    return;
+  }
+
+  message.textContent = filtered.length + " approved member(s) found.";
+
+  filtered.forEach(member => {
+    membersBox.appendChild(makeMemberCard(member));
+  });
+}
+
+async function loadMembers() {
+  try {
+    const result = await getDocs(
+      query(
+        collection(db, "users"),
+        where("status", "==", "approved")
+      )
+    );
+
+    members = result.docs.map(item => ({
+      id: item.id,
+      ...item.data()
+    }));
+
+    displayMembers();
+
+  } catch (error) {
+    console.error(error);
+    message.textContent =
+      "Unable to load members. Check your Firestore security rules.";
+  }
+}
+
+onAuthStateChanged(auth, async user => {
+  if (!user) {
+    location.href = "login.html";
+    return;
+  }
+
+  try {
+    const profile = await getDoc(doc(db, "users", user.uid));
+
+    if (!profile.exists() ||
+        profile.data().status !== "approved") {
+      location.href = "login.html";
       return;
     }
 
-    try {
-      const profile = await getDoc(doc(db, "users", user.uid));
+    loadMembers();
 
-      if (!profile.exists() ||
-          profile.data().status !== "approved") {
-        window.location.href = "login.html";
-        return;
-      }
+  } catch (error) {
+    console.error(error);
+    message.textContent = "Unable to verify your account.";
+  }
+});
 
-      status.textContent =
-        "Welcome, " + (profile.data().name || "Student") +
-        " | Your stream: " + profile.data().stream;
-
-    } catch (error) {
-      status.textContent = "Unable to verify your account.";
-      console.error(error);
-    }
-  });
+search.addEventListener("input", displayMembers);
+streamFilter.addEventListener("change", displayMembers);
 </script>
 
 </body>
