@@ -64,11 +64,72 @@ main {
   box-shadow: 0 0 10px rgba(255,190,60,.12);
 }
 
-.welcome h1 {
-  margin: 0 0 6px;
+.profile-heading {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.profile-link {
+  text-decoration: none;
+  display: block;
+  flex-shrink: 0;
+}
+
+.profile-avatar {
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #ffd36a;
+  box-shadow: 0 0 12px rgba(255,190,60,.4);
+  background: #302511;
+}
+
+.profile-initial {
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg,#d6a83e,#755019);
+  color: #fff2c9;
+  font-size: 23px;
+  font-weight: bold;
+  border: 2px solid #ffd36a;
+  box-shadow: 0 0 12px rgba(255,190,60,.4);
+}
+
+.profile-details {
+  min-width: 0;
+}
+
+.profile-details h1 {
+  margin: 0 0 5px;
   color: #ffdc87;
-  font-size: 21px;
+  font-size: 19px;
   text-shadow: 0 0 9px rgba(255,190,60,.3);
+  overflow-wrap: anywhere;
+}
+
+.profile-nickname {
+  color: #c5a75f;
+  font-size: 11px;
+  margin: 0;
+}
+
+.view-profile {
+  display: inline-block;
+  color: #ffd36a;
+  font-size: 10px;
+  margin-top: 5px;
+  text-decoration: none;
+}
+
+.view-profile:hover {
+  text-decoration: underline;
 }
 
 .welcome p {
@@ -172,11 +233,43 @@ footer {
 <main>
 
   <section class="welcome">
-    <h1 id="welcomeName">Welcome, Student</h1>
+
+    <div class="profile-heading">
+
+      <a href="profile.html" class="profile-link"
+         title="View your profile">
+
+        <img
+          id="dashboardPhoto"
+          class="profile-avatar"
+          src=""
+          alt="Profile picture"
+          style="display:none"
+        >
+
+        <div id="profileInitial" class="profile-initial">
+          ?
+        </div>
+
+      </a>
+
+      <div class="profile-details">
+        <h1 id="welcomeName">Welcome, Student</h1>
+        <p class="profile-nickname" id="profileNickname"></p>
+        <a href="profile.html" class="view-profile">
+          View your profile →
+        </a>
+      </div>
+
+    </div>
+
     <p>Your student community dashboard.</p>
     <p>Your stream:</p>
+
     <span class="stream" id="streamName">Loading...</span>
+
     <p id="statusMessage"></p>
+
   </section>
 
   <section class="cards">
@@ -222,6 +315,7 @@ footer {
     </div>
 
   </section>
+
 </main>
 
 <footer>
@@ -245,6 +339,35 @@ import {
 const welcomeName = document.getElementById("welcomeName");
 const streamName = document.getElementById("streamName");
 const statusMessage = document.getElementById("statusMessage");
+
+const dashboardPhoto = document.getElementById("dashboardPhoto");
+const profileInitial = document.getElementById("profileInitial");
+const profileNickname = document.getElementById("profileNickname");
+
+function showDashboardPhoto(photoURL, name) {
+
+  const initial = (name || "S").trim().charAt(0).toUpperCase();
+
+  profileInitial.textContent = initial || "S";
+
+  if (photoURL && /^https:\/\//i.test(photoURL)) {
+
+    dashboardPhoto.src = photoURL;
+    dashboardPhoto.style.display = "block";
+    profileInitial.style.display = "none";
+
+    dashboardPhoto.onerror = () => {
+      dashboardPhoto.style.display = "none";
+      profileInitial.style.display = "flex";
+    };
+
+  } else {
+
+    dashboardPhoto.style.display = "none";
+    profileInitial.style.display = "flex";
+
+  }
+}
 
 onAuthStateChanged(auth, async (user) => {
 
@@ -271,11 +394,18 @@ onAuthStateChanged(auth, async (user) => {
       return;
     }
 
-    welcomeName.textContent =
-      "Welcome, " + (data.name || "Student");
+    const studentName = data.name || "Student";
+    const nickname = data.nickname || "";
+
+    welcomeName.textContent = "Welcome, " + studentName;
+
+    profileNickname.textContent =
+      nickname ? "@" + nickname : "";
 
     streamName.textContent =
       data.stream || "Not assigned";
+
+    showDashboardPhoto(data.photoURL, nickname || studentName);
 
   } catch (error) {
 
