@@ -141,7 +141,7 @@ input{
  font-size:13px;
 }
 
-/* PRIVATE CHAT FULL SCREEN */
+/* WHATSAPP-STYLE PRIVATE CHAT */
 
 #privateScreen{
  display:none;
@@ -492,6 +492,8 @@ function loadGroup(){
 }
 
 
+// LOAD MEMBERS FROM PUBLIC PROFILES
+
 async function loadMembers(){
 
  if(membersLoaded){
@@ -502,7 +504,7 @@ async function loadMembers(){
  status("Loading approved members...");
 
  const result=await getDocs(query(
-  collection(db,"users"),
+  collection(db,"publicProfiles"),
   where("status","==","approved")
  ));
 
@@ -639,8 +641,6 @@ async function openPrivateChat(member){
 
  try{
 
-  // Both UIDs create one shared conversation ID.
-
   const participants=[
    user.uid,
    member.id
@@ -652,8 +652,6 @@ async function openPrivateChat(member){
 
   const chatRef=doc(db,"privateChats",chatId);
 
-  // Create the conversation if it does not exist.
-
   const chatSnapshot=await getDoc(chatRef);
 
   if(!chatSnapshot.exists()){
@@ -663,9 +661,16 @@ async function openPrivateChat(member){
     createdAt:serverTimestamp()
    });
 
-  }
+  }else{
 
-  // Listen to this conversation's messages.
+   const existing=chatSnapshot.data().participants||[];
+
+   if(!existing.includes(user.uid)||
+      !existing.includes(member.id)){
+    throw new Error("This conversation is unavailable.");
+   }
+
+  }
 
   const messagesRef=collection(
    db,
