@@ -2,308 +2,290 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin Dashboard | The Magunga High</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Dashboard | Magunga High</title>
 
-  <style>
-    * {
-      box-sizing: border-box;
-      font-family: Arial, sans-serif;
-    }
-
-    body {
-      margin: 0;
-      background: #101522;
-      color: white;
-    }
-
-    header {
-      padding: 18px;
-      background: #1b2435;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 12px;
-    }
-
-    main {
-      max-width: 1000px;
-      margin: auto;
-      padding: 22px;
-    }
-
-    .panel {
-      background: #1b2435;
-      padding: 22px;
-      border-radius: 12px;
-      margin-bottom: 20px;
-    }
-
-    .stream-label {
-      display: inline-block;
-      background: #2878ff;
-      padding: 8px 14px;
-      border-radius: 20px;
-    }
-
-    .student {
-      background: #263249;
-      padding: 16px;
-      border-radius: 9px;
-      margin-top: 12px;
-    }
-
-    button {
-      padding: 10px 15px;
-      border: none;
-      border-radius: 7px;
-      cursor: pointer;
-      font-weight: bold;
-      margin: 5px 5px 0 0;
-    }
-
-    button:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-    }
-
-    .approve {
-      background: #159b62;
-      color: white;
-    }
-
-    .reject, .logout {
-      background: #d74747;
-      color: white;
-    }
-
-    .muted {
-      color: #b7c2d4;
-    }
-
-    #message {
-      color: #ffbd75;
-      overflow-wrap: anywhere;
-    }
-
-    .success {
-      color: #60d69b;
-    }
-
-    .error {
-      color: #ff7777;
-    }
-  </style>
+<style>
+*{box-sizing:border-box;font-family:Arial,sans-serif}
+body{margin:0;background:#0d1422;color:#fff}
+header{background:#18243a;padding:18px 5%;display:flex;justify-content:space-between;align-items:center;gap:12px}
+header h2{margin:0;font-size:20px}
+button{border:0;padding:11px 15px;border-radius:7px;cursor:pointer;font-weight:bold}
+.logout{background:#e34d58;color:white}
+main{max-width:1150px;margin:auto;padding:25px 18px}
+.welcome{background:linear-gradient(120deg,#174b91,#263b68);padding:25px;border-radius:14px;margin-bottom:22px}
+.welcome h1{margin:0 0 8px}
+.muted{color:#b7c4d8}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:15px;margin-bottom:25px}
+.stat{background:#19263b;padding:20px;border-radius:12px;border:1px solid #2b3b55}
+.stat p{color:#aebbd0;margin:0 0 12px}
+.stat h2{font-size:30px;margin:0}
+.panel{background:#19263b;padding:22px;border-radius:13px;margin-bottom:22px}
+.streams{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px}
+.stream{padding:16px;border-radius:10px;background:#26364e}
+.stream h3{margin:0 0 8px}
+.student{background:#26364e;padding:16px;border-radius:10px;margin-top:12px}
+.student p{color:#bdc9da;overflow-wrap:anywhere}
+.approve{background:#159b62;color:white}
+.reject{background:#d74747;color:white}
+#message{overflow-wrap:anywhere}
+.success{color:#61dfa0}
+.error{color:#ff7777}
+nav{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:22px}
+nav a{background:#24344d;color:#fff;text-decoration:none;padding:11px 15px;border-radius:8px}
+nav a:hover{background:#31517b}
+[hidden]{display:none!important}
+</style>
 </head>
 
 <body>
 
 <header>
-  <h2>Magunga High Administration</h2>
-  <button class="logout" id="logoutButton">Logout</button>
+<h2>MAGUNGA HIGH | ADMIN</h2>
+<button class="logout" id="logoutButton">Logout</button>
 </header>
 
 <main>
 
-  <section class="panel">
-    <h1>Admin Dashboard</h1>
-    <p id="adminName" class="muted">Checking administrator...</p>
-    <p>Assigned stream:</p>
-    <span id="streamName" class="stream-label">Loading...</span>
-    <p id="message"></p>
-  </section>
+<section class="welcome">
+<h1>Administration Dashboard</h1>
+<p id="adminName" class="muted">Checking administrator...</p>
+<p>Managing: <strong id="streamName">Loading...</strong></p>
+</section>
 
-  <section class="panel">
-    <h2>Pending Student Registrations</h2>
-    <p class="muted">Review and approve or reject new registrations.</p>
-    <div id="pendingStudents">Loading registrations...</div>
-  </section>
+<nav>
+<a href="admin.html">Dashboard</a>
+<a href="announcements.html">Announcements</a>
+<a href="index.html">Website Home</a>
+</nav>
 
-  <section class="panel" id="superAdminPanel" hidden>
-    <h2>Super Admin Controls</h2>
-    <p class="muted">
-      Super Admin can manage all five streams and assign stream administrators.
-    </p>
-    <p>Stream management tools will be added in a later step.</p>
-  </section>
+<section class="stats">
+<div class="stat">
+<p>Total Students</p>
+<h2 id="totalStudents">...</h2>
+</div>
+<div class="stat">
+<p>Approved Students</p>
+<h2 id="approvedStudents">...</h2>
+</div>
+<div class="stat">
+<p>Pending Registrations</p>
+<h2 id="pendingCount">...</h2>
+</div>
+<div class="stat">
+<p>Rejected Registrations</p>
+<h2 id="rejectedStudents">...</h2>
+</div>
+</section>
+
+<section class="panel" id="streamPanel" hidden>
+<h2>Stream Overview</h2>
+<p class="muted">Student distribution across the five streams.</p>
+<div class="streams" id="streamStats"></div>
+</section>
+
+<section class="panel">
+<h2>Pending Student Registrations</h2>
+<p class="muted">Review new student accounts.</p>
+<div id="pendingStudents">Loading registrations...</div>
+</section>
+
+<section class="panel" id="superAdminPanel" hidden>
+<h2>Super Admin Controls</h2>
+<p class="muted">Full school administration access.</p>
+<p>Stream administrator management will be added next.</p>
+</section>
+
+<p id="message"></p>
 
 </main>
 
 <script type="module">
-  import { auth } from "./assets/js/firebase.js";
+import {auth,db} from "./assets/js/firebase.js";
 
-  import {
-    onAuthStateChanged,
-    signOut
-  } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
+import {
+onAuthStateChanged,
+signOut
+} from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
 
-  import {
-    getAdminProfile,
-    getPendingStudents,
-    approveStudent,
-    rejectStudent
-  } from "./assets/js/admin.js";
+import {
+collection,
+query,
+where,
+getCountFromServer
+} from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
 
-  const adminName = document.getElementById("adminName");
-  const streamName = document.getElementById("streamName");
-  const pendingStudents = document.getElementById("pendingStudents");
-  const message = document.getElementById("message");
-  const superAdminPanel = document.getElementById("superAdminPanel");
-  const logoutButton = document.getElementById("logoutButton");
+import {
+getAdminProfile,
+getPendingStudents,
+approveStudent,
+rejectStudent
+} from "./assets/js/admin.js";
 
-  let currentAdmin = null;
+const $ = id => document.getElementById(id);
 
-  onAuthStateChanged(auth, async (user) => {
-    if (!user) {
-      window.location.href = "login.html";
-      return;
-    }
+let admin = null;
 
-    try {
-      currentAdmin = await getAdminProfile();
+const streams = [
+"Victors","Heroes","Winners","Champions","Archivers"
+];
 
-      adminName.textContent =
-        "Administrator: " + (currentAdmin.name || user.email);
+onAuthStateChanged(auth, async user => {
+if(!user){
+location.href="login.html";
+return;
+}
 
-      streamName.textContent =
-        currentAdmin.role === "superadmin"
-          ? "All Streams"
-          : currentAdmin.stream;
+try{
+admin=await getAdminProfile();
 
-      if (currentAdmin.role === "superadmin") {
-        superAdminPanel.hidden = false;
-      }
+$("adminName").textContent="Administrator: "+(admin.name||user.email);
+$("streamName").textContent=
+admin.role==="superadmin"?"All Streams":admin.stream;
 
-      await loadPendingStudents();
+if(admin.role==="superadmin"){
+$("superAdminPanel").hidden=false;
+$("streamPanel").hidden=false;
+}
 
-    } catch (error) {
-      console.error(error);
-      message.textContent = error.message || "Unable to load dashboard.";
-      window.location.href = "login.html";
-    }
-  });
+await loadStatistics();
+await loadPending();
 
-  async function loadPendingStudents() {
-    pendingStudents.textContent = "Loading registrations...";
+}catch(error){
+console.error(error);
+$("message").textContent=error.message;
+$("message").className="error";
+}
+});
 
-    try {
-      const students = await getPendingStudents();
+function studentQuery(status,stream=null){
+const conditions=[where("status","==",status)];
 
-      pendingStudents.replaceChildren();
+if(admin.role!=="superadmin"){
+conditions.push(where("stream","==",admin.stream));
+}else if(stream){
+conditions.push(where("stream","==",stream));
+}
 
-      if (students.length === 0) {
-        pendingStudents.textContent = "No pending registrations.";
-        return;
-      }
+return query(collection(db,"users"),...conditions);
+}
 
-      students.forEach((student) => {
-        const card = document.createElement("div");
-        card.className = "student";
+async function countStudents(status,stream=null){
+const result=await getCountFromServer(studentQuery(status,stream));
+return result.data().count;
+}
 
-        const name = document.createElement("h3");
-        name.textContent = student.name || "Unnamed student";
+async function loadStatistics(){
+const [approved,pending,rejected]=await Promise.all([
+countStudents("approved"),
+countStudents("pending"),
+countStudents("rejected")
+]);
 
-        const details = document.createElement("p");
-        details.className = "muted";
-        details.textContent =
-          (student.email || "No email") +
-          " | Stream: " + (student.stream || "Unknown");
+$("approvedStudents").textContent=approved;
+$("pendingCount").textContent=pending;
+$("rejectedStudents").textContent=rejected;
+$("totalStudents").textContent=approved+pending+rejected;
 
-        const approveButton = document.createElement("button");
-        approveButton.className = "approve";
-        approveButton.textContent = "Approve";
+if(admin.role==="superadmin"){
+$("streamStats").replaceChildren();
 
-        const rejectButton = document.createElement("button");
-        rejectButton.className = "reject";
-        rejectButton.textContent = "Reject";
+for(const stream of streams){
+const count=await countStudents("approved",stream);
+const card=document.createElement("div");
+card.className="stream";
 
-        approveButton.addEventListener("click", async () => {
-          await reviewStudent(
-            student.id,
-            "approve",
-            approveButton,
-            rejectButton
-          );
-        });
+const title=document.createElement("h3");
+title.textContent=stream;
 
-        rejectButton.addEventListener("click", async () => {
-          await reviewStudent(
-            student.id,
-            "reject",
-            approveButton,
-            rejectButton
-          );
-        });
+const number=document.createElement("strong");
+number.textContent=count+" approved students";
 
-        card.append(
-          name,
-          details,
-          approveButton,
-          rejectButton
-        );
+card.append(title,number);
+$("streamStats").append(card);
+}
+}
+}
 
-        pendingStudents.appendChild(card);
-      });
+async function loadPending(){
+const container=$("pendingStudents");
+container.textContent="Loading registrations...";
 
-    } catch (error) {
-      console.error(error);
-      pendingStudents.textContent =
-        "Could not load registrations: " + error.message;
-    }
-  }
+try{
+const students=await getPendingStudents();
+container.replaceChildren();
 
-  async function reviewStudent(
-    studentId,
-    action,
-    approveButton,
-    rejectButton
-  ) {
-    const confirmed = confirm(
-      action === "approve"
-        ? "Approve this student's registration?"
-        : "Reject this student's registration?"
-    );
+if(!students.length){
+container.textContent="No pending registrations.";
+return;
+}
 
-    if (!confirmed) return;
+students.forEach(student=>{
+const card=document.createElement("div");
+card.className="student";
 
-    approveButton.disabled = true;
-    rejectButton.disabled = true;
+const name=document.createElement("h3");
+name.textContent=student.name||"Unnamed student";
 
-    message.textContent = "Processing registration...";
-    message.className = "";
+const details=document.createElement("p");
+details.textContent=
+(student.email||"No email")+" | Stream: "+(student.stream||"Unknown");
 
-    try {
-      if (action === "approve") {
-        await approveStudent(studentId);
-        message.textContent = "Student approved successfully.";
-      } else {
-        await rejectStudent(studentId);
-        message.textContent = "Student registration rejected.";
-      }
+const approve=document.createElement("button");
+approve.className="approve";
+approve.textContent="Approve";
 
-      message.className = "success";
+const reject=document.createElement("button");
+reject.className="reject";
+reject.textContent="Reject";
 
-      await loadPendingStudents();
+approve.onclick=()=>review(student.id,"approve",approve,reject);
+reject.onclick=()=>review(student.id,"reject",approve,reject);
 
-    } catch (error) {
-      console.error(error);
+card.append(name,details,approve,reject);
+container.append(card);
+});
 
-      message.textContent =
-        "Action failed: " + error.message;
+}catch(error){
+console.error(error);
+container.textContent="Could not load registrations: "+error.message;
+}
+}
 
-      message.className = "error";
+async function review(id,action,approve,reject){
+if(!confirm(action==="approve"?"Approve this student?":"Reject this registration?"))return;
 
-      approveButton.disabled = false;
-      rejectButton.disabled = false;
-    }
-  }
+approve.disabled=true;
+reject.disabled=true;
 
-  logoutButton.addEventListener("click", async () => {
-    await signOut(auth);
-    window.location.href = "login.html";
-  });
+try{
+if(action==="approve"){
+await approveStudent(id);
+$("message").textContent="Student approved successfully.";
+}else{
+await rejectStudent(id);
+$("message").textContent="Registration rejected.";
+}
+
+$("message").className="success";
+
+await loadStatistics();
+await loadPending();
+
+}catch(error){
+console.error(error);
+$("message").textContent="Action failed: "+error.message;
+$("message").className="error";
+approve.disabled=false;
+reject.disabled=false;
+}
+}
+
+$("logoutButton").addEventListener("click",async()=>{
+await signOut(auth);
+location.href="login.html";
+});
 </script>
 
 </body>
