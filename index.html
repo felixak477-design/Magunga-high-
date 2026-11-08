@@ -5,82 +5,277 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#101827">
+<meta name="description" content="The Magunga High student portal. Access student accounts, school announcements, discussions and Form 4 learning materials.">
+
 <title>The Magunga High | Student Portal</title>
+
 <style>
-*{box-sizing:border-box}
+*{
+ box-sizing:border-box;
+}
+
 body{
- margin:0;min-height:100vh;font-family:Arial,sans-serif;
+ margin:0;
+ min-height:100vh;
+ font-family:Arial,sans-serif;
  background:linear-gradient(145deg,#101827,#14243d);
- color:white;display:flex;flex-direction:column
+ color:white;
+ display:flex;
+ flex-direction:column;
 }
+
 header{
- padding:20px 7%;background:#121c30;
+ padding:20px 7%;
+ background:#121c30;
  border-bottom:1px solid #26344b;
- font-weight:bold;color:#8bbcff;letter-spacing:1px
+ font-weight:bold;
+ color:#8bbcff;
+ letter-spacing:1px;
 }
+
 main{
- width:min(900px,92%);margin:auto;padding:55px 0;
- text-align:center
+ width:min(950px,92%);
+ margin:auto;
+ padding:55px 0;
+ text-align:center;
 }
-.tag{color:#8bbcff;letter-spacing:2px;font-size:12px;font-weight:bold}
-h1{font-size:clamp(36px,7vw,62px);line-height:1.1;margin:18px 0}
-h1 span{color:#8bbcff}
+
+.tag{
+ color:#8bbcff;
+ letter-spacing:2px;
+ font-size:12px;
+ font-weight:bold;
+}
+
+h1{
+ font-size:clamp(36px,7vw,62px);
+ line-height:1.1;
+ margin:18px 0;
+}
+
+h1 span{
+ color:#8bbcff;
+}
+
 .intro{
- color:#b8c5d9;max-width:600px;
- margin:0 auto 30px;line-height:1.7
+ color:#b8c5d9;
+ max-width:620px;
+ margin:0 auto 30px;
+ line-height:1.8;
 }
+
 .actions{
- display:flex;justify-content:center;gap:14px;flex-wrap:wrap
+ display:flex;
+ justify-content:center;
+ gap:14px;
+ flex-wrap:wrap;
 }
+
 .btn{
- display:inline-block;min-width:155px;padding:14px 22px;
- border-radius:9px;text-decoration:none;font-weight:bold
+ display:inline-block;
+ min-width:155px;
+ padding:15px 22px;
+ border-radius:9px;
+ text-decoration:none;
+ font-weight:bold;
+ transition:0.2s;
 }
-.login{background:#2878ff;color:white}
-.register{background:#1b2b45;color:white;border:1px solid #6384b5}
+
+.btn:hover{
+ transform:translateY(-3px);
+ filter:brightness(1.12);
+}
+
+.login{
+ background:#2878ff;
+ color:white;
+}
+
+.register{
+ background:#1b2b45;
+ color:white;
+ border:1px solid #6384b5;
+}
+
+.notes{
+ background:#176b54;
+ color:white;
+ border:1px solid #36a987;
+}
+
 .streams{
- margin-top:48px;display:grid;
- grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px
+ margin-top:48px;
+ display:grid;
+ grid-template-columns:repeat(auto-fit,minmax(130px,1fr));
+ gap:12px;
 }
+
 .stream{
- padding:16px 10px;border-radius:10px;
- background:#17243a;border:1px solid #34445e
+ padding:18px 10px;
+ border-radius:10px;
+ background:#17243a;
+ border:1px solid #34445e;
 }
-.stream p{margin:5px 0 0;color:#aebbd0;font-size:12px}
-footer{text-align:center;padding:22px;color:#8e9db4;font-size:13px}
+
+.stream p{
+ margin:6px 0 0;
+ color:#aebbd0;
+ font-size:12px;
+}
+
+.stream:nth-child(1){
+ border-top:3px solid #2878ff;
+}
+
+.stream:nth-child(2){
+ border-top:3px solid #20b66b;
+}
+
+.stream:nth-child(3){
+ border-top:3px solid #e8b83e;
+}
+
+.stream:nth-child(4){
+ border-top:3px solid #9a65e8;
+}
+
+.stream:nth-child(5){
+ border-top:3px solid #e34d4d;
+}
+
+.resource{
+ margin:45px auto 0;
+ max-width:700px;
+ padding:24px;
+ background:#17243a;
+ border:1px solid #34445e;
+ border-radius:14px;
+}
+
+.resource h2{
+ margin-top:0;
+}
+
+.resource p{
+ color:#b8c5d9;
+ line-height:1.7;
+}
+
+.resource a{
+ color:#8bbcff;
+ text-decoration:none;
+ font-weight:bold;
+}
+
+footer{
+ text-align:center;
+ padding:22px;
+ color:#8e9db4;
+ font-size:13px;
+ border-top:1px solid #26344b;
+}
+
+@media(max-width:480px){
+ main{
+  padding:40px 0;
+ }
+ .btn{
+  width:100%;
+ }
+}
 </style>
 </head>
+
 <body>
 
-<header>THE MAGUNGA HIGH</header>
+<header>
+ THE MAGUNGA HIGH
+</header>
 
 <main>
- <div class="tag">ONE SCHOOL · FIVE STREAMS · ONE COMMUNITY</div>
 
- <h1>Welcome to<br><span>The Magunga High</span></h1>
+ <div class="tag">
+  ONE SCHOOL · FIVE STREAMS · ONE COMMUNITY
+ </div>
+
+ <h1>
+  Welcome to<br>
+  <span>The Magunga High</span>
+ </h1>
 
  <p class="intro">
- Your student community portal. Sign in to access your stream,
- announcements, learning materials and student discussions.
- New here? Create your student account to get started.
+  Your student community portal. Sign in to access your
+  stream, school announcements, learning materials and
+  student discussions. New here? Create your student
+  account to get started.
  </p>
 
  <div class="actions">
-  <a class="btn login" href="login.html">Student Login</a>
-  <a class="btn register" href="register.html">Create Account</a>
+
+  <a class="btn login" href="login.html">
+   Student Login
+  </a>
+
+  <a class="btn register" href="register.html">
+   Create Account
+  </a>
+
+  <a class="btn notes" href="notes.html">
+   Form 4 Notes
+  </a>
+
  </div>
 
  <div class="streams">
-  <div class="stream"><strong>Victors</strong><p>Blue stream</p></div>
-  <div class="stream"><strong>Heroes</strong><p>Green stream</p></div>
-  <div class="stream"><strong>Winners</strong><p>Gold stream</p></div>
-  <div class="stream"><strong>Champions</strong><p>Purple stream</p></div>
-  <div class="stream"><strong>Archivers</strong><p>Red stream</p></div>
+
+  <div class="stream">
+   <strong>Victors</strong>
+   <p>Blue Stream</p>
+  </div>
+
+  <div class="stream">
+   <strong>Heroes</strong>
+   <p>Green Stream</p>
+  </div>
+
+  <div class="stream">
+   <strong>Winners</strong>
+   <p>Gold Stream</p>
+  </div>
+
+  <div class="stream">
+   <strong>Champions</strong>
+   <p>Purple Stream</p>
+  </div>
+
+  <div class="stream">
+   <strong>Archivers</strong>
+   <p>Red Stream</p>
+  </div>
+
  </div>
+
+ <section class="resource">
+
+  <h2>Form Four Learning Resources</h2>
+
+  <p>
+   Access subject-based notes and revision materials
+   selected for Form Four students.
+  </p>
+
+  <a href="notes.html">
+   Explore Form 4 Notes →
+  </a>
+
+ </section>
+
 </main>
 
 <footer>
- © <span id="year"></span> The Magunga High · Learn Together. Rise Together.
+ © <span id="year"></span> The Magunga High
+ <br><br>
+ Learn Together. Rise Together.
 </footer>
 
 <script>
