@@ -16,6 +16,9 @@ service cloud.firestore {
 
     function approved() {
       return signedIn()
+        && exists(
+          /databases/$(database)/documents/users/$(request.auth.uid)
+        )
         && myProfile().status == "approved";
     }
 
@@ -46,13 +49,21 @@ service cloud.firestore {
 
     function validMessage(data) {
       return data.keys().hasAll([
-          "senderId", "senderName", "text", "createdAt"
+          "senderId",
+          "senderName",
+          "text",
+          "createdAt"
         ])
         && data.keys().hasOnly([
-          "senderId", "senderName", "text", "createdAt"
+          "senderId",
+          "senderName",
+          "text",
+          "createdAt",
+          "stream"
         ])
         && data.senderId == request.auth.uid
         && data.senderName is string
+        && data.senderName.size() > 0
         && data.senderName.size() <= 60
         && data.text is string
         && data.text.size() > 0
@@ -65,8 +76,12 @@ service cloud.firestore {
       allow create: if signedIn()
         && request.auth.uid == userId
         && request.resource.data.keys().hasOnly([
-          "name", "email", "stream",
-          "role", "status", "createdAt"
+          "name",
+          "email",
+          "stream",
+          "role",
+          "status",
+          "createdAt"
         ])
         && request.resource.data.name is string
         && request.resource.data.name.size() > 0
@@ -86,7 +101,7 @@ service cloud.firestore {
           )
         );
 
-      // Students can change only their own name.
+      // Students can edit only their own name.
       allow update: if signedIn()
         && request.auth.uid == userId
         && request.resource.data.diff(resource.data)
@@ -95,14 +110,17 @@ service cloud.firestore {
         && request.resource.data.name.size() > 0
         && request.resource.data.name.size() <= 60;
 
-      // Stream admins and superadmins review pending registrations.
+      // Admins can review pending registrations.
       allow update: if resource.data.status == "pending"
         && request.resource.data.diff(resource.data)
           .affectedKeys().hasOnly([
-            "status", "reviewedBy", "reviewedAt"
+            "status",
+            "reviewedBy",
+            "reviewedAt"
           ])
         && request.resource.data.status in [
-          "approved", "rejected"
+          "approved",
+          "rejected"
         ]
         && request.resource.data.reviewedBy == request.auth.uid
         && canManageStream(resource.data.stream);
@@ -128,7 +146,9 @@ service cloud.firestore {
         && request.resource.data.stream == resource.data.stream
         && request.resource.data.diff(resource.data)
           .affectedKeys().hasOnly([
-            "title", "body", "updatedAt"
+            "title",
+            "body",
+            "updatedAt"
           ]);
 
       allow delete: if canManageStream(resource.data.stream);
@@ -154,12 +174,13 @@ service cloud.firestore {
       allow read: if approved();
 
       allow create: if approved()
-        && validMessage(request.resource.data);
+        && validMessage(request.resource.data)
+        && !("stream" in request.resource.data);
 
       allow update, delete: if false;
     }
 
-    // PRIVATE CHAT CONVERSATIONS
+    // PRIVATE CONVERSATIONS
     match /privateChats/{chatId} {
 
       function isParticipant() {
@@ -168,36 +189,24 @@ service cloud.firestore {
       }
 
       allow create: if approved()
-        && request.resource.data.keys().hasOnly([
-          "participants", "createdAt"
-        ])
         && request.resource.data.keys().hasAll([
-          "participants", "createdAt"
+          "participants",
+          "createdAt"
+        ])
+        && request.resource.data.keys().hasOnly([
+          "participants",
+          "createdAt"
         ])
         && request.resource.data.participants is list
         && request.resource.data.participants.size() == 2
         && request.auth.uid in request.resource.data.participants
         && request.resource.data.participants[0]
-          != request.resource.data.participants[1]
-        && exists(
-          /databases/$(database)/documents/users/$(
-            request.resource.data.participants[0] == request.auth.uid
-              ? request.resource.data.participants[1]
-              : request.resource.data.participants[0]
-          )
-        )
-        && get(
-          /databases/$(database)/documents/users/$(
-            request.resource.data.participants[0] == request.auth.uid
-              ? request.resource.data.participants[1]
-              : request.resource.data.participants[0]
-          )
-        ).data.status == "approved";
+          != request.resource.data.participants[1];
 
       allow read: if isParticipant();
+
       allow update, delete: if false;
 
-      // Messages inside a private conversation.
       match /messages/{messageId} {
 
         function chatParticipant() {
@@ -210,13 +219,14 @@ service cloud.firestore {
         allow read: if chatParticipant();
 
         allow create: if chatParticipant()
-          && validMessage(request.resource.data);
+          && validMessage(request.resource.data)
+          && !("stream" in request.resource.data);
 
         allow update, delete: if false;
       }
     }
 
-    // DENY EVERYTHING NOT EXPLICITLY ALLOWED
+    // DENY EVERYTHING ELSE
     match /{document=**} {
       allow read, write: if false;
     }
