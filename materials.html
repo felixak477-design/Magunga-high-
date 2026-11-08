@@ -1,0 +1,171 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Learning Centre | The Magunga High</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      margin: 0;
+      background: #101522;
+      color: white;
+    }
+
+    header {
+      background: #1b2435;
+      padding: 20px;
+    }
+
+    main {
+      max-width: 1000px;
+      margin: auto;
+      padding: 22px;
+    }
+
+    .subject {
+      background: #1b2435;
+      padding: 20px;
+      border-radius: 12px;
+      margin-bottom: 15px;
+    }
+
+    .subject h3 {
+      margin-top: 0;
+      color: #83b3ff;
+    }
+
+    .subject p {
+      color: #b7c2d4;
+    }
+
+    a {
+      color: #83b3ff;
+      text-decoration: none;
+    }
+
+    .resource {
+      display: inline-block;
+      margin-top: 8px;
+      padding: 10px 14px;
+      background: #2878ff;
+      color: white;
+      border-radius: 7px;
+    }
+
+    #message {
+      color: #ffbd75;
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <h2>The Magunga High</h2>
+  <a href="dashboard.html">← Back to Dashboard</a>
+</header>
+
+<main>
+  <h1>📚 Learning Centre</h1>
+  <p>Form 4 revision and learning resources.</p>
+
+  <p id="message">Checking your account...</p>
+
+  <section id="materials" hidden>
+
+    <div class="subject">
+      <h3>Mathematics</h3>
+      <p>Mathematics revision notes and practice resources.</p>
+      <a class="resource" href="https://www.khanacademy.org/math"
+         target="_blank" rel="noopener noreferrer">
+        Study Mathematics
+      </a>
+    </div>
+
+    <div class="subject">
+      <h3>English</h3>
+      <p>Grammar, comprehension and writing practice.</p>
+      <a class="resource" href="https://learnenglish.britishcouncil.org/"
+         target="_blank" rel="noopener noreferrer">
+        Study English
+      </a>
+    </div>
+
+    <div class="subject">
+      <h3>Biology</h3>
+      <p>Biology concepts and revision resources.</p>
+      <a class="resource" href="https://www.khanacademy.org/science/biology"
+         target="_blank" rel="noopener noreferrer">
+        Study Biology
+      </a>
+    </div>
+
+    <div class="subject">
+      <h3>Chemistry</h3>
+      <p>Chemistry lessons and practice materials.</p>
+      <a class="resource" href="https://www.khanacademy.org/science/chemistry"
+         target="_blank" rel="noopener noreferrer">
+        Study Chemistry
+      </a>
+    </div>
+
+    <div class="subject">
+      <h3>Physics</h3>
+      <p>Physics lessons and learning resources.</p>
+      <a class="resource" href="https://www.khanacademy.org/science/physics"
+         target="_blank" rel="noopener noreferrer">
+        Study Physics
+      </a>
+    </div>
+
+  </section>
+</main>
+
+<script type="module">
+  import { auth, db } from "./assets/js/firebase.js";
+
+  import {
+    onAuthStateChanged
+  } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
+
+  import {
+    doc,
+    getDoc
+  } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
+
+  const message = document.getElementById("message");
+  const materials = document.getElementById("materials");
+
+  onAuthStateChanged(auth, async (user) => {
+    if (!user) {
+      window.location.href = "login.html";
+      return;
+    }
+
+    try {
+      const profile = await getDoc(doc(db, "users", user.uid));
+
+      if (!profile.exists() || profile.data().status !== "approved") {
+        window.location.href = "login.html";
+        return;
+      }
+
+      materials.hidden = false;
+      message.textContent = "";
+
+    } catch (error) {
+      message.textContent = "Unable to verify your account.";
+      console.error(error);
+    }
+  });
+</script>
+
+</body>
+</html>
