@@ -14,11 +14,11 @@ module.exports = async function handler(req, res) {
 
     if (!geminiKey || !firebaseKey) {
       return res.status(500).json({
-        error: "AI service configuration is incomplete. Check Vercel environment variables."
+        error: "AI service configuration is incomplete."
       });
     }
 
-    // Verify login
+    // Verify Firebase login
     const authorization = req.headers.authorization || "";
 
     if (!authorization.startsWith("Bearer ")) {
@@ -83,7 +83,7 @@ module.exports = async function handler(req, res) {
       });
     }
 
-    // Validate messages
+    // Validate conversation
     const messages = req.body?.messages;
 
     if (
@@ -125,24 +125,13 @@ module.exports = async function handler(req, res) {
       });
     }
 
-    // Connect to Gemini
-    const aiResponse = await fetch(
-      "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "x-goog-api-key": geminiKey
-        },
-        body: JSON.stringify({
-          system_instruction: {
-            parts: [{
-              text: `
+    // Magunga AI instructions
+    const systemInstruction = `
 You are Magunga AI, the educational study assistant
 for The Magunga High.
 
-Your purpose is to help students understand school
-subjects and prepare for Form 4 and KCSE examinations.
+Help students understand school subjects and prepare
+for Form 4 and KCSE examinations.
 
 Teaching guidelines:
 - Explain difficult topics in simple language.
@@ -157,18 +146,46 @@ Teaching guidelines:
 - Encourage students to understand, not just copy answers.
 
 You are a learning assistant, not a replacement for teachers.
-              `.trim()
-            }]
-          },
-          contents,
-          generationConfig: {
-            maxOutputTokens: 1200
-          }
-        })
-      }
-    );
+    `.trim();
 
-    // Show the actual Gemini error for diagnosis
+    const requestBody = {
+      system_instruction: {
+        parts: [{ text: systemInstruction }]
+      },
+      contents,
+      generationConfig: {
+        maxOutputTokens: 1200
+      }
+    };
+
+    // Function to contact a Gemini model
+    async function askGemini(model) {
+      return await fetch(
+        "https://generativelanguage.googleapis.com/v1beta/models/" +
+        model +
+        ":generateContent",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "x-goog-api-key": geminiKey
+          },
+          body: JSON.stringify(requestBody)
+        }
+      );
+    }
+
+    // Try the main model first
+    let aiResponse = await askGemini("gemini-3.8-flash");
+
+    // If overloaded, automatically try the backup model
+    if (aiResponse.status === 503) {
+      console.log("Main Gemini model overloaded. Trying backup.");
+
+      aiResponse = await askGemini("gemini-3.5-flash-lite");
+    }
+
+    // Handle remaining Gemini errors
     if (!aiResponse.ok) {
       const details = await aiResponse.json().catch(() => ({}));
 
@@ -176,12 +193,13 @@ You are a learning assistant, not a replacement for teachers.
 
       return res.status(503).json({
         error:
-          "Gemini error: " +
-          (details.error?.message || "Unknown API error") +
+          "Magunga AI could not get a response. " +
+          (details.error?.message || "Please try again later.") +
           " (HTTP " + aiResponse.status + ")"
       });
     }
 
+    // Read AI answer
     const result = await aiResponse.json();
 
     const answer = result.candidates?.[0]?.content?.parts
@@ -196,7 +214,7 @@ You are a learning assistant, not a replacement for teachers.
     }
 
     return res.status(200).json({
-      answer: answer
+      answer
     });
 
   } catch (error) {
