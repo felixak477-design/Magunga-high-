@@ -171,58 +171,57 @@ footer {
 
 <main>
 
-<section class="welcome">
-  <h1 id="welcomeName">Welcome, Student</h1>
-  <p>Your student community dashboard.</p>
-  <p>Your stream:</p>
-  <span class="stream" id="streamName">Loading...</span>
-  <p id="statusMessage"></p>
-</section>
+  <section class="welcome">
+    <h1 id="welcomeName">Welcome, Student</h1>
+    <p>Your student community dashboard.</p>
+    <p>Your stream:</p>
+    <span class="stream" id="streamName">Loading...</span>
+    <p id="statusMessage"></p>
+  </section>
 
-<section class="cards">
+  <section class="cards">
 
-  <div class="card ai-card">
-    <h3>✦ Magunga AI</h3>
-    <p>Your personal AI study assistant. Ask questions, revise KCSE topics and practise.</p>
-    <button onclick="location.href='ai.html'">
-      Open Magunga AI
-    </button>
-  </div>
+    <div class="card ai-card">
+      <h3>✦ Magunga AI</h3>
+      <p>Your personal AI study assistant. Ask questions, revise KCSE topics and practise.</p>
+      <button onclick="location.href='ai.html'">
+        Open Magunga AI
+      </button>
+    </div>
 
-  <div class="card">
-    <h3>📢 Announcements</h3>
-    <p>Read important school and stream announcements.</p>
-    <button onclick="location.href='announcements.html'">
-      View Announcements
-    </button>
-  </div>
+    <div class="card">
+      <h3>📢 Announcements</h3>
+      <p>Read important school and stream announcements.</p>
+      <button onclick="location.href='announcements.html'">
+        View Announcements
+      </button>
+    </div>
 
-  <div class="card">
-    <h3>📚 Learning Centre</h3>
-    <p>Access Form 4 notes, revision materials and learning links.</p>
-    <button onclick="location.href='materials.html'">
-      Open Materials
-    </button>
-  </div>
+    <div class="card">
+      <h3>📚 Learning Centre</h3>
+      <p>Access Form 4 notes, revision materials and learning links.</p>
+      <button onclick="window.location.href='https://esomake.co.ke/secondary/mathematics/form-4/revision-questions/'">
+        Open Learning Centre
+      </button>
+    </div>
 
-  <div class="card">
-    <h3>💬 Stream Chat</h3>
-    <p>Communicate with members of your stream and school community.</p>
-    <button onclick="location.href='chat.html'">
-      Open Chat
-    </button>
-  </div>
+    <div class="card">
+      <h3>💬 Stream Chat</h3>
+      <p>Communicate with members of your stream and school community.</p>
+      <button onclick="location.href='chat.html'">
+        Open Chat
+      </button>
+    </div>
 
-  <div class="card">
-    <h3>👥 Community</h3>
-    <p>Discover and connect with approved students across the five streams.</p>
-    <button onclick="location.href='community.html'">
-      Explore Community
-    </button>
-  </div>
+    <div class="card">
+      <h3>👥 Community</h3>
+      <p>Discover and connect with approved students across the five streams.</p>
+      <button onclick="location.href='community.html'">
+        Explore Community
+      </button>
+    </div>
 
-</section>
-
+  </section>
 </main>
 
 <footer>
@@ -230,6 +229,7 @@ footer {
 </footer>
 
 <script type="module">
+
 import { auth, db } from "./assets/js/firebase.js";
 
 import {
@@ -247,12 +247,14 @@ const streamName = document.getElementById("streamName");
 const statusMessage = document.getElementById("statusMessage");
 
 onAuthStateChanged(auth, async (user) => {
+
   if (!user) {
     window.location.href = "login.html";
     return;
   }
 
   try {
+
     const profile = await getDoc(doc(db, "users", user.uid));
 
     if (!profile.exists()) {
@@ -276,17 +278,24 @@ onAuthStateChanged(auth, async (user) => {
       data.stream || "Not assigned";
 
   } catch (error) {
+
     console.error(error);
+
     statusMessage.textContent =
       "Unable to load your profile. Please try again.";
+
   }
+
 });
 
 document.getElementById("logoutButton")
 .addEventListener("click", async () => {
+
   await signOut(auth);
   window.location.href = "login.html";
+
 });
+
 </script>
 
 </body>
