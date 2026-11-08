@@ -1,0 +1,255 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard | The Magunga High</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      margin: 0;
+      background: #101522;
+      color: white;
+    }
+
+    header {
+      padding: 20px;
+      background: #1b2435;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    main {
+      max-width: 1000px;
+      margin: auto;
+      padding: 22px;
+    }
+
+    .panel {
+      background: #1b2435;
+      padding: 22px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+    }
+
+    .stream-label {
+      display: inline-block;
+      background: #2878ff;
+      padding: 8px 14px;
+      border-radius: 20px;
+    }
+
+    .student {
+      background: #263249;
+      padding: 15px;
+      border-radius: 9px;
+      margin-top: 12px;
+    }
+
+    button {
+      padding: 10px 15px;
+      border: none;
+      border-radius: 7px;
+      cursor: pointer;
+      font-weight: bold;
+      margin: 5px 5px 0 0;
+    }
+
+    .approve {
+      background: #159b62;
+      color: white;
+    }
+
+    .reject {
+      background: #d74747;
+      color: white;
+    }
+
+    .logout {
+      background: #d74747;
+      color: white;
+    }
+
+    .muted {
+      color: #b7c2d4;
+    }
+
+    #message {
+      color: #ffbd75;
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <h2>Magunga High Administration</h2>
+  <button class="logout" id="logoutButton">Logout</button>
+</header>
+
+<main>
+
+  <section class="panel">
+    <h1>Admin Dashboard</h1>
+    <p id="adminName" class="muted">Checking administrator...</p>
+    <p>Assigned stream:</p>
+    <span id="streamName" class="stream-label">Loading...</span>
+    <p id="message"></p>
+  </section>
+
+  <section class="panel">
+    <h2>Pending Student Registrations</h2>
+    <p class="muted">Review students waiting for approval.</p>
+    <div id="pendingStudents">Loading registrations...</div>
+  </section>
+
+  <section class="panel" id="superAdminPanel" hidden>
+    <h2>Super Admin Controls</h2>
+    <p class="muted">
+      Manage all five streams and assign stream administrators.
+    </p>
+    <p>Super Admin management tools will be added in a later file.</p>
+  </section>
+
+</main>
+
+<script type="module">
+  import { auth, db } from "./assets/js/firebase.js";
+
+  import {
+    onAuthStateChanged,
+    signOut
+  } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
+
+  import {
+    collection,
+    getDocs,
+    query,
+    where
+  } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
+
+  const adminName = document.getElementById("adminName");
+  const streamName = document.getElementById("streamName");
+  const pendingStudents = document.getElementById("pendingStudents");
+  const message = document.getElementById("message");
+  const superAdminPanel = document.getElementById("superAdminPanel");
+
+  let currentAdmin = null;
+
+  onAuthStateChanged(auth, async (user) => {
+    if (!user) {
+      window.location.href = "login.html";
+      return;
+    }
+
+    try {
+      const { doc, getDoc } = await import(
+        "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js"
+      );
+
+      const profile = await getDoc(doc(db, "users", user.uid));
+
+      if (!profile.exists()) {
+        window.location.href = "login.html";
+        return;
+      }
+
+      const data = profile.data();
+
+      if (
+        data.status !== "approved" ||
+        !["superadmin", "streamAdmin"].includes(data.role)
+      ) {
+        window.location.href = "dashboard.html";
+        return;
+      }
+
+      currentAdmin = {
+        uid: user.uid,
+        role: data.role,
+        stream: data.stream
+      };
+
+      adminName.textContent = "Administrator: " + (data.name || user.email);
+      streamName.textContent =
+        data.role === "superadmin" ? "All Streams" : data.stream;
+
+      if (data.role === "superadmin") {
+        superAdminPanel.hidden = false;
+      }
+
+      await loadPendingStudents();
+
+    } catch (error) {
+      message.textContent = "Unable to load admin dashboard.";
+      console.error(error);
+    }
+  });
+
+  async function loadPendingStudents() {
+    let studentQuery;
+
+    if (currentAdmin.role === "superadmin") {
+      studentQuery = query(
+        collection(db, "users"),
+        where("status", "==", "pending")
+      );
+    } else {
+      studentQuery = query(
+        collection(db, "users"),
+        where("status", "==", "pending"),
+        where("stream", "==", currentAdmin.stream)
+      );
+    }
+
+    const results = await getDocs(studentQuery);
+
+    pendingStudents.replaceChildren();
+
+    if (results.empty) {
+      pendingStudents.textContent = "No pending registrations.";
+      return;
+    }
+
+    results.forEach((studentDoc) => {
+      const student = studentDoc.data();
+
+      const card = document.createElement("div");
+      card.className = "student";
+
+      const name = document.createElement("h3");
+      name.textContent = student.name || "Unnamed student";
+
+      const details = document.createElement("p");
+      details.textContent =
+        (student.email || "") + " | " + (student.stream || "");
+
+      card.append(name, details);
+
+      const notice = document.createElement("p");
+      notice.className = "muted";
+      notice.textContent =
+        "Approval actions will be enabled after the secure admin workflow is installed.";
+
+      card.appendChild(notice);
+      pendingStudents.appendChild(card);
+    });
+  }
+
+  document.getElementById("logoutButton").addEventListener("click", async () => {
+    await signOut(auth);
+    window.location.href = "login.html";
+  });
+</script>
+
+</body>
+</html>
