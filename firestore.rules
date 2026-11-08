@@ -14,84 +14,119 @@ service cloud.firestore {
       ).data;
     }
 
-    function isApproved() {
+    function approved() {
       return signedIn()
         && myProfile().status == "approved";
     }
 
-    function isSuperAdmin() {
-      return signedIn()
+    function superAdmin() {
+      return approved()
         && myProfile().role == "superadmin";
     }
 
-    function isStreamAdmin(stream) {
-      return signedIn()
+    function streamAdmin(stream) {
+      return approved()
         && myProfile().role == "streamAdmin"
         && myProfile().stream == stream;
     }
 
     function canManageStream(stream) {
-      return isSuperAdmin() || isStreamAdmin(stream);
+      return superAdmin() || streamAdmin(stream);
     }
 
+    function validStream(stream) {
+      return stream in [
+        "Victors",
+        "Heroes",
+        "Winners",
+        "Champions",
+        "Archivers"
+      ];
+    }
+
+    // USER PROFILES
     match /users/{userId} {
 
       allow create: if signedIn()
         && request.auth.uid == userId
-        && request.resource.data.role == "member"
-        && request.resource.data.status == "pending"
+        && request.resource.data.keys().hasOnly([
+          "name",
+          "email",
+          "stream",
+          "role",
+          "status",
+          "createdAt"
+        ])
+        && request.resource.data.name is string
         && request.resource.data.email == request.auth.token.email
-        && request.resource.data.stream in [
-          "Victors",
-          "Heroes",
-          "Winners",
-          "Champions",
-          "Archivers"
-        ];
+        && validStream(request.resource.data.stream)
+        && request.resource.data.role == "member"
+        && request.resource.data.status == "pending";
 
       allow read: if signedIn()
         && (
           request.auth.uid == userId
-          || isSuperAdmin()
+          || superAdmin()
           || (
-            isStreamAdmin(resource.data.stream)
+            approved()
+            && streamAdmin(resource.data.stream)
           )
         );
 
-      allow update: if isSuperAdmin()
-        || (
-          signedIn()
-          && isStreamAdmin(resource.data.stream)
-          && request.resource.data.role == resource.data.role
-          && request.resource.data.stream == resource.data.stream
-        );
+      // Students may edit only their own name.
+      allow update: if signedIn()
+        && request.auth.uid == userId
+        && request.resource.data.diff(resource.data)
+          .affectedKeys().hasOnly(["name"]);
 
-      allow delete: if isSuperAdmin();
+      // Admins may review pending registrations.
+      allow update: if
+        resource.data.status == "pending"
+        && request.resource.data.diff(resource.data)
+          .affectedKeys()
+          .hasOnly(["status", "reviewedBy", "reviewedAt"])
+        && request.resource.data.status in ["approved", "rejected"]
+        && request.resource.data.reviewedBy == request.auth.uid
+        && canManageStream(resource.data.stream);
+
+      // Only superadmin may delete profiles.
+      allow delete: if superAdmin();
     }
 
+    // ANNOUNCEMENTS
     match /announcements/{announcementId} {
 
-      allow read: if isApproved();
+      allow read: if approved();
 
-      allow create: if isApproved()
-        && canManageStream(request.resource.data.stream);
+      allow create: if approved()
+        && request.resource.data.stream is string
+        && (
+          request.resource.data.stream == "All"
+          ? superAdmin()
+          : canManageStream(request.resource.data.stream)
+        );
 
-      allow update, delete: if isApproved()
-        && canManageStream(resource.data.stream);
+      allow update, delete: if
+        canManageStream(resource.data.stream);
     }
 
+    // STREAM CHAT
     match /messages/{messageId} {
 
-      allow read: if isApproved()
+      allow read: if approved()
         && resource.data.stream == myProfile().stream;
 
-      allow create: if isApproved()
+      allow create: if approved()
         && request.resource.data.senderId == request.auth.uid
-        && request.resource.data.stream == myProfile().stream;
+        && request.resource.data.stream == myProfile().stream
+        && request.resource.data.text is string
+        && request.resource.data.text.size() > 0
+        && request.resource.data.text.size() <= 2000;
 
       allow update, delete: if false;
     }
 
+    // DENY EVERYTHING ELSE
     match /{document=**} {
       allow read, write: if false;
     }
