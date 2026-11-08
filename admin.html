@@ -19,7 +19,7 @@
     }
 
     header {
-      padding: 20px;
+      padding: 18px;
       background: #1b2435;
       display: flex;
       justify-content: space-between;
@@ -50,7 +50,7 @@
 
     .student {
       background: #263249;
-      padding: 15px;
+      padding: 16px;
       border-radius: 9px;
       margin-top: 12px;
     }
@@ -64,17 +64,17 @@
       margin: 5px 5px 0 0;
     }
 
+    button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
     .approve {
       background: #159b62;
       color: white;
     }
 
-    .reject {
-      background: #d74747;
-      color: white;
-    }
-
-    .logout {
+    .reject, .logout {
       background: #d74747;
       color: white;
     }
@@ -85,6 +85,15 @@
 
     #message {
       color: #ffbd75;
+      overflow-wrap: anywhere;
+    }
+
+    .success {
+      color: #60d69b;
+    }
+
+    .error {
+      color: #ff7777;
     }
   </style>
 </head>
@@ -108,22 +117,22 @@
 
   <section class="panel">
     <h2>Pending Student Registrations</h2>
-    <p class="muted">Review students waiting for approval.</p>
+    <p class="muted">Review and approve or reject new registrations.</p>
     <div id="pendingStudents">Loading registrations...</div>
   </section>
 
   <section class="panel" id="superAdminPanel" hidden>
     <h2>Super Admin Controls</h2>
     <p class="muted">
-      Manage all five streams and assign stream administrators.
+      Super Admin can manage all five streams and assign stream administrators.
     </p>
-    <p>Super Admin management tools will be added in a later file.</p>
+    <p>Stream management tools will be added in a later step.</p>
   </section>
 
 </main>
 
 <script type="module">
-  import { auth, db } from "./assets/js/firebase.js";
+  import { auth } from "./assets/js/firebase.js";
 
   import {
     onAuthStateChanged,
@@ -131,17 +140,18 @@
   } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
 
   import {
-    collection,
-    getDocs,
-    query,
-    where
-  } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
+    getAdminProfile,
+    getPendingStudents,
+    approveStudent,
+    rejectStudent
+  } from "./assets/js/admin.js";
 
   const adminName = document.getElementById("adminName");
   const streamName = document.getElementById("streamName");
   const pendingStudents = document.getElementById("pendingStudents");
   const message = document.getElementById("message");
   const superAdminPanel = document.getElementById("superAdminPanel");
+  const logoutButton = document.getElementById("logoutButton");
 
   let currentAdmin = null;
 
@@ -152,100 +162,145 @@
     }
 
     try {
-      const { doc, getDoc } = await import(
-        "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js"
-      );
+      currentAdmin = await getAdminProfile();
 
-      const profile = await getDoc(doc(db, "users", user.uid));
+      adminName.textContent =
+        "Administrator: " + (currentAdmin.name || user.email);
 
-      if (!profile.exists()) {
-        window.location.href = "login.html";
-        return;
-      }
-
-      const data = profile.data();
-
-      if (
-        data.status !== "approved" ||
-        !["superadmin", "streamAdmin"].includes(data.role)
-      ) {
-        window.location.href = "dashboard.html";
-        return;
-      }
-
-      currentAdmin = {
-        uid: user.uid,
-        role: data.role,
-        stream: data.stream
-      };
-
-      adminName.textContent = "Administrator: " + (data.name || user.email);
       streamName.textContent =
-        data.role === "superadmin" ? "All Streams" : data.stream;
+        currentAdmin.role === "superadmin"
+          ? "All Streams"
+          : currentAdmin.stream;
 
-      if (data.role === "superadmin") {
+      if (currentAdmin.role === "superadmin") {
         superAdminPanel.hidden = false;
       }
 
       await loadPendingStudents();
 
     } catch (error) {
-      message.textContent = "Unable to load admin dashboard.";
       console.error(error);
+      message.textContent = error.message || "Unable to load dashboard.";
+      window.location.href = "login.html";
     }
   });
 
   async function loadPendingStudents() {
-    let studentQuery;
+    pendingStudents.textContent = "Loading registrations...";
 
-    if (currentAdmin.role === "superadmin") {
-      studentQuery = query(
-        collection(db, "users"),
-        where("status", "==", "pending")
-      );
-    } else {
-      studentQuery = query(
-        collection(db, "users"),
-        where("status", "==", "pending"),
-        where("stream", "==", currentAdmin.stream)
-      );
+    try {
+      const students = await getPendingStudents();
+
+      pendingStudents.replaceChildren();
+
+      if (students.length === 0) {
+        pendingStudents.textContent = "No pending registrations.";
+        return;
+      }
+
+      students.forEach((student) => {
+        const card = document.createElement("div");
+        card.className = "student";
+
+        const name = document.createElement("h3");
+        name.textContent = student.name || "Unnamed student";
+
+        const details = document.createElement("p");
+        details.className = "muted";
+        details.textContent =
+          (student.email || "No email") +
+          " | Stream: " + (student.stream || "Unknown");
+
+        const approveButton = document.createElement("button");
+        approveButton.className = "approve";
+        approveButton.textContent = "Approve";
+
+        const rejectButton = document.createElement("button");
+        rejectButton.className = "reject";
+        rejectButton.textContent = "Reject";
+
+        approveButton.addEventListener("click", async () => {
+          await reviewStudent(
+            student.id,
+            "approve",
+            approveButton,
+            rejectButton
+          );
+        });
+
+        rejectButton.addEventListener("click", async () => {
+          await reviewStudent(
+            student.id,
+            "reject",
+            approveButton,
+            rejectButton
+          );
+        });
+
+        card.append(
+          name,
+          details,
+          approveButton,
+          rejectButton
+        );
+
+        pendingStudents.appendChild(card);
+      });
+
+    } catch (error) {
+      console.error(error);
+      pendingStudents.textContent =
+        "Could not load registrations: " + error.message;
     }
-
-    const results = await getDocs(studentQuery);
-
-    pendingStudents.replaceChildren();
-
-    if (results.empty) {
-      pendingStudents.textContent = "No pending registrations.";
-      return;
-    }
-
-    results.forEach((studentDoc) => {
-      const student = studentDoc.data();
-
-      const card = document.createElement("div");
-      card.className = "student";
-
-      const name = document.createElement("h3");
-      name.textContent = student.name || "Unnamed student";
-
-      const details = document.createElement("p");
-      details.textContent =
-        (student.email || "") + " | " + (student.stream || "");
-
-      card.append(name, details);
-
-      const notice = document.createElement("p");
-      notice.className = "muted";
-      notice.textContent =
-        "Approval actions will be enabled after the secure admin workflow is installed.";
-
-      card.appendChild(notice);
-      pendingStudents.appendChild(card);
-    });
   }
 
-  document.getElementById("logoutButton").addEventListener("click", async () => {
+  async function reviewStudent(
+    studentId,
+    action,
+    approveButton,
+    rejectButton
+  ) {
+    const confirmed = confirm(
+      action === "approve"
+        ? "Approve this student's registration?"
+        : "Reject this student's registration?"
+    );
+
+    if (!confirmed) return;
+
+    approveButton.disabled = true;
+    rejectButton.disabled = true;
+
+    message.textContent = "Processing registration...";
+    message.className = "";
+
+    try {
+      if (action === "approve") {
+        await approveStudent(studentId);
+        message.textContent = "Student approved successfully.";
+      } else {
+        await rejectStudent(studentId);
+        message.textContent = "Student registration rejected.";
+      }
+
+      message.className = "success";
+
+      await loadPendingStudents();
+
+    } catch (error) {
+      console.error(error);
+
+      message.textContent =
+        "Action failed: " + error.message;
+
+      message.className = "error";
+
+      approveButton.disabled = false;
+      rejectButton.disabled = false;
+    }
+  }
+
+  logoutButton.addEventListener("click", async () => {
     await signOut(auth);
     window.location.href = "login.html";
   });
