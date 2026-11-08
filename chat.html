@@ -9,66 +9,412 @@
 
 <style>
 *{box-sizing:border-box;font-family:Arial,sans-serif}
-body{margin:0;background:#eef2f7;color:#17212b}
-body>header{background:#0866ff;color:white;padding:16px;box-shadow:0 2px 8px #0002}
-body>header a{color:white;text-decoration:none}
-main{max-width:850px;margin:auto;padding:16px}
-button{border:0;border-radius:9px;padding:12px;background:#0866ff;color:white;font-weight:bold;cursor:pointer}
+
+body{
+  margin:0;
+  background:#eef2f7;
+  color:#17212b;
+}
+
+body>header{
+  background:#0866ff;
+  color:white;
+  padding:15px;
+  box-shadow:0 2px 8px #0002;
+}
+
+body>header a{
+  color:white;
+  text-decoration:none;
+}
+
+main{
+  max-width:850px;
+  margin:auto;
+  padding:12px;
+}
+
+button{
+  border:0;
+  border-radius:9px;
+  padding:12px;
+  background:#0866ff;
+  color:white;
+  font-weight:bold;
+  cursor:pointer;
+}
+
 button:disabled{opacity:.5}
-.tabs{display:flex;gap:8px;margin:20px 0;flex-wrap:wrap}
-.tabs button{flex:1;background:#dce5f2;color:#26364b}
-.tabs button.active{background:#0866ff;color:white}
-.panel{padding:15px;border-radius:14px;background:white;box-shadow:0 2px 12px #17212b12}
+
+.tabs{
+  display:flex;
+  gap:8px;
+  margin:15px 0;
+  flex-wrap:wrap;
+}
+
+.tabs button{
+  flex:1;
+  background:#dce5f2;
+  color:#26364b;
+}
+
+.tabs button.active{
+  background:#0866ff;
+  color:white;
+}
+
+.panel{
+  padding:12px;
+  border-radius:14px;
+  background:white;
+  box-shadow:0 2px 12px #17212b12;
+}
+
 .hidden{display:none!important}
-.messages{height:350px;overflow-y:auto;padding:14px;background:#f1f4f8;border-radius:12px;margin:12px 0}
-.messageRow{display:flex;align-items:flex-end;gap:8px;margin:10px 0}
-.messageRow.mine{justify-content:flex-end}
-.messageAvatar{width:32px;height:32px;min-width:32px;border-radius:50%;background:#0866ff;color:white;display:flex;align-items:center;justify-content:center;font-weight:bold;font-size:13px}
-.message{background:white;color:#17212b;padding:11px 13px;border-radius:14px 14px 14px 4px;margin:0;max-width:85%;overflow-wrap:anywhere;box-shadow:0 1px 3px #00000012}
-.message.mine{background:#d9fdd3;color:#17212b;border-radius:14px 14px 4px 14px}
-.message strong{font-size:13px;color:#0866ff}
-.message p{margin:7px 0;line-height:1.4;white-space:pre-wrap}
-.message small{display:block;color:#718096;font-size:11px;text-align:right}
-form{display:flex;gap:8px}
-input{min-width:0;flex:1;padding:13px;border-radius:22px;border:1px solid #d5dce5;background:white;color:#17212b;font-size:15px;outline:none}
+
+/* LARGE CHAT AREAS */
+
+#streamPanel,
+#groupPanel{
+  min-height:calc(100dvh - 175px);
+  display:flex;
+  flex-direction:column;
+  overflow:hidden;
+}
+
+#streamPanel h3,
+#groupPanel h3{
+  flex-shrink:0;
+  margin:5px 0 8px;
+}
+
+#streamPanel .messages,
+#groupPanel .messages{
+  flex:1;
+  height:auto;
+  min-height:450px;
+  overflow-y:auto;
+  padding:14px;
+  margin:10px 0;
+}
+
+#streamPanel form,
+#groupPanel form{
+  flex-shrink:0;
+  padding-bottom:max(5px,env(safe-area-inset-bottom));
+}
+
+.messages{
+  height:350px;
+  overflow-y:auto;
+  padding:14px;
+  background:#f1f4f8;
+  border-radius:12px;
+  margin:12px 0;
+}
+
+/* MESSAGE DESIGN */
+
+.messageRow{
+  display:flex;
+  align-items:flex-end;
+  gap:8px;
+  margin:10px 0;
+}
+
+.messageRow.mine{
+  justify-content:flex-end;
+}
+
+.messageAvatar{
+  width:32px;
+  height:32px;
+  min-width:32px;
+  border-radius:50%;
+  background:#0866ff;
+  color:white;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:bold;
+  font-size:13px;
+}
+
+.message{
+  background:white;
+  color:#17212b;
+  padding:11px 13px;
+  border-radius:14px 14px 14px 4px;
+  margin:0;
+  max-width:85%;
+  overflow-wrap:anywhere;
+  box-shadow:0 1px 3px #00000012;
+}
+
+.message.mine{
+  background:#d9fdd3;
+  color:#17212b;
+  border-radius:14px 14px 4px 14px;
+}
+
+.message strong{
+  font-size:13px;
+  color:#0866ff;
+}
+
+.message p{
+  margin:7px 0;
+  line-height:1.4;
+  white-space:pre-wrap;
+}
+
+.message small{
+  display:block;
+  color:#718096;
+  font-size:11px;
+  text-align:right;
+}
+
+form{
+  display:flex;
+  gap:8px;
+}
+
+input{
+  min-width:0;
+  flex:1;
+  padding:13px;
+  border-radius:22px;
+  border:1px solid #d5dce5;
+  background:white;
+  color:#17212b;
+  font-size:15px;
+  outline:none;
+}
+
 input:focus{border-color:#0866ff}
-#status{color:#d97706;min-height:22px}
-#groupPanel{background:#fff;border:1px solid #e1e7ef}
-#groupPanel h3{color:#0866ff;margin-top:2px}
-#groupPanel .messages{background:#f0f2f5}
-#groupPanel .message{background:white;border:1px solid #e4e6eb;border-radius:16px 16px 16px 5px}
-#groupPanel .message.mine{background:#dbeafe;border-color:#c6dcff;border-radius:16px 16px 5px 16px}
+
+#status{
+  color:#d97706;
+  min-height:22px;
+}
+
+/* FACEBOOK STYLE GROUP CHAT */
+
+#groupPanel{
+  background:#fff;
+  border:1px solid #e1e7ef;
+}
+
+#groupPanel h3{color:#0866ff}
+
+#groupPanel .messages{
+  background:#f0f2f5;
+}
+
+#groupPanel .message{
+  background:white;
+  border:1px solid #e4e6eb;
+  border-radius:16px 16px 16px 5px;
+}
+
+#groupPanel .message.mine{
+  background:#dbeafe;
+  border-color:#c6dcff;
+  border-radius:16px 16px 5px 16px;
+}
+
 #groupPanel .message strong{color:#0866ff}
-#groupPanel form button{background:#0866ff;border-radius:22px;min-width:65px}
-#streamPanel{background:white;border:1px solid #d9e7f1}
-#streamPanel h3{color:#168acd;margin-top:2px}
-#streamPanel .messages{background-color:#dcecf5;background-image:radial-gradient(#ffffff80 1px,transparent 1px);background-size:22px 22px}
-#streamPanel .message{background:white;border-radius:12px 12px 12px 3px;border:1px solid #e5edf2}
-#streamPanel .message.mine{background:#c9f3d8;border-radius:12px 12px 3px 12px}
+
+#groupPanel form button{
+  background:#0866ff;
+  border-radius:22px;
+  min-width:65px;
+}
+
+/* TELEGRAM STYLE STREAM CHAT */
+
+#streamPanel{
+  background:white;
+  border:1px solid #d9e7f1;
+}
+
+#streamPanel h3{color:#168acd}
+
+#streamPanel .messages{
+  background-color:#dcecf5;
+  background-image:radial-gradient(#ffffff80 1px,transparent 1px);
+  background-size:22px 22px;
+}
+
+#streamPanel .message{
+  background:white;
+  border-radius:12px 12px 12px 3px;
+  border:1px solid #e5edf2;
+}
+
+#streamPanel .message.mine{
+  background:#c9f3d8;
+  border-radius:12px 12px 3px 12px;
+}
+
 #streamPanel .message strong{color:#168acd}
-#streamPanel form button{background:#168acd;border-radius:22px}
-.chatChoice{width:100%;display:flex;align-items:center;gap:12px;margin:7px 0;background:white;color:#17212b;text-align:left;border:1px solid #e5eaf0}
+
+#streamPanel form button{
+  background:#168acd;
+  border-radius:22px;
+}
+
+/* PRIVATE MEMBER LIST */
+
+.chatChoice{
+  width:100%;
+  display:flex;
+  align-items:center;
+  gap:12px;
+  margin:7px 0;
+  background:white;
+  color:#17212b;
+  text-align:left;
+  border:1px solid #e5eaf0;
+}
+
 .chatChoice:hover{background:#f1f6ff}
-.avatar{width:45px;height:45px;border-radius:50%;object-fit:cover;background:#d5e5f8;color:#0866ff;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.note{color:#718096;font-size:13px}
-#privateScreen{display:none;position:fixed;inset:0;z-index:1000;background:#101522;flex-direction:column}
+
+.avatar{
+  width:45px;
+  height:45px;
+  border-radius:50%;
+  object-fit:cover;
+  background:#d5e5f8;
+  color:#0866ff;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  flex-shrink:0;
+}
+
+.note{
+  color:#718096;
+  font-size:13px;
+}
+
+/* WHATSAPP STYLE PRIVATE CHAT */
+
+#privateScreen{
+  display:none;
+  position:fixed;
+  inset:0;
+  z-index:1000;
+  background:#101522;
+  flex-direction:column;
+}
+
 #privateScreen.active{display:flex}
-.chatHeader{background:#075e54;color:white;display:flex;align-items:center;gap:12px;padding:12px;min-height:68px}
-.backButton{background:transparent;color:white;font-size:24px;padding:5px 10px}
-#recipientAvatar{width:42px;height:42px}
-.recipientInfo{flex:1;min-width:0}
-.recipientInfo strong{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+.chatHeader{
+  background:#075e54;
+  color:white;
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:12px;
+  min-height:68px;
+}
+
+.backButton{
+  background:transparent;
+  color:white;
+  font-size:24px;
+  padding:5px 10px;
+}
+
+#recipientAvatar{
+  width:42px;
+  height:42px;
+}
+
+.recipientInfo{
+  flex:1;
+  min-width:0;
+}
+
+.recipientInfo strong{
+  display:block;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+
 .recipientInfo small{color:#d1e8e4}
-#privateMessages{flex:1;overflow-y:auto;padding:14px;background:radial-gradient(circle at center,#182337 0%,#101522 75%)}
-#privateMessages .message{background:#263249;color:white}
-#privateMessages .message.mine{background:#075e54;color:white}
+
+#privateMessages{
+  flex:1;
+  overflow-y:auto;
+  padding:14px;
+  background:radial-gradient(circle at center,#182337 0%,#101522 75%);
+}
+
+#privateMessages .message{
+  background:#263249;
+  color:white;
+}
+
+#privateMessages .message.mine{
+  background:#075e54;
+  color:white;
+}
+
 #privateMessages .message strong{color:#b9e7df}
 #privateMessages .message small{color:#c2d0d8}
-#privateStatus{padding:4px 12px;color:#ffbd75;font-size:12px;min-height:20px;background:#101522}
-.privateComposer{display:flex;gap:8px;padding:10px;background:#1b2435;padding-bottom:max(10px,env(safe-area-inset-bottom))}
-.privateComposer input{border-radius:25px;background:#111a2a;color:white;border-color:#39465e}
-.privateComposer button{background:#128c7e;border-radius:50%;width:48px;height:48px;flex-shrink:0}
-@media(max-width:520px){main{padding:12px}.messages{height:300px}.tabs button{font-size:12px;padding:10px 6px}}
+
+#privateStatus{
+  padding:4px 12px;
+  color:#ffbd75;
+  font-size:12px;
+  min-height:20px;
+  background:#101522;
+}
+
+.privateComposer{
+  display:flex;
+  gap:8px;
+  padding:10px;
+  background:#1b2435;
+  padding-bottom:max(10px,env(safe-area-inset-bottom));
+}
+
+.privateComposer input{
+  border-radius:25px;
+  background:#111a2a;
+  color:white;
+  border-color:#39465e;
+}
+
+.privateComposer button{
+  background:#128c7e;
+  border-radius:50%;
+  width:48px;
+  height:48px;
+  flex-shrink:0;
+}
+
+@media(max-width:520px){
+  main{padding:8px}
+  #streamPanel,#groupPanel{
+    min-height:calc(100dvh - 155px);
+    padding:10px;
+  }
+  #streamPanel .messages,
+  #groupPanel .messages{
+    min-height:400px;
+  }
+  .tabs button{
+    font-size:12px;
+    padding:11px 5px;
+  }
+}
 </style>
 </head>
 
@@ -175,40 +521,40 @@ let streamUnsub = null;
 let groupUnsub = null;
 let privateUnsub = null;
 
-function status(message) {
+function status(message){
   $("status").textContent = message || "";
 }
 
-function privateStatus(message) {
+function privateStatus(message){
   $("privateStatus").textContent = message || "";
 }
 
-function stopPrivate() {
-  if (privateUnsub) privateUnsub();
+function stopPrivate(){
+  if(privateUnsub) privateUnsub();
   privateUnsub = null;
 }
 
-function stopStream() {
-  if (streamUnsub) streamUnsub();
+function stopStream(){
+  if(streamUnsub) streamUnsub();
   streamUnsub = null;
 }
 
-function stopGroup() {
-  if (groupUnsub) groupUnsub();
+function stopGroup(){
+  if(groupUnsub) groupUnsub();
   groupUnsub = null;
 }
 
-function makeAvatar(name) {
+function makeAvatar(name){
   const avatar = document.createElement("div");
   avatar.className = "messageAvatar";
   avatar.textContent = (name || "S").trim().charAt(0).toUpperCase();
   return avatar;
 }
 
-function renderMessages(container, snapshot) {
+function renderMessages(container,snapshot){
   container.replaceChildren();
 
-  if (snapshot.empty) {
+  if(snapshot.empty){
     const empty = document.createElement("p");
     empty.className = "note";
     empty.textContent = "No messages yet. Send the first message!";
@@ -216,15 +562,15 @@ function renderMessages(container, snapshot) {
     return;
   }
 
-  const docs = [...snapshot.docs].sort((a,b) => {
+  const docs = [...snapshot.docs].sort((a,b)=>{
     const first = a.data().createdAt?.toMillis?.() || 0;
     const second = b.data().createdAt?.toMillis?.() || 0;
-    return first - second;
+    return first-second;
   });
 
   let previousDate = "";
 
-  docs.forEach(item => {
+  docs.forEach(item=>{
     const data = item.data();
     const mine = data.senderId === user.uid;
     const date = data.createdAt?.toDate
@@ -233,7 +579,7 @@ function renderMessages(container, snapshot) {
 
     const dateLabel = date.toLocaleDateString();
 
-    if (dateLabel !== previousDate) {
+    if(dateLabel !== previousDate){
       const separator = document.createElement("div");
       separator.className = "note";
       separator.style.textAlign = "center";
@@ -245,14 +591,14 @@ function renderMessages(container, snapshot) {
 
     const row = document.createElement("div");
     row.className = "messageRow";
-    if (mine) row.classList.add("mine");
+    if(mine) row.classList.add("mine");
 
     const name = data.senderName || "Student";
     const avatar = makeAvatar(name);
 
     const bubble = document.createElement("div");
     bubble.className = "message";
-    if (mine) bubble.classList.add("mine");
+    if(mine) bubble.classList.add("mine");
 
     const sender = document.createElement("strong");
     sender.textContent = mine ? "You" : name;
@@ -261,15 +607,15 @@ function renderMessages(container, snapshot) {
     text.textContent = data.text || "";
 
     const time = document.createElement("small");
-    time.textContent = date.toLocaleTimeString([], {
-      hour: "2-digit",
-      minute: "2-digit"
+    time.textContent = date.toLocaleTimeString([],{
+      hour:"2-digit",
+      minute:"2-digit"
     });
 
-    bubble.append(sender, text, time);
+    bubble.append(sender,text,time);
 
-    if (mine) row.append(bubble, avatar);
-    else row.append(avatar, bubble);
+    if(mine) row.append(bubble,avatar);
+    else row.append(avatar,bubble);
 
     container.appendChild(row);
   });
@@ -277,10 +623,10 @@ function renderMessages(container, snapshot) {
   container.scrollTop = container.scrollHeight;
 }
 
-function loadStream() {
+function loadStream(){
   stopStream();
 
-  if (!profile?.stream) return;
+  if(!profile?.stream) return;
 
   $("streamTitle").textContent = profile.stream + " Stream Chat";
 
@@ -289,36 +635,38 @@ function loadStream() {
     where("stream","==",profile.stream)
   );
 
-  streamUnsub = onSnapshot(q, snapshot => {
+  streamUnsub = onSnapshot(q,snapshot=>{
     renderMessages($("streamMessages"),snapshot);
-  }, error => {
+  },error=>{
     $("streamMessages").textContent = "Unable to load stream messages.";
     status(error.message);
   });
 }
 
-function loadGroup() {
+function loadGroup(){
   stopGroup();
 
-  const q = collection(db,"groupMessages");
-
-  groupUnsub = onSnapshot(q, snapshot => {
-    renderMessages($("groupMessages"),snapshot);
-  }, error => {
-    $("groupMessages").textContent = "Unable to load group messages.";
-    status(error.message);
-  });
+  groupUnsub = onSnapshot(
+    collection(db,"groupMessages"),
+    snapshot=>{
+      renderMessages($("groupMessages"),snapshot);
+    },
+    error=>{
+      $("groupMessages").textContent = "Unable to load group messages.";
+      status(error.message);
+    }
+  );
 }
 
-async function loadMembers() {
-  if (membersLoaded) {
+async function loadMembers(){
+  if(membersLoaded){
     displayMembers();
     return;
   }
 
   $("chatList").textContent = "Loading students...";
 
-  try {
+  try{
     const q = query(
       collection(db,"publicProfiles"),
       where("status","==","approved")
@@ -327,37 +675,34 @@ async function loadMembers() {
     const snapshot = await getDocs(q);
 
     approvedMembers = snapshot.docs
-      .filter(item => item.id !== user.uid)
-      .map(item => ({
-        id:item.id,
-        ...item.data()
-      }));
+      .filter(item=>item.id !== user.uid)
+      .map(item=>({id:item.id,...item.data()}));
 
     membersLoaded = true;
     displayMembers();
 
-  } catch(error) {
+  }catch(error){
     $("chatList").textContent =
       "Could not load students. Check publicProfiles permissions.";
     status(error.message);
   }
 }
 
-function displayMembers(search = "") {
+function displayMembers(search=""){
   const list = $("chatList");
   list.replaceChildren();
 
-  const filtered = approvedMembers.filter(member => {
+  const filtered = approvedMembers.filter(member=>{
     const name = member.name || member.fullName || "Student";
     return name.toLowerCase().includes(search.toLowerCase());
   });
 
-  if (!filtered.length) {
+  if(!filtered.length){
     list.textContent = "No students found.";
     return;
   }
 
-  filtered.forEach(member => {
+  filtered.forEach(member=>{
     const button = document.createElement("button");
     button.type = "button";
     button.className = "chatChoice";
@@ -367,16 +712,16 @@ function displayMembers(search = "") {
 
     const photo = member.photoURL || member.photoUrl || member.profilePic;
 
-    if (photo) {
+    if(photo){
       const image = document.createElement("img");
       image.src = photo;
       image.alt = "";
       image.className = "avatar";
-      image.onerror = () => {
+      image.onerror = ()=>{
         image.replaceWith(makeAvatar(member.name || "S"));
       };
       avatar.replaceWith(image);
-    } else {
+    }else{
       avatar.textContent =
         (member.name || "S").trim().charAt(0).toUpperCase();
     }
@@ -392,13 +737,13 @@ function displayMembers(search = "") {
     details.append(name,stream);
     button.append(avatar,details);
 
-    button.addEventListener("click",() => openPrivateChat(member));
+    button.addEventListener("click",()=>openPrivateChat(member));
 
     list.appendChild(button);
   });
 }
 
-async function openPrivateChat(member) {
+async function openPrivateChat(member){
   activeRecipient = member;
   stopPrivate();
 
@@ -412,30 +757,30 @@ async function openPrivateChat(member) {
 
   const photo = member.photoURL || member.photoUrl || member.profilePic;
 
-  if (photo) {
+  if(photo){
     const image = document.createElement("img");
     image.src = photo;
     image.className = "avatar";
     image.alt = "";
-    image.onerror = () => {
+    image.onerror = ()=>{
       avatar.textContent =
         (member.name || "S").trim().charAt(0).toUpperCase();
     };
     avatar.appendChild(image);
-  } else {
+  }else{
     avatar.textContent =
       (member.name || "S").trim().charAt(0).toUpperCase();
   }
 
   privateStatus("Opening conversation...");
 
-  try {
+  try{
     const participants = [user.uid,member.id].sort();
     const chatId = participants.join("_");
     const chatRef = doc(db,"privateChats",chatId);
     const chatSnap = await getDoc(chatRef);
 
-    if (!chatSnap.exists()) {
+    if(!chatSnap.exists()){
       await setDoc(chatRef,{
         participants,
         createdAt:serverTimestamp()
@@ -446,31 +791,31 @@ async function openPrivateChat(member) {
       db,"privateChats",chatId,"messages"
     );
 
-    privateUnsub = onSnapshot(messagesRef,snapshot => {
+    privateUnsub = onSnapshot(messagesRef,snapshot=>{
       renderMessages($("privateMessages"),snapshot);
       privateStatus("");
-    },error => {
-      privateStatus("Unable to load messages: " + error.message);
+    },error=>{
+      privateStatus("Unable to load messages: "+error.message);
     });
 
-  } catch(error) {
-    privateStatus("Could not open chat: " + error.message);
+  }catch(error){
+    privateStatus("Could not open chat: "+error.message);
   }
 }
 
-$("backButton").addEventListener("click",() => {
+$("backButton").addEventListener("click",()=>{
   stopPrivate();
   $("privateScreen").classList.remove("active");
   activeRecipient = null;
 });
 
-async function sendMessage(collectionName,inputId,extra = {}) {
+async function sendMessage(collectionName,inputId,extra={}){
   const input = $(inputId);
   const text = input.value.trim();
 
-  if (!text || !user || !profile) return;
+  if(!text || !user || !profile) return;
 
-  try {
+  try{
     await addDoc(collection(db,collectionName),{
       senderId:user.uid,
       senderName:profile.name || user.displayName || "Student",
@@ -482,37 +827,37 @@ async function sendMessage(collectionName,inputId,extra = {}) {
     input.value = "";
     status("");
 
-  } catch(error) {
-    status("Message failed: " + error.message);
+  }catch(error){
+    status("Message failed: "+error.message);
   }
 }
 
-$("streamForm").addEventListener("submit",event => {
+$("streamForm").addEventListener("submit",event=>{
   event.preventDefault();
   sendMessage("messages","streamInput",{
     stream:profile.stream
   });
 });
 
-$("groupForm").addEventListener("submit",event => {
+$("groupForm").addEventListener("submit",event=>{
   event.preventDefault();
   sendMessage("groupMessages","groupInput");
 });
 
-$("privateForm").addEventListener("submit",async event => {
+$("privateForm").addEventListener("submit",async event=>{
   event.preventDefault();
 
-  if (!activeRecipient) return;
+  if(!activeRecipient) return;
 
   const input = $("privateInput");
   const text = input.value.trim();
 
-  if (!text) return;
+  if(!text) return;
 
   const participants = [user.uid,activeRecipient.id].sort();
   const chatId = participants.join("_");
 
-  try {
+  try{
     await addDoc(
       collection(db,"privateChats",chatId,"messages"),
       {
@@ -526,73 +871,73 @@ $("privateForm").addEventListener("submit",async event => {
     input.value = "";
     privateStatus("");
 
-  } catch(error) {
-    privateStatus("Message failed: " + error.message);
+  }catch(error){
+    privateStatus("Message failed: "+error.message);
   }
 });
 
-document.querySelectorAll("[data-tab]").forEach(button => {
-  button.addEventListener("click",() => {
+document.querySelectorAll("[data-tab]").forEach(button=>{
+  button.addEventListener("click",()=>{
     const target = button.dataset.tab;
 
-    document.querySelectorAll("[data-tab]").forEach(tab => {
-      tab.classList.toggle("active",tab === button);
+    document.querySelectorAll("[data-tab]").forEach(tab=>{
+      tab.classList.toggle("active",tab===button);
     });
 
-    ["streamPanel","groupPanel","privatePanel"].forEach(id => {
-      $(id).classList.toggle("hidden",id !== target);
+    ["streamPanel","groupPanel","privatePanel"].forEach(id=>{
+      $(id).classList.toggle("hidden",id!==target);
     });
 
-    if (target === "streamPanel") loadStream();
-    if (target === "groupPanel") loadGroup();
-    if (target === "privatePanel") loadMembers();
+    if(target==="streamPanel") loadStream();
+    if(target==="groupPanel") loadGroup();
+    if(target==="privatePanel") loadMembers();
   });
 });
 
-$("memberSearch").addEventListener("input",event => {
+$("memberSearch").addEventListener("input",event=>{
   displayMembers(event.target.value);
 });
 
-onAuthStateChanged(auth,async currentUser => {
+onAuthStateChanged(auth,async currentUser=>{
   stopStream();
   stopGroup();
   stopPrivate();
 
-  if (!currentUser) {
+  if(!currentUser){
     location.href = "index.html";
     return;
   }
 
   user = currentUser;
 
-  try {
+  try{
     const profileSnap = await getDoc(
       doc(db,"users",user.uid)
     );
 
-    if (!profileSnap.exists()) {
+    if(!profileSnap.exists()){
       status("Your account profile was not found.");
       return;
     }
 
     profile = profileSnap.data();
 
-    if (profile.status !== "approved") {
+    if(profile.status!=="approved"){
       status("Your account is awaiting approval.");
       return;
     }
 
     $("welcome").textContent =
-      "Welcome, " + (profile.name || "Student");
+      "Welcome, "+(profile.name || "Student");
 
     loadStream();
 
-  } catch(error) {
-    status("Could not load your account: " + error.message);
+  }catch(error){
+    status("Could not load your account: "+error.message);
   }
 });
 
-window.addEventListener("beforeunload",() => {
+window.addEventListener("beforeunload",()=>{
   stopStream();
   stopGroup();
   stopPrivate();
