@@ -2,241 +2,259 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Magunga AI | The Magunga High</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Magunga AI | The Magunga High</title>
 
-  <style>
-    * {
-      box-sizing: border-box;
-      font-family: Arial, sans-serif;
-    }
+<style>
+* {
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
+}
 
-    body {
-      margin: 0;
-      background: #090d16;
-      color: #fff;
-      min-height: 100vh;
-    }
+body {
+  margin: 0;
+  background: #090d16;
+  color: white;
+  min-height: 100vh;
+}
 
-    header {
-      padding: 13px 15px;
-      background: #111827;
-      border-bottom: 1px solid rgba(255,204,92,.4);
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      box-shadow: 0 2px 15px rgba(255,190,60,.08);
-    }
+header {
+  padding: 13px 15px;
+  background: #111827;
+  border-bottom: 1px solid rgba(255,204,92,.4);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  box-shadow: 0 2px 15px rgba(255,190,60,.08);
+}
 
-    .back {
-      background: #25202a;
-      color: #ffd36a;
-      border: 1px solid #a87920;
-      padding: 8px 12px;
-      border-radius: 6px;
-      cursor: pointer;
-    }
+.back {
+  background: #25202a;
+  color: #ffd36a;
+  border: 1px solid #a87920;
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+}
 
-    header h2 {
-      margin: 0;
-      color: #ffd36a;
-      font-size: 18px;
-      text-shadow: 0 0 9px rgba(255,190,60,.4);
-    }
+header h2 {
+  margin: 0;
+  color: #ffd36a;
+  font-size: 18px;
+  text-shadow: 0 0 9px rgba(255,190,60,.4);
+}
 
-    header small {
-      display: block;
-      color: #aeb9ca;
-      font-size: 10px;
-      margin-top: 4px;
-    }
+header small {
+  display: block;
+  color: #aeb9ca;
+  font-size: 10px;
+  margin-top: 4px;
+}
 
-    main {
-      max-width: 850px;
-      margin: auto;
-      padding: 14px;
-    }
+main {
+  max-width: 850px;
+  margin: auto;
+  padding: 14px;
+}
 
-    .intro {
-      text-align: center;
-      padding: 18px 10px;
-    }
+.intro {
+  text-align: center;
+  padding: 18px 10px;
+}
 
-    .intro h1 {
-      color: #ffda80;
-      font-size: 25px;
-      margin: 0 0 8px;
-      text-shadow: 0 0 12px rgba(255,190,60,.3);
-    }
+.intro h1 {
+  color: #ffda80;
+  font-size: 25px;
+  margin: 0 0 8px;
+  text-shadow: 0 0 12px rgba(255,190,60,.3);
+}
 
-    .intro p {
-      color: #aeb9ca;
-      font-size: 12px;
-      line-height: 1.5;
-    }
+.intro p {
+  color: #aeb9ca;
+  font-size: 12px;
+  line-height: 1.5;
+}
 
-    .suggestions {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 7px;
-      margin: 15px 0 20px;
-    }
+.suggestions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 7px;
+  margin: 15px 0 20px;
+}
 
-    .suggestions button {
-      background: #151b27;
-      color: #f4d58c;
-      border: 1px solid rgba(255,204,92,.4);
-      border-radius: 20px;
-      padding: 8px 11px;
-      font-size: 11px;
-      cursor: pointer;
-    }
+.suggestions button {
+  background: #151b27;
+  color: #f4d58c;
+  border: 1px solid rgba(255,204,92,.4);
+  border-radius: 20px;
+  padding: 8px 11px;
+  font-size: 11px;
+  cursor: pointer;
+}
 
-    #chatBox {
-      min-height: 300px;
-      max-height: 58vh;
-      overflow-y: auto;
-      padding: 12px;
-      background: #101622;
-      border: 1px solid rgba(255,204,92,.25);
-      border-radius: 10px;
-    }
+#chatBox {
+  min-height: 300px;
+  max-height: 58vh;
+  overflow-y: auto;
+  padding: 12px;
+  background: #101622;
+  border: 1px solid rgba(255,204,92,.25);
+  border-radius: 10px;
+}
 
-    .message {
-      display: flex;
-      margin: 10px 0;
-    }
+.message {
+  display: flex;
+  margin: 10px 0;
+}
 
-    .message.user {
-      justify-content: flex-end;
-    }
+.message.user {
+  justify-content: flex-end;
+}
 
-    .bubble {
-      max-width: 88%;
-      padding: 11px 13px;
-      border-radius: 10px;
-      font-size: 13px;
-      line-height: 1.6;
-      white-space: pre-wrap;
-      overflow-wrap: anywhere;
-    }
+.bubble {
+  max-width: 88%;
+  padding: 11px 13px;
+  border-radius: 10px;
+  font-size: 13px;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
 
-    .user .bubble {
-      background: #3b2d13;
-      border: 1px solid #b98b32;
-      color: #fff0c8;
-      border-bottom-right-radius: 3px;
-    }
+.user .bubble {
+  background: #3b2d13;
+  border: 1px solid #b98b32;
+  color: #fff0c8;
+  border-bottom-right-radius: 3px;
+}
 
-    .ai .bubble {
-      background: #1b2635;
-      border: 1px solid #35445a;
-      color: #e2e8f0;
-      border-bottom-left-radius: 3px;
-    }
+.ai .bubble {
+  background: #1b2635;
+  border: 1px solid #35445a;
+  color: #e2e8f0;
+  border-bottom-left-radius: 3px;
+}
 
-    .sender {
-      display: block;
-      font-size: 10px;
-      color: #ffd36a;
-      margin-bottom: 5px;
-      font-weight: bold;
-    }
+.sender {
+  display: block;
+  font-size: 10px;
+  color: #ffd36a;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
 
-    .composer {
-      margin-top: 12px;
-      display: flex;
-      gap: 8px;
-      align-items: flex-end;
-    }
+.composer {
+  margin-top: 12px;
+  display: flex;
+  gap: 8px;
+  align-items: flex-end;
+}
 
-    textarea {
-      flex: 1;
-      resize: vertical;
-      min-height: 46px;
-      max-height: 130px;
-      padding: 12px;
-      border-radius: 8px;
-      border: 1px solid #65502b;
-      background: #151b27;
-      color: white;
-      outline: none;
-      font-size: 13px;
-    }
+textarea {
+  flex: 1;
+  resize: vertical;
+  min-height: 46px;
+  max-height: 130px;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #65502b;
+  background: #151b27;
+  color: white;
+  outline: none;
+  font-size: 13px;
+}
 
-    textarea:focus {
-      border-color: #ffd36a;
-      box-shadow: 0 0 8px rgba(255,190,60,.15);
-    }
+textarea:focus {
+  border-color: #ffd36a;
+  box-shadow: 0 0 8px rgba(255,190,60,.15);
+}
 
-    #sendButton {
-      background: linear-gradient(135deg,#d6a83e,#a87920);
-      color: #17120a;
-      border: 0;
-      padding: 13px 17px;
-      border-radius: 8px;
-      font-weight: bold;
-      cursor: pointer;
-    }
+#sendButton {
+  background: linear-gradient(135deg,#d6a83e,#a87920);
+  color: #17120a;
+  border: 0;
+  padding: 13px 17px;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+}
 
-    button:disabled {
-      opacity: .5;
-      cursor: not-allowed;
-    }
+button:disabled {
+  opacity: .5;
+  cursor: not-allowed;
+}
 
-    #status {
-      min-height: 18px;
-      color: #ffbd75;
-      font-size: 11px;
-      margin: 8px 3px;
-    }
+#status {
+  min-height: 18px;
+  color: #ffbd75;
+  font-size: 11px;
+  margin: 8px 3px;
+}
 
-    .tools {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-top: 10px;
-      gap: 10px;
-    }
+.chatgpt-fallback {
+  display: none;
+  margin: 10px 3px;
+  padding: 13px;
+  border: 1px solid #10a37f;
+  border-radius: 8px;
+  background: rgba(16,163,127,.10);
+  color: #8ee8ce;
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: bold;
+  text-align: center;
+}
 
-    .tools button {
-      background: transparent;
-      border: 1px solid #465064;
-      color: #aeb9ca;
-      padding: 7px 10px;
-      border-radius: 6px;
-      font-size: 10px;
-      cursor: pointer;
-    }
+.chatgpt-fallback:hover {
+  background: rgba(16,163,127,.2);
+}
 
-    .notice {
-      text-align: center;
-      color: #78869a;
-      font-size: 10px;
-      line-height: 1.5;
-      margin: 15px 5px;
-    }
+.tools {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 10px;
+  gap: 10px;
+}
 
-    @media(max-width:480px) {
-      main {
-        padding: 10px;
-      }
+.tools button {
+  background: transparent;
+  border: 1px solid #465064;
+  color: #aeb9ca;
+  padding: 7px 10px;
+  border-radius: 6px;
+  font-size: 10px;
+  cursor: pointer;
+}
 
-      #chatBox {
-        max-height: 55vh;
-      }
+.notice {
+  text-align: center;
+  color: #78869a;
+  font-size: 10px;
+  line-height: 1.5;
+  margin: 15px 5px;
+}
 
-      .bubble {
-        max-width: 94%;
-      }
+@media(max-width:480px) {
+  main {
+    padding: 10px;
+  }
 
-      #sendButton {
-        padding: 13px 12px;
-      }
-    }
-  </style>
+  #chatBox {
+    max-height: 55vh;
+  }
+
+  .bubble {
+    max-width: 94%;
+  }
+
+  #sendButton {
+    padding: 13px 12px;
+  }
+}
+</style>
 </head>
 
 <body>
@@ -254,254 +272,343 @@
 
 <main>
 
-  <section class="intro">
-    <h1>Learn Smarter with Magunga AI</h1>
-    <p>
-      Ask questions, understand difficult topics,
-      practise KCSE questions and improve your knowledge.
-    </p>
-  </section>
-
-  <div class="suggestions">
-    <button data-question="Explain quadratic equations with examples.">
-      Mathematics
-    </button>
-
-    <button data-question="Give me a Form 4 Biology revision quiz.">
-      Biology quiz
-    </button>
-
-    <button data-question="Explain chemical bonding in simple terms.">
-      Chemistry
-    </button>
-
-    <button data-question="Give me five KCSE English revision questions.">
-      English
-    </button>
-  </div>
-
-  <section id="chatBox" aria-live="polite">
-    <div class="message ai">
-      <div class="bubble">
-        <span class="sender">MAGUNGA AI</span>
-        Hello! I am Magunga AI.
-
-        I can help you revise, understand difficult topics,
-        solve mathematical problems and practise examination questions.
-
-        What would you like to learn today?
-      </div>
-    </div>
-  </section>
-
-  <div id="status"></div>
-
-  <div class="composer">
-    <textarea
-      id="questionInput"
-      placeholder="Ask Magunga AI a question..."
-      rows="2"
-    ></textarea>
-
-    <button id="sendButton">Send</button>
-  </div>
-
-  <div class="tools">
-    <span style="color:#8995a8;font-size:10px">
-      Press Enter to send
-    </span>
-
-    <button id="clearButton">Clear conversation</button>
-  </div>
-
-  <p class="notice">
-    AI can make mistakes. Always check important school answers
-    against your textbooks and teachers' guidance.
+<section class="intro">
+  <h1>Learn Smarter with Magunga AI</h1>
+  <p>
+    Ask questions, understand difficult topics,
+    practise KCSE questions and improve your knowledge.
   </p>
+</section>
+
+<div class="suggestions">
+  <button data-question="Explain quadratic equations with examples.">
+    Mathematics
+  </button>
+
+  <button data-question="Give me a Form 4 Biology revision quiz.">
+    Biology quiz
+  </button>
+
+  <button data-question="Explain chemical bonding in simple terms.">
+    Chemistry
+  </button>
+
+  <button data-question="Give me five KCSE English revision questions.">
+    English
+  </button>
+</div>
+
+<section id="chatBox" aria-live="polite">
+  <div class="message ai">
+    <div class="bubble">
+      <span class="sender">MAGUNGA AI</span>
+      Hello! I am Magunga AI.
+
+      I can help you revise, understand difficult topics,
+      solve mathematical problems and practise examination questions.
+
+      What would you like to learn today?
+    </div>
+  </div>
+</section>
+
+<div id="status"></div>
+
+<a
+  id="chatgptFallback"
+  class="chatgpt-fallback"
+  href="#"
+  target="_blank"
+  rel="noopener noreferrer"
+>
+  Continue with ChatGPT ↗
+</a>
+
+<div class="composer">
+  <textarea
+    id="questionInput"
+    placeholder="Ask Magunga AI a question..."
+    rows="2"
+  ></textarea>
+
+  <button id="sendButton">Send</button>
+</div>
+
+<div class="tools">
+  <span style="color:#8995a8;font-size:10px">
+    Press Enter to send
+  </span>
+
+  <button id="clearButton">Clear conversation</button>
+</div>
+
+<p class="notice">
+  AI can make mistakes. Always check important school answers
+  against your textbooks and teachers' guidance.
+</p>
 
 </main>
 
 <script type="module">
-  import { auth, db } from "./assets/js/firebase.js";
 
-  import {
-    onAuthStateChanged
-  } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
+import { auth, db } from "./assets/js/firebase.js";
 
-  import {
-    doc,
-    getDoc
-  } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
+import {
+  onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
 
-  const chatBox = document.getElementById("chatBox");
-  const input = document.getElementById("questionInput");
-  const sendButton = document.getElementById("sendButton");
-  const clearButton = document.getElementById("clearButton");
-  const status = document.getElementById("status");
+import {
+  doc,
+  getDoc
+} from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
 
-  let currentUser = null;
-  let messages = [];
-  let ready = false;
+const chatBox = document.getElementById("chatBox");
+const input = document.getElementById("questionInput");
+const sendButton = document.getElementById("sendButton");
+const clearButton = document.getElementById("clearButton");
+const status = document.getElementById("status");
+const chatgptFallback = document.getElementById("chatgptFallback");
 
-  function addMessage(role, text) {
-    const wrapper = document.createElement("div");
-    wrapper.className =
-      "message " + (role === "user" ? "user" : "ai");
+let currentUser = null;
+let messages = [];
+let ready = false;
 
-    const bubble = document.createElement("div");
-    bubble.className = "bubble";
+function addMessage(role, text) {
 
-    const sender = document.createElement("span");
-    sender.className = "sender";
-    sender.textContent =
-      role === "user" ? "YOU" : "MAGUNGA AI";
+  const wrapper = document.createElement("div");
 
-    const content = document.createElement("div");
-    content.textContent = text;
+  wrapper.className =
+    "message " + (role === "user" ? "user" : "ai");
 
-    bubble.appendChild(sender);
-    bubble.appendChild(content);
-    wrapper.appendChild(bubble);
+  const bubble = document.createElement("div");
+  bubble.className = "bubble";
 
-    chatBox.appendChild(wrapper);
-    chatBox.scrollTop = chatBox.scrollHeight;
+  const sender = document.createElement("span");
+  sender.className = "sender";
+
+  sender.textContent =
+    role === "user" ? "YOU" : "MAGUNGA AI";
+
+  const content = document.createElement("div");
+  content.textContent = text;
+
+  bubble.appendChild(sender);
+  bubble.appendChild(content);
+
+  wrapper.appendChild(bubble);
+  chatBox.appendChild(wrapper);
+
+  chatBox.scrollTop = chatBox.scrollHeight;
+}
+
+function setLoading(loading) {
+
+  sendButton.disabled = loading;
+  input.disabled = loading;
+
+  sendButton.textContent = loading ? "..." : "Send";
+}
+
+function showChatGPT(question) {
+
+  chatgptFallback.href =
+    "https://chatgpt.com/?q=" +
+    encodeURIComponent(question);
+
+  chatgptFallback.style.display = "block";
+}
+
+async function sendQuestion() {
+
+  const question = input.value.trim();
+
+  if (!question || !currentUser || !ready) return;
+
+  if (question.length > 4000) {
+    status.textContent =
+      "Please keep your question under 4,000 characters.";
+    return;
   }
 
-  function setLoading(loading) {
-    sendButton.disabled = loading;
-    input.disabled = loading;
-    sendButton.textContent = loading ? "..." : "Send";
-  }
+  input.value = "";
+  status.textContent = "";
 
-  async function sendQuestion() {
-    const question = input.value.trim();
+  chatgptFallback.style.display = "none";
+  chatgptFallback.href = "#";
 
-    if (!question || !currentUser || !ready) return;
+  messages.push({
+    role: "user",
+    text: question
+  });
 
-    if (question.length > 4000) {
-      status.textContent = "Please keep your question under 4,000 characters.";
-      return;
-    }
+  addMessage("user", question);
 
-    input.value = "";
-    status.textContent = "";
+  setLoading(true);
 
-    messages.push({
-      role: "user",
-      text: question
+  status.textContent =
+    "Magunga AI is preparing your answer...";
+
+  const controller = new AbortController();
+
+  const timeoutId = setTimeout(() => {
+    controller.abort();
+  }, 18000);
+
+  try {
+
+    const token = await currentUser.getIdToken();
+
+    const response = await fetch("/api/ask", {
+      method: "POST",
+      signal: controller.signal,
+
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer " + token
+      },
+
+      body: JSON.stringify({
+        messages: messages.slice(-12)
+      })
     });
 
-    addMessage("user", question);
-    setLoading(true);
-    status.textContent = "Magunga AI is preparing your answer...";
+    const result = await response.json();
 
-    try {
-      const token = await currentUser.getIdToken();
-
-      const response = await fetch("/api/ask", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": "Bearer " + token
-        },
-        body: JSON.stringify({
-          messages: messages.slice(-12)
-        })
-      });
-
-      const result = await response.json();
-
-      if (!response.ok) {
-        throw new Error(
-          result.error || "Unable to get an answer."
-        );
-      }
-
-      if (!result.answer) {
-        throw new Error("Magunga AI returned an empty answer.");
-      }
-
-      messages.push({
-        role: "model",
-        text: result.answer
-      });
-
-      addMessage("model", result.answer);
-      status.textContent = "";
-
-    } catch (error) {
-      console.error("Magunga AI:", error);
-      status.textContent =
-        error.message || "Something went wrong. Please try again.";
-
-    } finally {
-      setLoading(false);
-      input.focus();
+    if (!response.ok) {
+      throw new Error(
+        result.error || "Unable to get an answer."
+      );
     }
+
+    if (!result.answer) {
+      throw new Error("Magunga AI returned an empty answer.");
+    }
+
+    messages.push({
+      role: "model",
+      text: result.answer
+    });
+
+    addMessage("model", result.answer);
+
+    status.textContent = "";
+    chatgptFallback.style.display = "none";
+
+  } catch (error) {
+
+    console.error("Magunga AI:", error);
+
+    if (error.name === "AbortError") {
+
+      status.textContent =
+        "Magunga AI is taking too long. Continue with ChatGPT below.";
+
+    } else {
+
+      status.textContent =
+        error.message ||
+        "Magunga AI is temporarily unavailable.";
+
+    }
+
+    showChatGPT(question);
+
+  } finally {
+
+    clearTimeout(timeoutId);
+
+    setLoading(false);
+    input.focus();
+  }
+}
+
+// Verify student login and approval
+
+onAuthStateChanged(auth, async (user) => {
+
+  if (!user) {
+    window.location.href = "login.html";
+    return;
   }
 
-  onAuthStateChanged(auth, async (user) => {
-    if (!user) {
+  try {
+
+    const profile = await getDoc(
+      doc(db, "users", user.uid)
+    );
+
+    if (!profile.exists()) {
       window.location.href = "login.html";
       return;
     }
 
-    try {
-      const profile = await getDoc(
-        doc(db, "users", user.uid)
-      );
+    const data = profile.data();
 
-      if (!profile.exists()) {
-        window.location.href = "login.html";
-        return;
-      }
-
-      const data = profile.data();
-
-      if (data.status !== "approved") {
-        window.location.href = "login.html";
-        return;
-      }
-
-      currentUser = user;
-      ready = true;
-      status.textContent = "";
-
-    } catch (error) {
-      console.error(error);
-      status.textContent =
-        "Unable to verify your student account.";
+    if (data.status !== "approved") {
+      window.location.href = "login.html";
+      return;
     }
-  });
 
-  sendButton.addEventListener("click", sendQuestion);
-
-  input.addEventListener("keydown", (event) => {
-    if (event.key === "Enter" && !event.shiftKey) {
-      event.preventDefault();
-      sendQuestion();
-    }
-  });
-
-  clearButton.addEventListener("click", () => {
-    messages = [];
-
-    chatBox.innerHTML = "";
-
-    addMessage(
-      "model",
-      "Conversation cleared. What would you like to learn next?"
-    );
+    currentUser = user;
+    ready = true;
 
     status.textContent = "";
+
+  } catch (error) {
+
+    console.error(error);
+
+    status.textContent =
+      "Unable to verify your student account.";
+  }
+});
+
+// Send button
+
+sendButton.addEventListener("click", sendQuestion);
+
+// Enter to send
+
+input.addEventListener("keydown", (event) => {
+
+  if (event.key === "Enter" && !event.shiftKey) {
+    event.preventDefault();
+    sendQuestion();
+  }
+});
+
+// Clear conversation
+
+clearButton.addEventListener("click", () => {
+
+  messages = [];
+
+  chatBox.innerHTML = "";
+
+  addMessage(
+    "model",
+    "Conversation cleared. What would you like to learn next?"
+  );
+
+  status.textContent = "";
+
+  chatgptFallback.style.display = "none";
+  chatgptFallback.href = "#";
+});
+
+// Quick questions
+
+document.querySelectorAll("[data-question]").forEach(button => {
+
+  button.addEventListener("click", () => {
+
+    input.value = button.dataset.question;
+    input.focus();
+
   });
 
-  document.querySelectorAll("[data-question]").forEach(button => {
-    button.addEventListener("click", () => {
-      input.value = button.dataset.question;
-      input.focus();
-    });
-  });
+});
+
 </script>
 
 </body>
