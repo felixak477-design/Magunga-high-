@@ -1,0 +1,162 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Announcements | The Magunga High</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      margin: 0;
+      background: #101522;
+      color: white;
+    }
+
+    header {
+      background: #1b2435;
+      padding: 18px;
+    }
+
+    main {
+      max-width: 850px;
+      margin: auto;
+      padding: 22px;
+    }
+
+    .announcement {
+      background: #1b2435;
+      padding: 20px;
+      border-radius: 12px;
+      margin-bottom: 15px;
+    }
+
+    .announcement h3 {
+      margin-top: 0;
+    }
+
+    .meta {
+      color: #9eacc2;
+      font-size: 13px;
+    }
+
+    a {
+      color: #83b3ff;
+      text-decoration: none;
+    }
+
+    #message {
+      color: #ffbd75;
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <h2>The Magunga High</h2>
+  <a href="dashboard.html">← Back to Dashboard</a>
+</header>
+
+<main>
+  <h1>📢 Announcements</h1>
+  <p>Stay updated with your stream and school news.</p>
+
+  <p id="message">Loading announcements...</p>
+  <div id="announcements"></div>
+</main>
+
+<script type="module">
+  import { auth, db } from "./assets/js/firebase.js";
+
+  import {
+    onAuthStateChanged
+  } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
+
+  import {
+    collection,
+    getDocs,
+    query,
+    where
+  } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
+
+  const message = document.getElementById("message");
+  const container = document.getElementById("announcements");
+
+  onAuthStateChanged(auth, async (user) => {
+    if (!user) {
+      window.location.href = "login.html";
+      return;
+    }
+
+    try {
+      const { doc, getDoc } = await import(
+        "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js"
+      );
+
+      const profile = await getDoc(doc(db, "users", user.uid));
+
+      if (!profile.exists() || profile.data().status !== "approved") {
+        window.location.href = "login.html";
+        return;
+      }
+
+      const stream = profile.data().stream;
+
+      const announcementQuery = query(
+        collection(db, "announcements"),
+        where("stream", "in", [stream, "All"])
+      );
+
+      const results = await getDocs(announcementQuery);
+
+      container.replaceChildren();
+
+      if (results.empty) {
+        message.textContent = "No announcements yet.";
+        return;
+      }
+
+      const items = results.docs.map(item => item.data());
+
+      items.sort((a, b) => {
+        const dateA = a.createdAt?.toMillis?.() || 0;
+        const dateB = b.createdAt?.toMillis?.() || 0;
+        return dateB - dateA;
+      });
+
+      items.forEach(item => {
+        const card = document.createElement("article");
+        card.className = "announcement";
+
+        const title = document.createElement("h3");
+        title.textContent = item.title || "Announcement";
+
+        const body = document.createElement("p");
+        body.textContent = item.message || "";
+
+        const meta = document.createElement("p");
+        meta.className = "meta";
+        meta.textContent = "Stream: " + (item.stream || "");
+
+        card.append(title, body, meta);
+        container.appendChild(card);
+      });
+
+      message.textContent = "";
+
+    } catch (error) {
+      message.textContent =
+        "Could not load announcements. Please try again.";
+      console.error(error);
+    }
+  });
+</script>
+
+</body>
+</html>
