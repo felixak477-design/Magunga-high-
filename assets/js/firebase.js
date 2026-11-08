@@ -8,13 +8,13 @@ import { getFirestore } from
 "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
 
 const firebaseConfig = {
-  apiKey: "PASTE_YOUR_API_KEY",
-  authDomain: "PASTE_YOUR_AUTH_DOMAIN",
-  projectId: "PASTE_YOUR_PROJECT_ID",
-  storageBucket: "PASTE_YOUR_STORAGE_BUCKET",
-  messagingSenderId: "PASTE_YOUR_MESSAGING_SENDER_ID",
-  appId: "PASTE_YOUR_APP_ID"
-};
+  apiKey: "AIzaSyBnnkdo4nCR0CuLmAGT3KoKtr4_sHfBl2I",
+  authDomain: "magunga-high.firebaseapp.com",
+  projectId: "magunga-high",
+  storageBucket: "magunga-high.firebasestorage.app",
+  messagingSenderId: "269431579701",
+  appId: "1:269431579701:web:794a260163d67000e43d7c",
+  measurementId: "G-QCHP6D65TM"
 
 const app = initializeApp(firebaseConfig);
 
