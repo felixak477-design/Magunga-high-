@@ -13,8 +13,15 @@ import {
   serverTimestamp
 } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
 
-// Register a new student
-export async function registerStudent(name, email, password, stream) {
+import { uploadProfileImage } from "./cloudinary.js";
+
+export async function registerStudent(
+  name,
+  email,
+  password,
+  stream,
+  photoFile = null
+) {
   const allowedStreams = [
     "Victors",
     "Heroes",
@@ -25,6 +32,12 @@ export async function registerStudent(name, email, password, stream) {
 
   if (!allowedStreams.includes(stream)) {
     throw new Error("Please select a valid stream.");
+  }
+
+  let photoURL = "";
+
+  if (photoFile) {
+    photoURL = await uploadProfileImage(photoFile);
   }
 
   const credential = await createUserWithEmailAndPassword(
@@ -39,13 +52,13 @@ export async function registerStudent(name, email, password, stream) {
     stream,
     role: "member",
     status: "pending",
+    ...(photoURL ? { photoURL } : {}),
     createdAt: serverTimestamp()
   });
 
   return credential.user;
 }
 
-// Login
 export async function loginStudent(email, password) {
   const credential = await signInWithEmailAndPassword(
     auth,
@@ -56,7 +69,6 @@ export async function loginStudent(email, password) {
   return credential.user;
 }
 
-// Logout
 export async function logoutStudent() {
   await signOut(auth);
 }
