@@ -8,7 +8,7 @@ import {
   getDocs,
   query,
   where,
-  updateDoc,
+  writeBatch,
   serverTimestamp
 } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
 
@@ -76,6 +76,8 @@ async function updateStudentStatus(studentId, newStatus) {
   const admin = await getAdminProfile();
 
   const studentRef = doc(db, "users", studentId);
+  const publicRef = doc(db, "publicProfiles", studentId);
+
   const studentProfile = await getDoc(studentRef);
 
   if (!studentProfile.exists()) {
@@ -95,11 +97,26 @@ async function updateStudentStatus(studentId, newStatus) {
     throw new Error("You cannot manage another stream.");
   }
 
-  await updateDoc(studentRef, {
+  const publicProfile = await getDoc(publicRef);
+
+  if (!publicProfile.exists()) {
+    throw new Error(
+      "This student has no public profile yet. Their profile must be created before approval."
+    );
+  }
+
+  const batch = writeBatch(db);
+
+  const reviewData = {
     status: newStatus,
     reviewedBy: admin.uid,
     reviewedAt: serverTimestamp()
-  });
+  };
+
+  batch.update(studentRef, reviewData);
+  batch.update(publicRef, reviewData);
+
+  await batch.commit();
 
   return true;
 }
