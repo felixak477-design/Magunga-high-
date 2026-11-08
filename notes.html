@@ -1,0 +1,170 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#101827">
+<title>Form 4 Notes | The Magunga High</title>
+
+<style>
+*{box-sizing:border-box}
+body{
+ margin:0;
+ font-family:Arial,sans-serif;
+ background:#101827;
+ color:#f5f7fb;
+}
+header{
+ padding:18px 6%;
+ background:#121c30;
+ border-bottom:1px solid #293951;
+ display:flex;
+ justify-content:space-between;
+ align-items:center;
+ flex-wrap:wrap;
+ gap:12px;
+}
+header strong{color:#8bbcff;letter-spacing:1px}
+header a{color:#b8c5d9;text-decoration:none}
+main{width:min(900px,92%);margin:auto;padding:35px 0 55px}
+.tag{
+ color:#8bbcff;
+ font-size:12px;
+ letter-spacing:2px;
+ font-weight:bold;
+}
+h1{font-size:clamp(32px,6vw,48px);margin:14px 0}
+.intro{
+ color:#b8c5d9;
+ line-height:1.8;
+ max-width:700px;
+}
+.panel{
+ background:#19263b;
+ border:1px solid #30415c;
+ border-radius:15px;
+ padding:23px;
+ margin-top:25px;
+}
+.panel h2{margin-top:0}
+.subjects{
+ display:grid;
+ grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+ gap:12px;
+ margin-top:20px;
+}
+.subject{
+ background:#17243a;
+ border:1px solid #34445e;
+ border-radius:10px;
+ padding:15px;
+}
+.subject strong{display:block;margin-bottom:6px}
+.subject small{color:#aebbd0}
+.button{
+ display:inline-block;
+ margin-top:18px;
+ padding:14px 22px;
+ border-radius:9px;
+ background:#2878ff;
+ color:white;
+ text-decoration:none;
+ font-weight:bold;
+}
+.credit{
+ margin-top:25px;
+ padding:17px;
+ border-left:3px solid #438cff;
+ background:#17243a;
+ color:#c4d0e2;
+ line-height:1.7;
+}
+.note{
+ color:#aebbd0;
+ font-size:13px;
+ line-height:1.7;
+}
+footer{
+ text-align:center;
+ padding:22px;
+ color:#8798b2;
+ font-size:13px;
+ border-top:1px solid #293951;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+ <strong>THE MAGUNGA HIGH</strong>
+ <a href="index.html">Home</a>
+</header>
+
+<main>
+
+ <div class="tag">LEARNING RESOURCE CENTRE · FORM FOUR</div>
+
+ <h1>Form 4 Notes</h1>
+
+ <p class="intro">
+ A learning and revision resource for Form Four students.
+ Explore subject-based notes and use them to strengthen
+ your understanding, revise important topics and prepare
+ for your examinations.
+ </p>
+
+ <section class="panel">
+  <h2>Explore the Notes Library</h2>
+
+  <p class="intro">
+   The external collection is organized into separate
+   subject sections for easier reading and revision.
+  </p>
+
+  <div class="subjects">
+   <div class="subject"><strong>Biology</strong><small>Topics and revision notes</small></div>
+   <div class="subject"><strong>English</strong><small>Language and literature</small></div>
+   <div class="subject"><strong>Kiswahili</strong><small>Lugha na fasihi</small></div>
+   <div class="subject"><strong>Mathematics</strong><small>Mathematical topics</small></div>
+   <div class="subject"><strong>Physics</strong><small>Physics topics</small></div>
+   <div class="subject"><strong>Geography</strong><small>Geographical studies</small></div>
+   <div class="subject"><strong>History</strong><small>Historical studies</small></div>
+   <div class="subject"><strong>Civics</strong><small>Additional learning material</small></div>
+  </div>
+
+  <a class="button"
+     href="https://devinevisiontech.com/form-four-notes/"
+     target="_blank"
+     rel="noopener noreferrer">
+     Open Form 4 Notes →
+  </a>
+ </section>
+
+ <section class="credit">
+  <strong>Prepared and reviewed by Lamic</strong><br>
+  A curated learning resource for the Form Four community
+  of The Magunga High.
+ </section>
+
+ <p class="note">
+  Resource source: Devine Vision Tech. The original notes
+  are hosted externally. Subject coverage may differ from
+  the Kenyan syllabus, so compare topics with your school's
+  syllabus and your teachers' guidance.
+ </p>
+
+</main>
+
+<footer>
+ © <span id="year"></span> The Magunga High · Learning Together
+</footer>
+
+<script>
+document.getElementById("year").textContent =
+ new Date().getFullYear();
+</script>
+
+</body>
+</html>
