@@ -2,181 +2,159 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Register | The Magunga High</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Register | The Magunga High</title>
 
-  <style>
-    * {
-      box-sizing: border-box;
-      font-family: Arial, sans-serif;
-    }
-
-    body {
-      margin: 0;
-      min-height: 100vh;
-      display: grid;
-      place-items: center;
-      padding: 20px;
-      background: #101522;
-      color: white;
-    }
-
-    .register-box {
-      width: 100%;
-      max-width: 430px;
-      padding: 30px;
-      background: #1b2435;
-      border-radius: 16px;
-      box-shadow: 0 10px 35px #0007;
-    }
-
-    h1, .subtitle {
-      text-align: center;
-    }
-
-    .subtitle {
-      color: #aebbd0;
-      margin-bottom: 25px;
-    }
-
-    label {
-      display: block;
-      margin: 15px 0 7px;
-    }
-
-    input, select {
-      width: 100%;
-      padding: 13px;
-      border: 1px solid #39465e;
-      border-radius: 8px;
-      background: #111a2a;
-      color: white;
-      font-size: 16px;
-    }
-
-    button {
-      width: 100%;
-      padding: 14px;
-      margin-top: 22px;
-      border: none;
-      border-radius: 8px;
-      background: #2878ff;
-      color: white;
-      font-size: 16px;
-      font-weight: bold;
-      cursor: pointer;
-    }
-
-    button:disabled {
-      opacity: 0.6;
-    }
-
-    #message {
-      text-align: center;
-      margin-top: 18px;
-      color: #ffbd75;
-    }
-
-    a {
-      color: #83b3ff;
-    }
-
-    .login-link {
-      text-align: center;
-      margin-top: 20px;
-    }
-  </style>
+<style>
+*{box-sizing:border-box;font-family:Arial,sans-serif}
+body{
+ margin:0;min-height:100vh;display:grid;
+ place-items:center;padding:20px;
+ background:#101522;color:white
+}
+.register-box{
+ width:100%;max-width:430px;padding:30px;
+ background:#1b2435;border:1px solid #5b4820;
+ border-radius:16px;box-shadow:0 0 24px #d6a52b25
+}
+h1,.subtitle{text-align:center}
+.subtitle{color:#aebbd0}
+label{display:block;margin:15px 0 7px}
+input,select{
+ width:100%;padding:13px;border:1px solid #39465e;
+ border-radius:8px;background:#111a2a;
+ color:white;font-size:16px
+}
+button{
+ width:100%;padding:14px;margin-top:22px;
+ border:0;border-radius:8px;background:#d5a52b;
+ color:#171717;font-size:16px;font-weight:bold
+}
+button:disabled{opacity:.6}
+#message{text-align:center;color:#ffbd75}
+a{color:#e8c45e}
+.login-link{text-align:center}
+.preview{
+ display:none;width:90px;height:90px;
+ object-fit:cover;border-radius:50%;
+ margin:12px auto;border:2px solid #d5a52b
+}
+.hint{font-size:12px;color:#aebbd0}
+</style>
 </head>
 
 <body>
-  <main class="register-box">
-    <h1>The Magunga High</h1>
-    <p class="subtitle">Create Your Student Account</p>
 
-    <form id="registerForm">
-      <label for="name">Full name</label>
-      <input
-        id="name"
-        type="text"
-        required
-        maxlength="80"
-        placeholder="Enter your full name"
-      >
+<main class="register-box">
 
-      <label for="email">Email address</label>
-      <input
-        id="email"
-        type="email"
-        required
-        placeholder="Enter your email"
-      >
+<h1>The Magunga High</h1>
+<p class="subtitle">Create Your Student Account</p>
 
-      <label for="password">Password</label>
-      <input
-        id="password"
-        type="password"
-        required
-        minlength="6"
-        placeholder="At least 6 characters"
-      >
+<form id="registerForm">
 
-      <label for="stream">Select your stream</label>
-      <select id="stream" required>
-        <option value="">Choose your stream</option>
-        <option value="Victors">Victors</option>
-        <option value="Heroes">Heroes</option>
-        <option value="Winners">Winners</option>
-        <option value="Champions">Champions</option>
-        <option value="Archivers">Archivers</option>
-      </select>
+<label>Full name</label>
+<input id="name" type="text" required maxlength="60">
 
-      <button type="submit" id="registerButton">
-        Create Account
-      </button>
-    </form>
+<label>Email address</label>
+<input id="email" type="email" required>
 
-    <p id="message" role="status"></p>
+<label>Password</label>
+<input id="password" type="password" required minlength="6">
 
-    <p class="login-link">
-      Already registered?
-      <a href="login.html">Login here</a>
-    </p>
-  </main>
+<label>Select your stream</label>
+<select id="stream" required>
+<option value="">Choose your stream</option>
+<option>Victors</option>
+<option>Heroes</option>
+<option>Winners</option>
+<option>Champions</option>
+<option>Archivers</option>
+</select>
 
-  <script type="module">
-    import { registerStudent } from "./assets/js/auth.js";
+<label>Profile picture (optional)</label>
+<input
+ id="profilePhoto"
+ type="file"
+ accept="image/png,image/jpeg,image/webp"
+>
 
-    const form = document.getElementById("registerForm");
-    const message = document.getElementById("message");
-    const button = document.getElementById("registerButton");
+<p class="hint">Maximum image size: 3 MB.</p>
 
-    form.addEventListener("submit", async (event) => {
-      event.preventDefault();
+<img id="preview" class="preview" alt="Preview">
 
-      button.disabled = true;
-      message.textContent = "Creating your account...";
+<button type="submit" id="registerButton">
+Create Account
+</button>
 
-      try {
-        const name = document.getElementById("name").value.trim();
-        const email = document.getElementById("email").value.trim();
-        const password = document.getElementById("password").value;
-        const stream = document.getElementById("stream").value;
+</form>
 
-        await registerStudent(name, email, password, stream);
+<p id="message"></p>
 
-        message.textContent =
-          "Account created! Your registration is awaiting admin approval.";
+<p class="login-link">
+Already registered?
+<a href="login.html">Login here</a>
+</p>
 
-        form.reset();
+</main>
 
-      } catch (error) {
-        message.textContent =
-          "Registration failed: " + error.message;
-      } finally {
-        button.disabled = false;
-      }
-    });
-  </script>
+<script type="module">
+
+import { registerStudent } from "./assets/js/auth.js";
+
+const form = document.getElementById("registerForm");
+const message = document.getElementById("message");
+const button = document.getElementById("registerButton");
+const photoInput = document.getElementById("profilePhoto");
+const preview = document.getElementById("preview");
+
+photoInput.addEventListener("change", () => {
+ const file = photoInput.files[0];
+
+ if (!file) {
+  preview.style.display = "none";
+  return;
+ }
+
+ preview.src = URL.createObjectURL(file);
+ preview.style.display = "block";
+});
+
+form.addEventListener("submit", async event => {
+
+ event.preventDefault();
+ button.disabled = true;
+
+ try {
+
+  message.textContent = "Creating account...";
+
+  await registerStudent(
+   document.getElementById("name").value.trim(),
+   document.getElementById("email").value.trim(),
+   document.getElementById("password").value,
+   document.getElementById("stream").value,
+   photoInput.files[0] || null
+  );
+
+  message.textContent =
+   "Account created! Awaiting admin approval.";
+
+  form.reset();
+  preview.style.display = "none";
+
+ } catch(error) {
+
+  message.textContent =
+   "Registration failed: " + error.message;
+
+ } finally {
+  button.disabled = false;
+ }
+
+});
+
+</script>
+
 </body>
 </html>
