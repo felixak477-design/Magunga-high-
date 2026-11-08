@@ -44,20 +44,33 @@ service cloud.firestore {
       ];
     }
 
-    // USER PROFILES
+    function validMessage(data) {
+      return data.keys().hasAll([
+          "senderId", "senderName", "text", "createdAt"
+        ])
+        && data.keys().hasOnly([
+          "senderId", "senderName", "text", "createdAt"
+        ])
+        && data.senderId == request.auth.uid
+        && data.senderName is string
+        && data.senderName.size() <= 60
+        && data.text is string
+        && data.text.size() > 0
+        && data.text.size() <= 2000;
+    }
+
+    // STUDENT PROFILES
     match /users/{userId} {
 
       allow create: if signedIn()
         && request.auth.uid == userId
         && request.resource.data.keys().hasOnly([
-          "name",
-          "email",
-          "stream",
-          "role",
-          "status",
-          "createdAt"
+          "name", "email", "stream",
+          "role", "status", "createdAt"
         ])
         && request.resource.data.name is string
+        && request.resource.data.name.size() > 0
+        && request.resource.data.name.size() <= 60
         && request.resource.data.email == request.auth.token.email
         && validStream(request.resource.data.stream)
         && request.resource.data.role == "member"
@@ -73,23 +86,27 @@ service cloud.firestore {
           )
         );
 
-      // Students may edit only their own name.
+      // Students can change only their own name.
       allow update: if signedIn()
         && request.auth.uid == userId
         && request.resource.data.diff(resource.data)
-          .affectedKeys().hasOnly(["name"]);
+          .affectedKeys().hasOnly(["name"])
+        && request.resource.data.name is string
+        && request.resource.data.name.size() > 0
+        && request.resource.data.name.size() <= 60;
 
-      // Admins may review pending registrations.
-      allow update: if
-        resource.data.status == "pending"
+      // Stream admins and superadmins review pending registrations.
+      allow update: if resource.data.status == "pending"
         && request.resource.data.diff(resource.data)
-          .affectedKeys()
-          .hasOnly(["status", "reviewedBy", "reviewedAt"])
-        && request.resource.data.status in ["approved", "rejected"]
+          .affectedKeys().hasOnly([
+            "status", "reviewedBy", "reviewedAt"
+          ])
+        && request.resource.data.status in [
+          "approved", "rejected"
+        ]
         && request.resource.data.reviewedBy == request.auth.uid
         && canManageStream(resource.data.stream);
 
-      // Only superadmin may delete profiles.
       allow delete: if superAdmin();
     }
 
@@ -103,11 +120,18 @@ service cloud.firestore {
         && (
           request.resource.data.stream == "All"
           ? superAdmin()
-          : canManageStream(request.resource.data.stream)
+          : validStream(request.resource.data.stream)
+            && canManageStream(request.resource.data.stream)
         );
 
-      allow update, delete: if
-        canManageStream(resource.data.stream);
+      allow update: if canManageStream(resource.data.stream)
+        && request.resource.data.stream == resource.data.stream
+        && request.resource.data.diff(resource.data)
+          .affectedKeys().hasOnly([
+            "title", "body", "updatedAt"
+          ]);
+
+      allow delete: if canManageStream(resource.data.stream);
     }
 
     // STREAM CHAT
@@ -117,16 +141,82 @@ service cloud.firestore {
         && resource.data.stream == myProfile().stream;
 
       allow create: if approved()
-        && request.resource.data.senderId == request.auth.uid
+        && validStream(request.resource.data.stream)
         && request.resource.data.stream == myProfile().stream
-        && request.resource.data.text is string
-        && request.resource.data.text.size() > 0
-        && request.resource.data.text.size() <= 2000;
+        && validMessage(request.resource.data);
 
       allow update, delete: if false;
     }
 
-    // DENY EVERYTHING ELSE
+    // SCHOOL-WIDE GROUP CHAT
+    match /groupMessages/{messageId} {
+
+      allow read: if approved();
+
+      allow create: if approved()
+        && validMessage(request.resource.data);
+
+      allow update, delete: if false;
+    }
+
+    // PRIVATE CHAT CONVERSATIONS
+    match /privateChats/{chatId} {
+
+      function isParticipant() {
+        return approved()
+          && request.auth.uid in resource.data.participants;
+      }
+
+      allow create: if approved()
+        && request.resource.data.keys().hasOnly([
+          "participants", "createdAt"
+        ])
+        && request.resource.data.keys().hasAll([
+          "participants", "createdAt"
+        ])
+        && request.resource.data.participants is list
+        && request.resource.data.participants.size() == 2
+        && request.auth.uid in request.resource.data.participants
+        && request.resource.data.participants[0]
+          != request.resource.data.participants[1]
+        && exists(
+          /databases/$(database)/documents/users/$(
+            request.resource.data.participants[0] == request.auth.uid
+              ? request.resource.data.participants[1]
+              : request.resource.data.participants[0]
+          )
+        )
+        && get(
+          /databases/$(database)/documents/users/$(
+            request.resource.data.participants[0] == request.auth.uid
+              ? request.resource.data.participants[1]
+              : request.resource.data.participants[0]
+          )
+        ).data.status == "approved";
+
+      allow read: if isParticipant();
+      allow update, delete: if false;
+
+      // Messages inside a private conversation.
+      match /messages/{messageId} {
+
+        function chatParticipant() {
+          return approved()
+            && request.auth.uid in get(
+              /databases/$(database)/documents/privateChats/$(chatId)
+            ).data.participants;
+        }
+
+        allow read: if chatParticipant();
+
+        allow create: if chatParticipant()
+          && validMessage(request.resource.data);
+
+        allow update, delete: if false;
+      }
+    }
+
+    // DENY EVERYTHING NOT EXPLICITLY ALLOWED
     match /{document=**} {
       allow read, write: if false;
     }
