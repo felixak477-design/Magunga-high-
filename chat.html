@@ -1,958 +1,379 @@
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#075e54">
-<title>Chats | The Magunga High</title>
-
-<style>
-*{box-sizing:border-box;font-family:Arial,sans-serif}
-
-body{
- margin:0;
- background:#101522;
- color:white;
+* {
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
 }
 
-header{
- background:#075e54;
- padding:16px;
+body {
+  margin: 0;
+  background: #eef2f7;
+  color: #17212b;
 }
 
-header a{
- color:white;
- text-decoration:none;
+/* MAIN SCHOOL HEADER */
+body > header {
+  background: #0866ff;
+  color: white;
+  padding: 16px;
+  box-shadow: 0 2px 8px #0002;
 }
 
-main{
- max-width:850px;
- margin:auto;
- padding:16px;
+body > header a {
+  color: white;
+  text-decoration: none;
 }
 
-button{
- border:0;
- border-radius:8px;
- padding:12px;
- background:#128c7e;
- color:white;
- font-weight:bold;
- cursor:pointer;
+main {
+  max-width: 850px;
+  margin: auto;
+  padding: 16px;
 }
 
-button:disabled{opacity:.5}
-
-.tabs{
- display:flex;
- gap:8px;
- margin:20px 0;
- flex-wrap:wrap;
+button {
+  border: 0;
+  border-radius: 9px;
+  padding: 12px;
+  background: #0866ff;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
 }
 
-.tabs button{flex:1;background:#263249}
-.tabs button.active{background:#128c7e}
-
-.panel{
- background:#1b2435;
- padding:15px;
- border-radius:12px;
+button:disabled {
+  opacity: .5;
 }
 
-.hidden{display:none!important}
-
-.messages{
- height:350px;
- overflow-y:auto;
- padding:12px;
- background:#111a2a;
- border-radius:10px;
- margin:12px 0;
+/* CHAT TABS */
+.tabs {
+  display: flex;
+  gap: 8px;
+  margin: 20px 0;
+  flex-wrap: wrap;
 }
 
-.message{
- background:#263249;
- padding:11px;
- border-radius:10px;
- margin:8px 0;
- max-width:85%;
- overflow-wrap:anywhere;
+.tabs button {
+  flex: 1;
+  background: #dce5f2;
+  color: #26364b;
 }
 
-.message.mine{
- background:#075e54;
- margin-left:auto;
+.tabs button.active {
+  background: #0866ff;
+  color: white;
 }
 
-.message strong{font-size:13px}
-.message p{margin:7px 0}
-.message small{
- display:block;
- color:#c2d0d8;
- font-size:11px;
+.panel {
+  padding: 15px;
+  border-radius: 14px;
+  background: white;
+  box-shadow: 0 2px 12px #17212b12;
 }
 
-form{
- display:flex;
- gap:8px;
+.hidden {
+  display: none !important;
 }
 
-input{
- min-width:0;
- flex:1;
- padding:13px;
- border-radius:9px;
- border:1px solid #39465e;
- background:#111a2a;
- color:white;
- font-size:15px;
+/* DEFAULT CHAT AREA */
+.messages {
+  height: 350px;
+  overflow-y: auto;
+  padding: 14px;
+  background: #f1f4f8;
+  border-radius: 12px;
+  margin: 12px 0;
 }
 
-#status{
- color:#ffbd75;
- min-height:22px;
+.message {
+  background: white;
+  color: #17212b;
+  padding: 11px 13px;
+  border-radius: 14px 14px 14px 4px;
+  margin: 9px 0;
+  max-width: 85%;
+  overflow-wrap: anywhere;
+  box-shadow: 0 1px 3px #00000012;
 }
 
-.chatChoice{
- width:100%;
- display:flex;
- align-items:center;
- gap:12px;
- margin:7px 0;
- background:#263249;
- text-align:left;
+.message.mine {
+  background: #d9fdd3;
+  color: #17212b;
+  margin-left: auto;
+  border-radius: 14px 14px 4px 14px;
 }
 
-.avatar{
- width:45px;
- height:45px;
- border-radius:50%;
- object-fit:cover;
- background:#405574;
- display:flex;
- align-items:center;
- justify-content:center;
- flex-shrink:0;
+.message strong {
+  font-size: 13px;
+  color: #0866ff;
 }
 
-.note{
- color:#aab8cd;
- font-size:13px;
+.message p {
+  margin: 7px 0;
+  line-height: 1.4;
 }
 
-/* WHATSAPP-STYLE PRIVATE CHAT */
-
-#privateScreen{
- display:none;
- position:fixed;
- inset:0;
- z-index:1000;
- background:#101522;
- flex-direction:column;
+.message small {
+  display: block;
+  color: #718096;
+  font-size: 11px;
+  text-align: right;
 }
 
-#privateScreen.active{
- display:flex;
+form {
+  display: flex;
+  gap: 8px;
 }
 
-.chatHeader{
- background:#075e54;
- display:flex;
- align-items:center;
- gap:12px;
- padding:12px;
- min-height:68px;
+input {
+  min-width: 0;
+  flex: 1;
+  padding: 13px;
+  border-radius: 22px;
+  border: 1px solid #d5dce5;
+  background: white;
+  color: #17212b;
+  font-size: 15px;
+  outline: none;
 }
 
-.backButton{
- background:transparent;
- font-size:24px;
- padding:5px 10px;
+input:focus {
+  border-color: #0866ff;
 }
 
-#recipientAvatar{
- width:42px;
- height:42px;
+#status {
+  color: #d97706;
+  min-height: 22px;
 }
 
-.recipientInfo{
- flex:1;
- min-width:0;
+/* FACEBOOK-STYLE SCHOOL GROUP */
+#groupPanel {
+  background: #ffffff;
+  border: 1px solid #e1e7ef;
 }
 
-.recipientInfo strong{
- display:block;
- overflow:hidden;
- text-overflow:ellipsis;
- white-space:nowrap;
+#groupPanel h3 {
+  color: #0866ff;
+  margin-top: 2px;
 }
 
-.recipientInfo small{
- color:#d1e8e4;
+#groupPanel .messages {
+  background: #f0f2f5;
+  border-radius: 12px;
 }
 
-#privateMessages{
- flex:1;
- overflow-y:auto;
- padding:14px;
- background:
- radial-gradient(circle at center,#182337 0%,#101522 75%);
+#groupPanel .message {
+  background: white;
+  border: 1px solid #e4e6eb;
+  border-radius: 16px 16px 16px 5px;
 }
 
-#privateMessages .message{
- background:#263249;
+#groupPanel .message.mine {
+  background: #dbeafe;
+  border-color: #c6dcff;
+  border-radius: 16px 16px 5px 16px;
 }
 
-#privateMessages .message.mine{
- background:#075e54;
+#groupPanel .message strong {
+  color: #0866ff;
 }
 
-#privateStatus{
- padding:4px 12px;
- color:#ffbd75;
- font-size:12px;
- min-height:20px;
- background:#101522;
+#groupPanel form button {
+  background: #0866ff;
+  border-radius: 22px;
+  min-width: 65px;
 }
 
-.privateComposer{
- display:flex;
- gap:8px;
- padding:10px;
- background:#1b2435;
- padding-bottom:max(10px,env(safe-area-inset-bottom));
+/* TELEGRAM-STYLE STREAM CHAT */
+#streamPanel {
+  background: #ffffff;
+  border: 1px solid #d9e7f1;
 }
 
-.privateComposer input{
- border-radius:25px;
+#streamPanel h3 {
+  color: #168acd;
+  margin-top: 2px;
 }
 
-.privateComposer button{
- border-radius:50%;
- width:48px;
- height:48px;
- flex-shrink:0;
+#streamPanel .messages {
+  background-color: #dcecf5;
+  background-image:
+    radial-gradient(#ffffff80 1px, transparent 1px);
+  background-size: 22px 22px;
+  border-radius: 12px;
 }
 
-@media(max-width:520px){
- main{padding:12px}
- .messages{height:300px}
-}
-</style>
-</head>
-
-<body>
-
-<header>
-<h2>THE MAGUNGA HIGH</h2>
-<a href="dashboard.html">← Back to Dashboard</a>
-</header>
-
-<main>
-
-<h1>💬 Student Chats</h1>
-<p id="welcome">Checking your account...</p>
-
-<div class="tabs">
-<button class="active" data-tab="streamPanel">Stream Chat</button>
-<button data-tab="groupPanel">School Group</button>
-<button data-tab="privatePanel">Private Chat</button>
-</div>
-
-<section id="streamPanel" class="panel">
-<h3 id="streamTitle">Stream Chat</h3>
-<div id="streamMessages" class="messages"></div>
-
-<form id="streamForm">
-<input id="streamInput" maxlength="2000"
-placeholder="Write a message..." required>
-<button type="submit">Send</button>
-</form>
-</section>
-
-<section id="groupPanel" class="panel hidden">
-<h3>School-wide Group Chat</h3>
-<div id="groupMessages" class="messages"></div>
-
-<form id="groupForm">
-<input id="groupInput" maxlength="2000"
-placeholder="Write a message..." required>
-<button type="submit">Send</button>
-</form>
-</section>
-
-<section id="privatePanel" class="panel hidden">
-<h3>Private Messages</h3>
-
-<input id="memberSearch" type="search"
-placeholder="Search members by name or nickname..."
-autocomplete="off">
-
-<div id="chatList"></div>
-</section>
-
-<p id="status"></p>
-
-</main>
-
-<!-- FULL SCREEN PRIVATE CHAT -->
-
-<section id="privateScreen">
-
-<div class="chatHeader">
-
-<button class="backButton" id="backButton"
-aria-label="Back to members">←</button>
-
-<div id="recipientAvatar" class="avatar">M</div>
-
-<div class="recipientInfo">
-<strong id="recipientName">Member</strong>
-<small id="recipientStream">Private conversation</small>
-</div>
-
-</div>
-
-<div id="privateMessages">
-<p class="note">Opening conversation...</p>
-</div>
-
-<p id="privateStatus"></p>
-
-<form id="privateForm" class="privateComposer">
-<input id="privateInput" maxlength="2000"
-placeholder="Write a message..." required>
-<button id="privateSend" type="submit">➤</button>
-</form>
-
-</section>
-
-<script type="module">
-
-import {auth,db} from "./assets/js/firebase.js";
-
-import {
-onAuthStateChanged
-} from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
-
-import {
-collection,
-doc,
-getDoc,
-getDocs,
-setDoc,
-addDoc,
-query,
-where,
-onSnapshot,
-serverTimestamp
-} from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
-
-
-const $=id=>document.getElementById(id);
-
-let user=null;
-let profile=null;
-let activeChatType="stream";
-let activeChatId=null;
-let activeRecipient=null;
-let approvedMembers=[];
-let membersLoaded=false;
-
-let streamUnsub=null;
-let groupUnsub=null;
-let privateUnsub=null;
-
-
-function status(message){
- $("status").textContent=message;
+#streamPanel .message {
+  background: #ffffff;
+  border-radius: 12px 12px 12px 3px;
+  border: 1px solid #e5edf2;
 }
 
-function privateStatus(message){
- $("privateStatus").textContent=message;
+#streamPanel .message.mine {
+  background: #c9f3d8;
+  border-radius: 12px 12px 3px 12px;
 }
 
-
-function stopPrivate(){
- if(privateUnsub){
-  privateUnsub();
-  privateUnsub=null;
- }
+#streamPanel .message strong {
+  color: #168acd;
 }
 
-function stopStream(){
- if(streamUnsub){
-  streamUnsub();
-  streamUnsub=null;
- }
+#streamPanel form button {
+  background: #168acd;
+  border-radius: 22px;
 }
 
-function stopGroup(){
- if(groupUnsub){
-  groupUnsub();
-  groupUnsub=null;
- }
+/* MEMBER LIST */
+.chatChoice {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 7px 0;
+  background: white;
+  color: #17212b;
+  text-align: left;
+  border: 1px solid #e5eaf0;
 }
 
-
-function renderMessages(container,snapshot){
-
- container.replaceChildren();
-
- if(snapshot.empty){
-  const empty=document.createElement("p");
-  empty.className="note";
-  empty.textContent="No messages yet. Send the first message!";
-  container.appendChild(empty);
-  return;
- }
-
- const docs=[...snapshot.docs].sort((a,b)=>{
-  const first=a.data().createdAt?.toMillis?.()||0;
-  const second=b.data().createdAt?.toMillis?.()||0;
-  return first-second;
- });
-
- docs.forEach(item=>{
-
-  const data=item.data();
-
-  const bubble=document.createElement("div");
-
-  bubble.className="message";
-
-  if(data.senderId===user.uid){
-   bubble.classList.add("mine");
-  }
-
-  const name=document.createElement("strong");
-
-  name.textContent=data.senderId===user.uid
-   ?"You"
-   :(data.senderName||"Student");
-
-  const text=document.createElement("p");
-  text.textContent=data.text||"";
-
-  const time=document.createElement("small");
-
-  time.textContent=data.createdAt?.toDate
-   ?data.createdAt.toDate().toLocaleString()
-   :"Just now";
-
-  bubble.append(name,text,time);
-  container.appendChild(bubble);
-
- });
-
- container.scrollTop=container.scrollHeight;
+.chatChoice:hover {
+  background: #f1f6ff;
 }
 
-
-function loadStream(){
-
- stopStream();
-
- activeChatType="stream";
-
- $("streamTitle").textContent=profile.stream+" Stream Chat";
-
- const reference=query(
-  collection(db,"messages"),
-  where("stream","==",profile.stream)
- );
-
- streamUnsub=onSnapshot(reference,snapshot=>{
-  renderMessages($("streamMessages"),snapshot);
- },error=>{
-  console.error(error);
-  status("Stream chat error: "+error.message);
- });
+.avatar {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  object-fit: cover;
+  background: #d5e5f8;
+  color: #0866ff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
 }
 
-
-function loadGroup(){
-
- stopGroup();
-
- activeChatType="group";
-
- groupUnsub=onSnapshot(
-  collection(db,"groupMessages"),
-  snapshot=>{
-   renderMessages($("groupMessages"),snapshot);
-  },
-  error=>{
-   console.error(error);
-   status("Group chat error: "+error.message);
-  }
- );
-
+.note {
+  color: #718096;
+  font-size: 13px;
 }
 
-
-// LOAD MEMBERS FROM PUBLIC PROFILES
-
-async function loadMembers(){
-
- if(membersLoaded){
-  displayMembers();
-  return;
- }
-
- status("Loading approved members...");
-
- const result=await getDocs(query(
-  collection(db,"publicProfiles"),
-  where("status","==","approved")
- ));
-
- approvedMembers=result.docs
-  .filter(item=>item.id!==user.uid)
-  .map(item=>({
-   id:item.id,
-   ...item.data()
-  }));
-
- membersLoaded=true;
-
- status("");
-
- displayMembers();
+/* WHATSAPP-STYLE PRIVATE CHAT: PRESERVED */
+#privateScreen {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: #101522;
+  flex-direction: column;
 }
 
-
-function avatarFor(member){
-
- const element=document.createElement("div");
- element.className="avatar";
-
- const photo=member.photoURL||member.photoUrl||"";
-
- if(/^https?:\/\//i.test(photo)){
-  const img=document.createElement("img");
-  img.src=photo;
-  img.alt="";
-  img.className="avatar";
-  img.onerror=()=>{
-   element.textContent=(member.name||"M").charAt(0);
-  };
-  return img;
- }
-
- element.textContent=
-  (member.nickname||member.name||"M")
-  .charAt(0).toUpperCase();
-
- return element;
+#privateScreen.active {
+  display: flex;
 }
 
-
-function displayMembers(){
-
- const list=$("chatList");
- list.replaceChildren();
-
- const term=$("memberSearch").value.trim().toLowerCase();
-
- const matches=approvedMembers.filter(member=>{
-
-  const name=(member.name||"").toLowerCase();
-  const nickname=(member.nickname||"").toLowerCase();
-
-  return !term||
-   name.includes(term)||
-   nickname.includes(term);
-
- });
-
- if(!matches.length){
-  list.textContent="No approved members found.";
-  return;
- }
-
- matches.forEach(member=>{
-
-  const button=document.createElement("button");
-
-  button.type="button";
-  button.className="chatChoice";
-
-  const label=document.createElement("span");
-
-  const name=document.createElement("strong");
-  name.textContent=member.nickname||member.name||"Member";
-
-  const details=document.createElement("small");
-  details.style.display="block";
-  details.style.color="#aab8cd";
-
-  details.textContent=
-   (member.nickname&&member.name
-    ?member.name+" · ":"")+
-   (member.stream||"");
-
-  label.append(name,details);
-
-  button.append(avatarFor(member),label);
-
-  button.addEventListener("click",()=>{
-   openPrivateChat(member);
-  });
-
-  list.appendChild(button);
-
- });
-
+.chatHeader {
+  background: #075e54;
+  color: white;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  min-height: 68px;
 }
 
+.backButton {
+  background: transparent;
+  color: white;
+  font-size: 24px;
+  padding: 5px 10px;
+}
 
-// OPEN A NEW PRIVATE CHAT SCREEN
+#recipientAvatar {
+  width: 42px;
+  height: 42px;
+}
 
-async function openPrivateChat(member){
+.recipientInfo {
+  flex: 1;
+  min-width: 0;
+}
 
- if(!member||!member.id||!user)return;
+.recipientInfo strong {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
 
- stopPrivate();
+.recipientInfo small {
+  color: #d1e8e4;
+}
 
- activeRecipient=member;
-
- $("privateScreen").classList.add("active");
-
- $("recipientName").textContent=
-  member.nickname||member.name||"Member";
-
- $("recipientStream").textContent=
-  member.stream||"Member";
-
- const avatar=avatarFor(member);
-
- $("recipientAvatar").replaceWith(avatar);
-
- avatar.id="recipientAvatar";
-
- $("privateMessages").innerHTML=
-  '<p class="note">Opening conversation...</p>';
-
- privateStatus("Connecting...");
-
- $("privateInput").value="";
-
- try{
-
-  const participants=[
-   user.uid,
-   member.id
-  ].sort();
-
-  const chatId=participants.join("_");
-
-  activeChatId=chatId;
-
-  const chatRef=doc(db,"privateChats",chatId);
-
-  const chatSnapshot=await getDoc(chatRef);
-
-  if(!chatSnapshot.exists()){
-
-   await setDoc(chatRef,{
-    participants:participants,
-    createdAt:serverTimestamp()
-   });
-
-  }else{
-
-   const existing=chatSnapshot.data().participants||[];
-
-   if(!existing.includes(user.uid)||
-      !existing.includes(member.id)){
-    throw new Error("This conversation is unavailable.");
-   }
-
-  }
-
-  const messagesRef=collection(
-   db,
-   "privateChats",
-   chatId,
-   "messages"
+#privateMessages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 14px;
+  background: radial-gradient(
+    circle at center,
+    #182337 0%,
+    #101522 75%
   );
-
-  privateUnsub=onSnapshot(
-   messagesRef,
-   snapshot=>{
-    renderMessages($("privateMessages"),snapshot);
-    privateStatus("");
-   },
-   error=>{
-    console.error(error);
-    privateStatus("Could not load messages: "+error.message);
-   }
-  );
-
- }catch(error){
-
-  console.error(error);
-
-  privateStatus(
-   "Could not open chat: "+error.message
-  );
-
- }
-
 }
 
-
-// RETURN TO MEMBER LIST
-
-$("backButton").addEventListener("click",()=>{
-
- stopPrivate();
-
- activeChatId=null;
- activeRecipient=null;
-
- $("privateScreen").classList.remove("active");
-
-});
-
-
-// PRIVATE MESSAGE SENDING
-
-$("privateForm").addEventListener("submit",async event=>{
-
- event.preventDefault();
-
- const text=$("privateInput").value.trim();
-
- if(!text||!activeChatId||!activeRecipient||!user){
-  privateStatus("Select a member first.");
-  return;
- }
-
- $("privateSend").disabled=true;
-
- privateStatus("Sending...");
-
- try{
-
-  const reference=collection(
-   db,
-   "privateChats",
-   activeChatId,
-   "messages"
-  );
-
-  await addDoc(reference,{
-
-   senderId:user.uid,
-
-   senderName:
-    profile.nickname||profile.name||"Student",
-
-   text:text,
-
-   createdAt:serverTimestamp()
-
-  });
-
-  $("privateInput").value="";
-
-  privateStatus("");
-
- }catch(error){
-
-  console.error(error);
-
-  privateStatus(
-   "Message failed: "+error.message
-  );
-
- }finally{
-
-  $("privateSend").disabled=false;
-
- }
-
-});
-
-
-// STREAM MESSAGE SENDING
-
-$("streamForm").addEventListener("submit",async event=>{
-
- event.preventDefault();
-
- const text=$("streamInput").value.trim();
-
- if(!text)return;
-
- try{
-
-  await addDoc(collection(db,"messages"),{
-
-   senderId:user.uid,
-   senderName:profile.nickname||profile.name,
-   stream:profile.stream,
-   text:text,
-   createdAt:serverTimestamp()
-
-  });
-
-  $("streamInput").value="";
-  status("");
-
- }catch(error){
-
-  console.error(error);
-  status("Message failed: "+error.message);
-
- }
-
-});
-
-
-// SCHOOL GROUP MESSAGE SENDING
-
-$("groupForm").addEventListener("submit",async event=>{
-
- event.preventDefault();
-
- const text=$("groupInput").value.trim();
-
- if(!text)return;
-
- try{
-
-  await addDoc(collection(db,"groupMessages"),{
-
-   senderId:user.uid,
-   senderName:profile.nickname||profile.name,
-   text:text,
-   createdAt:serverTimestamp()
-
-  });
-
-  $("groupInput").value="";
-  status("");
-
- }catch(error){
-
-  console.error(error);
-  status("Message failed: "+error.message);
-
- }
-
-});
-
-
-// TABS
-
-document.querySelectorAll("[data-tab]").forEach(button=>{
-
- button.addEventListener("click",async()=>{
-
-  document.querySelectorAll("[data-tab]")
-   .forEach(item=>item.classList.remove("active"));
-
-  button.classList.add("active");
-
-  const tab=button.dataset.tab;
-
-  ["streamPanel","groupPanel","privatePanel"]
-   .forEach(id=>{
-    $(id).classList.toggle("hidden",id!==tab);
-   });
-
-  if(tab==="streamPanel"){
-   loadStream();
+#privateMessages .message {
+  background: #263249;
+  color: white;
+}
+
+#privateMessages .message.mine {
+  background: #075e54;
+  color: white;
+}
+
+#privateMessages .message strong {
+  color: #b9e7df;
+}
+
+#privateMessages .message small {
+  color: #c2d0d8;
+}
+
+#privateStatus {
+  padding: 4px 12px;
+  color: #ffbd75;
+  font-size: 12px;
+  min-height: 20px;
+  background: #101522;
+}
+
+.privateComposer {
+  display: flex;
+  gap: 8px;
+  padding: 10px;
+  background: #1b2435;
+  padding-bottom: max(10px, env(safe-area-inset-bottom));
+}
+
+.privateComposer input {
+  border-radius: 25px;
+  background: #111a2a;
+  color: white;
+  border-color: #39465e;
+}
+
+.privateComposer button {
+  background: #128c7e;
+  border-radius: 50%;
+  width: 48px;
+  height: 48px;
+  flex-shrink: 0;
+}
+
+@media(max-width: 520px) {
+  main {
+    padding: 12px;
   }
 
-  if(tab==="groupPanel"){
-   loadGroup();
+  .messages {
+    height: 300px;
   }
-
-  if(tab==="privatePanel"){
-
-   stopStream();
-   stopGroup();
-
-   activeChatType="private";
-
-   try{
-    await loadMembers();
-   }catch(error){
-    console.error(error);
-    status("Could not load members: "+error.message);
-   }
-
-  }
-
- });
-
-});
-
-
-$("memberSearch").addEventListener(
- "input",
- displayMembers
-);
-
-
-// AUTHENTICATION
-
-onAuthStateChanged(auth,async currentUser=>{
-
- if(!currentUser){
-  location.href="login.html";
-  return;
- }
-
- user=currentUser;
-
- try{
-
-  const profileSnapshot=await getDoc(
-   doc(db,"users",user.uid)
-  );
-
-  if(!profileSnapshot.exists()){
-   location.href="login.html";
-   return;
-  }
-
-  profile=profileSnapshot.data();
-
-  if(profile.status!=="approved"){
-   location.href="login.html";
-   return;
-  }
-
-  $("welcome").textContent=
-   "Welcome, "+
-   (profile.nickname||profile.name||"Student");
-
-  loadStream();
-
- }catch(error){
-
-  console.error(error);
-
-  status("Profile error: "+error.message);
-
- }
-
-});
-
-
-window.addEventListener("beforeunload",()=>{
- stopPrivate();
- stopStream();
- stopGroup();
-});
-
-</script>
-
-</body>
-</html>
+}
