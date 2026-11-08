@@ -9,7 +9,7 @@ import {
 
 import {
   doc,
-  setDoc,
+  writeBatch,
   serverTimestamp
 } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
 
@@ -46,7 +46,12 @@ export async function registerStudent(
     password
   );
 
-  await setDoc(doc(db, "users", credential.user.uid), {
+  const uid = credential.user.uid;
+
+  const batch = writeBatch(db);
+
+  // Private account information
+  batch.set(doc(db, "users", uid), {
     name,
     email,
     stream,
@@ -55,6 +60,17 @@ export async function registerStudent(
     ...(photoURL ? { photoURL } : {}),
     createdAt: serverTimestamp()
   });
+
+  // Public profile for the school directory and private chat list
+  batch.set(doc(db, "publicProfiles", uid), {
+    name,
+    stream,
+    status: "pending",
+    ...(photoURL ? { photoURL } : {}),
+    createdAt: serverTimestamp()
+  });
+
+  await batch.commit();
 
   return credential.user;
 }
