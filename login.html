@@ -1,180 +1,328 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Login | The Magunga High</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#080706">
+<title>Student Login | The Magunga High</title>
 
-  <style>
-    * {
-      box-sizing: border-box;
-      font-family: Arial, sans-serif;
-    }
+<style>
+*{box-sizing:border-box}
+:root{--gold:#f6b91b;--light:#ffe18a}
 
-    body {
-      margin: 0;
-      min-height: 100vh;
-      display: grid;
-      place-items: center;
-      background: #101522;
-      color: white;
-      padding: 20px;
-    }
+body{
+ margin:0;min-height:100vh;color:white;
+ font-family:Arial,Helvetica,sans-serif;
+ background:
+ linear-gradient(90deg,rgba(0,0,0,.08) 0%,rgba(0,0,0,.12) 40%,rgba(0,0,0,.88) 67%,#080706 100%),
+ linear-gradient(0deg,rgba(0,0,0,.7),transparent 30%),
+ url("assets/images/login-student.png") center/cover no-repeat,
+ #100d08;
+}
 
-    .login-box {
-      width: 100%;
-      max-width: 400px;
-      background: #1b2435;
-      padding: 30px;
-      border-radius: 16px;
-      box-shadow: 0 10px 35px #0007;
-    }
+.page{
+ min-height:100vh;display:flex;flex-direction:column;
+ justify-content:center;align-items:flex-end;
+ padding:35px 5% 75px;position:relative;
+}
 
-    h1 {
-      text-align: center;
-      margin-bottom: 8px;
-    }
+.brand{
+ width:min(100%,660px);display:flex;align-items:center;
+ justify-content:center;gap:18px;margin-bottom:28px;
+}
 
-    .subtitle {
-      text-align: center;
-      color: #aebbd0;
-      margin-bottom: 28px;
-    }
+.crest{
+ width:76px;height:86px;display:grid;place-items:center;
+ border:2px solid var(--gold);border-radius:18px 18px 24px 24px;
+ background:linear-gradient(145deg,#14213a,#080b12);
+ color:var(--light);font-size:38px;
+ box-shadow:0 0 22px #f5b51b55;
+}
 
-    label {
-      display: block;
-      margin: 14px 0 7px;
-    }
+.brand h1{
+ margin:0;color:var(--gold);
+ font-family:Georgia,serif;font-size:clamp(22px,3vw,36px);
+ letter-spacing:1px;
+}
+.brand p{
+ margin:7px 0 0;color:var(--light);
+ font-family:Georgia,serif;font-style:italic;
+}
 
-    input {
-      width: 100%;
-      padding: 13px;
-      border: 1px solid #39465e;
-      border-radius: 8px;
-      background: #111a2a;
-      color: white;
-      font-size: 16px;
-    }
+.login-card{
+ width:min(100%,590px);padding:32px 38px 28px;
+ border:2px solid var(--gold);border-radius:22px;
+ background:linear-gradient(145deg,rgba(18,15,13,.95),rgba(8,8,8,.93));
+ box-shadow:0 0 12px #ffca35aa,0 0 42px #d9971733;
+ backdrop-filter:blur(12px);
+}
 
-    button {
-      width: 100%;
-      padding: 14px;
-      margin-top: 22px;
-      border: none;
-      border-radius: 8px;
-      background: #2878ff;
-      color: white;
-      font-size: 16px;
-      font-weight: bold;
-      cursor: pointer;
-    }
+.login-card h2{
+ margin:0;text-align:center;
+ font-family:Georgia,serif;font-size:40px;
+ color:var(--light);text-shadow:0 0 15px #e8a91e55;
+}
+.intro{text-align:center;margin:12px 0 28px;color:#eee;line-height:1.5}
 
-    button:disabled {
-      opacity: 0.6;
-    }
+.field{
+ height:72px;display:flex;align-items:center;gap:15px;
+ padding:0 18px;margin:18px 0;
+ border:1px solid #a87921;border-radius:13px;
+ background:rgba(48,42,38,.75);
+}
+.field-icon{font-size:25px;color:var(--gold)}
+.field input{
+ width:100%;min-width:0;border:0;outline:0;
+ background:transparent;color:white;font-size:18px;
+}
+.field input::placeholder{color:#bcb8b5}
+.show-password{
+ border:0;background:transparent;color:var(--light);
+ font-size:22px;cursor:pointer;padding:6px;
+}
 
-    #message {
-      text-align: center;
-      margin-top: 18px;
-      color: #ffbd75;
-    }
+.sign-in{
+ width:100%;height:72px;margin-top:8px;
+ border:1px solid #ffdc75;border-radius:13px;
+ color:#100d06;font-size:21px;font-weight:bold;
+ background:linear-gradient(100deg,#ffcf48,#f2a900);
+ box-shadow:0 0 20px #eaa51d55;cursor:pointer;
+}
+.sign-in:disabled,.google-btn:disabled{opacity:.6;cursor:wait}
 
-    .back {
-      display: block;
-      text-align: center;
-      margin-top: 20px;
-      color: #83b3ff;
-      text-decoration: none;
-    }
-  </style>
+.or{
+ display:flex;align-items:center;gap:16px;
+ margin:24px 0 18px;color:#f7e7c4;
+ font-family:Georgia,serif;font-size:20px;
+}
+.or:before,.or:after{
+ content:"";height:1px;flex:1;background:#99702b;
+}
+
+.google-btn{
+ width:100%;min-height:64px;border:1px solid #b78326;
+ border-radius:40px;background:rgba(0,0,0,.35);
+ color:white;font-size:18px;cursor:pointer;
+}
+.google-g{font-size:25px;font-weight:bold;color:#4285f4;margin-right:12px}
+
+.links{
+ display:flex;justify-content:center;gap:16px;
+ flex-wrap:wrap;margin-top:22px;color:var(--gold);
+}
+.links a{color:var(--gold);text-decoration:none}
+.links a:hover{text-decoration:underline}
+
+#message{
+ min-height:20px;margin:15px 0 0;text-align:center;
+ color:#ffd36c;font-size:14px;line-height:1.5;
+}
+
+.footer{
+ position:absolute;bottom:20px;left:4%;right:4%;
+ display:flex;align-items:center;gap:18px;
+ color:var(--light);font-family:Georgia,serif;
+ font-size:clamp(17px,2.5vw,29px);
+ font-style:italic;text-align:center;white-space:nowrap;
+}
+.footer:before,.footer:after{
+ content:"";height:2px;flex:1;background:var(--gold);
+ box-shadow:0 0 8px #f4b51e;
+}
+
+@media(max-width:760px){
+ body{
+  background:
+  linear-gradient(180deg,rgba(0,0,0,.3),rgba(0,0,0,.85) 38%,#080706 100%),
+  url("assets/images/login-student.png") center top/auto 48vh no-repeat,
+  #080706;
+ }
+ .page{align-items:center;justify-content:flex-start;padding:22vh 16px 82px}
+ .brand{gap:12px;margin-bottom:18px}
+ .crest{width:54px;height:62px;font-size:27px}
+ .brand h1{font-size:clamp(19px,5vw,27px)}
+ .brand p{font-size:13px}
+ .login-card{padding:25px 19px 22px;border-radius:18px}
+ .login-card h2{font-size:32px}
+ .intro{font-size:14px;margin-bottom:20px}
+ .field{height:61px;margin:14px 0;padding:0 13px}
+ .field input{font-size:16px}
+ .sign-in{height:60px;font-size:19px}
+ .google-btn{min-height:56px;font-size:16px}
+ .footer{bottom:16px;gap:9px;font-size:16px}
+}
+@media(max-width:360px){
+ .page{padding-left:11px;padding-right:11px}
+ .login-card{padding-left:14px;padding-right:14px}
+ .brand h1{font-size:18px}
+ .footer{font-size:13px}
+}
+</style>
 </head>
 
 <body>
-  <main class="login-box">
-    <h1>The Magunga High</h1>
-    <p class="subtitle">Student Portal Login</p>
+<main class="page">
 
-    <form id="loginForm">
-      <label for="email">Email address</label>
-      <input
-        type="email"
-        id="email"
-        required
-        autocomplete="email"
-        placeholder="Enter your email"
-      >
+<header class="brand">
+ <div class="crest">♜</div>
+ <div>
+  <h1>THE MAGUNGA HIGH</h1>
+  <p>Knowledge · Discipline · Success</p>
+ </div>
+</header>
 
-      <label for="password">Password</label>
-      <input
-        type="password"
-        id="password"
-        required
-        autocomplete="current-password"
-        placeholder="Enter your password"
-      >
+<section class="login-card">
+ <h2>Student Login</h2>
+ <p class="intro">Access Magunga AI and your learning resources</p>
 
-      <button type="submit" id="loginButton">Login</button>
-    </form>
+ <form id="loginForm">
+  <div class="field">
+   <span class="field-icon">✉</span>
+   <input id="email" type="email"
+    placeholder="Enter your Gmail address"
+    autocomplete="username" required>
+  </div>
 
-    <p id="message" role="status"></p>
+  <div class="field">
+   <span class="field-icon">🔒</span>
+   <input id="password" type="password"
+    placeholder="Enter your password"
+    autocomplete="current-password" required>
+   <button class="show-password" type="button"
+    id="togglePassword">◉</button>
+  </div>
 
-    <a class="back" href="index.html">Back to Home</a>
-  </main>
+  <button class="sign-in" id="loginButton" type="submit">
+   ↪ Sign In
+  </button>
+ </form>
 
-  <script type="module">
-    import { loginStudent } from "./assets/js/auth.js";
-    import { db } from "./assets/js/firebase.js";
-    import {
-      doc,
-      getDoc
-    } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
+ <div class="or">or</div>
 
-    const form = document.getElementById("loginForm");
-    const message = document.getElementById("message");
-    const button = document.getElementById("loginButton");
+ <button class="google-btn" id="googleButton" type="button">
+  <span class="google-g">G</span> Continue with Google
+ </button>
 
-    form.addEventListener("submit", async (event) => {
-      event.preventDefault();
+ <p id="message" role="status" aria-live="polite"></p>
 
-      button.disabled = true;
-      message.textContent = "Signing in...";
+ <nav class="links">
+  <a href="#" id="forgotPassword">Forgot Password?</a>
+  <span>|</span>
+  <a href="index.html">Back to Home</a>
+ </nav>
+</section>
 
-      try {
-        const email = document.getElementById("email").value.trim();
-        const password = document.getElementById("password").value;
+<div class="footer">Together for a brighter future</div>
+</main>
 
-        const user = await loginStudent(email, password);
+<script type="module">
+import {loginStudent} from "./assets/js/auth.js";
+import {auth,db} from "./assets/js/firebase.js";
 
-        const profile = await getDoc(doc(db, "users", user.uid));
+import {
+ GoogleAuthProvider,
+ signInWithPopup,
+ sendPasswordResetEmail
+} from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
 
-        if (!profile.exists()) {
-          message.textContent = "Account profile not found.";
-          return;
-        }
+import {
+ doc,getDoc
+} from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
 
-        const data = profile.data();
+const form=document.getElementById("loginForm");
+const message=document.getElementById("message");
+const loginButton=document.getElementById("loginButton");
+const googleButton=document.getElementById("googleButton");
+const email=document.getElementById("email");
+const password=document.getElementById("password");
 
-        if (data.status !== "approved") {
-          message.textContent =
-            "Your account is awaiting approval. Contact your stream admin.";
-          return;
-        }
+function showMessage(text,success=false){
+ message.textContent=text;
+ message.style.color=success?"#b8efbd":"#ffd36c";
+}
 
-        if (data.role === "superadmin" ||
-            data.role === "streamAdmin") {
-          window.location.href = "admin.html";
-        } else {
-          window.location.href = "dashboard.html";
-        }
+async function finishLogin(user){
+ const profile=await getDoc(doc(db,"users",user.uid));
 
-      } catch (error) {
-        message.textContent =
-          "Login failed: " + error.message;
-      } finally {
-        button.disabled = false;
-      }
-    });
-  </script>
+ if(!profile.exists()){
+  showMessage("Account profile not found. Please register first.");
+  return;
+ }
+
+ const data=profile.data();
+
+ if(data.status!=="approved"){
+  showMessage("Your account is awaiting admin approval.");
+  return;
+ }
+
+ showMessage("Login successful. Opening your portal...",true);
+
+ if(data.role==="superadmin" || data.role==="streamAdmin"){
+  window.location.href="admin.html";
+ }else{
+  window.location.href="dashboard.html";
+ }
+}
+
+document.getElementById("togglePassword").onclick=()=>{
+ const hidden=password.type==="password";
+ password.type=hidden?"text":"password";
+ document.getElementById("togglePassword").textContent=hidden?"◎":"◉";
+};
+
+form.addEventListener("submit",async event=>{
+ event.preventDefault();
+ loginButton.disabled=true;
+ googleButton.disabled=true;
+ showMessage("Signing in...");
+
+ try{
+  const user=await loginStudent(email.value.trim(),password.value);
+  await finishLogin(user);
+ }catch(error){
+  showMessage("Login failed: "+error.message);
+ }finally{
+  loginButton.disabled=false;
+  googleButton.disabled=false;
+ }
+});
+
+document.getElementById("forgotPassword").onclick=async event=>{
+ event.preventDefault();
+
+ const address=email.value.trim();
+
+ if(!address){
+  showMessage("Enter your Gmail address first.");
+  email.focus();
+  return;
+ }
+
+ try{
+  await sendPasswordResetEmail(auth,address);
+  showMessage("Password reset email sent. Check your inbox.",true);
+ }catch(error){
+  showMessage("Could not send reset email: "+error.message);
+ }
+};
+
+googleButton.onclick=async()=>{
+ googleButton.disabled=true;
+ loginButton.disabled=true;
+ showMessage("Connecting to Google...");
+
+ try{
+  const provider=new GoogleAuthProvider();
+  const result=await signInWithPopup(auth,provider);
+  await finishLogin(result.user);
+ }catch(error){
+  showMessage("Google sign-in failed: "+error.message);
+ }finally{
+  googleButton.disabled=false;
+  loginButton.disabled=false;
+ }
+};
+</script>
 </body>
 </html>
