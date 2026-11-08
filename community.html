@@ -1,0 +1,187 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Community | The Magunga High</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      margin: 0;
+      background: #101522;
+      color: white;
+    }
+
+    header {
+      background: #1b2435;
+      padding: 20px;
+    }
+
+    header a {
+      color: #83b3ff;
+      text-decoration: none;
+    }
+
+    main {
+      max-width: 1000px;
+      margin: auto;
+      padding: 22px;
+    }
+
+    .intro {
+      background: #1b2435;
+      padding: 22px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+    }
+
+    .streams {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
+    }
+
+    .stream {
+      padding: 22px;
+      border-radius: 12px;
+      background: #1b2435;
+      border-left: 5px solid var(--stream-color);
+    }
+
+    .stream h3 {
+      margin-top: 0;
+    }
+
+    .victors { --stream-color: #2878ff; }
+    .heroes { --stream-color: #18a66a; }
+    .winners { --stream-color: #e5b323; }
+    .champions { --stream-color: #9865ee; }
+    .archivers { --stream-color: #e34c4c; }
+
+    .rules {
+      margin-top: 22px;
+      padding: 22px;
+      background: #1b2435;
+      border-radius: 12px;
+      line-height: 1.7;
+    }
+
+    #status {
+      color: #ffbd75;
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <h2>The Magunga High</h2>
+  <a href="dashboard.html">← Back to Dashboard</a>
+</header>
+
+<main>
+
+  <section class="intro">
+    <h1>👥 Student Community</h1>
+    <p>
+      Five streams. One school community.
+      Connect, learn and support one another.
+    </p>
+    <p id="status">Checking your account...</p>
+  </section>
+
+  <section class="streams">
+
+    <article class="stream victors">
+      <h3>Victors</h3>
+      <p>Blue stream</p>
+      <p>Focused on teamwork and achievement.</p>
+    </article>
+
+    <article class="stream heroes">
+      <h3>Heroes</h3>
+      <p>Green stream</p>
+      <p>Focused on courage and cooperation.</p>
+    </article>
+
+    <article class="stream winners">
+      <h3>Winners</h3>
+      <p>Gold stream</p>
+      <p>Focused on effort and success.</p>
+    </article>
+
+    <article class="stream champions">
+      <h3>Champions</h3>
+      <p>Purple stream</p>
+      <p>Focused on discipline and excellence.</p>
+    </article>
+
+    <article class="stream archivers">
+      <h3>Archivers</h3>
+      <p>Red stream</p>
+      <p>Focused on progress and determination.</p>
+    </article>
+
+  </section>
+
+  <section class="rules">
+    <h2>Community Guidelines</h2>
+    <ul>
+      <li>Respect every member, regardless of stream.</li>
+      <li>Keep conversations friendly and constructive.</li>
+      <li>Do not share another student's private information.</li>
+      <li>Avoid spam and unnecessary arguments.</li>
+      <li>Use the community to support learning.</li>
+    </ul>
+  </section>
+
+</main>
+
+<script type="module">
+  import { auth, db } from "./assets/js/firebase.js";
+
+  import {
+    onAuthStateChanged
+  } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
+
+  import {
+    doc,
+    getDoc
+  } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
+
+  const status = document.getElementById("status");
+
+  onAuthStateChanged(auth, async (user) => {
+    if (!user) {
+      window.location.href = "login.html";
+      return;
+    }
+
+    try {
+      const profile = await getDoc(doc(db, "users", user.uid));
+
+      if (!profile.exists() ||
+          profile.data().status !== "approved") {
+        window.location.href = "login.html";
+        return;
+      }
+
+      status.textContent =
+        "Welcome, " + (profile.data().name || "Student") +
+        " | Your stream: " + profile.data().stream;
+
+    } catch (error) {
+      status.textContent = "Unable to verify your account.";
+      console.error(error);
+    }
+  });
+</script>
+
+</body>
+</html>
