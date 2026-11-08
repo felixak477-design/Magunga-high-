@@ -1,6 +1,6 @@
 
 const CLOUDINARY_CLOUD_NAME = "kvw56gnz";
-const CLOUDINARY_UPLOAD_PRESET = "ML raw";
+const CLOUDINARY_UPLOAD_PRESET = "Images";
 
 export async function uploadProfileImage(file) {
   if (!file) return "";
