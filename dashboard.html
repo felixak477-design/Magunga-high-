@@ -1,0 +1,223 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Dashboard | The Magunga High</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      margin: 0;
+      background: #101522;
+      color: white;
+    }
+
+    header {
+      background: #1b2435;
+      padding: 18px 22px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    header h2 {
+      margin: 0;
+    }
+
+    button {
+      border: 0;
+      padding: 11px 16px;
+      border-radius: 7px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .logout {
+      background: #e64b4b;
+      color: white;
+    }
+
+    main {
+      max-width: 1000px;
+      margin: auto;
+      padding: 22px;
+    }
+
+    .welcome {
+      background: #1b2435;
+      padding: 24px;
+      border-radius: 14px;
+      margin-bottom: 20px;
+    }
+
+    .stream {
+      display: inline-block;
+      padding: 8px 15px;
+      border-radius: 20px;
+      font-weight: bold;
+      background: #2878ff;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 16px;
+    }
+
+    .card {
+      background: #1b2435;
+      padding: 22px;
+      border-radius: 12px;
+    }
+
+    .card h3 {
+      margin-top: 0;
+    }
+
+    .card p {
+      color: #b7c2d4;
+      line-height: 1.5;
+    }
+
+    .card button {
+      background: #2878ff;
+      color: white;
+    }
+
+    #statusMessage {
+      color: #ffbd75;
+    }
+
+    footer {
+      text-align: center;
+      padding: 25px;
+      color: #8995a8;
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <h2>Magunga High</h2>
+  <button class="logout" id="logoutButton">Logout</button>
+</header>
+
+<main>
+
+  <section class="welcome">
+    <h1 id="welcomeName">Welcome, Student</h1>
+    <p>Your student community dashboard.</p>
+    <p>Your stream:</p>
+    <span class="stream" id="streamName">Loading...</span>
+    <p id="statusMessage"></p>
+  </section>
+
+  <section class="cards">
+
+    <div class="card">
+      <h3>📢 Announcements</h3>
+      <p>Read important school and stream announcements.</p>
+      <button onclick="location.href='announcements.html'">
+        View Announcements
+      </button>
+    </div>
+
+    <div class="card">
+      <h3>📚 Learning Centre</h3>
+      <p>Access Form 4 notes, revision materials and learning links.</p>
+      <button onclick="location.href='materials.html'">
+        Open Materials
+      </button>
+    </div>
+
+    <div class="card">
+      <h3>💬 Stream Chat</h3>
+      <p>Communicate with members of your stream.</p>
+      <button onclick="location.href='chat.html'">
+        Open Chat
+      </button>
+    </div>
+
+    <div class="card">
+      <h3>👥 Community</h3>
+      <p>Connect with other students across the five streams.</p>
+      <button onclick="location.href='community.html'">
+        Explore Community
+      </button>
+    </div>
+
+  </section>
+
+</main>
+
+<footer>
+  The Magunga High Student Community
+</footer>
+
+<script type="module">
+  import { auth, db } from "./assets/js/firebase.js";
+
+  import {
+    onAuthStateChanged,
+    signOut
+  } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
+
+  import {
+    doc,
+    getDoc
+  } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
+
+  const welcomeName = document.getElementById("welcomeName");
+  const streamName = document.getElementById("streamName");
+  const statusMessage = document.getElementById("statusMessage");
+
+  onAuthStateChanged(auth, async (user) => {
+    if (!user) {
+      window.location.href = "login.html";
+      return;
+    }
+
+    try {
+      const profile = await getDoc(doc(db, "users", user.uid));
+
+      if (!profile.exists()) {
+        await signOut(auth);
+        window.location.href = "login.html";
+        return;
+      }
+
+      const data = profile.data();
+
+      if (data.status !== "approved") {
+        await signOut(auth);
+        window.location.href = "login.html";
+        return;
+      }
+
+      welcomeName.textContent = "Welcome, " + data.name;
+      streamName.textContent = data.stream;
+
+    } catch (error) {
+      statusMessage.textContent =
+        "Unable to load your profile. Please try again.";
+      console.error(error);
+    }
+  });
+
+  document.getElementById("logoutButton").addEventListener("click", async () => {
+    await signOut(auth);
+    window.location.href = "login.html";
+  });
+</script>
+
+</body>
+</html>
