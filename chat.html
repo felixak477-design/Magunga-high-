@@ -6,20 +6,18 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#101522">
 <title>Chats | The Magunga High</title>
-
 <style>
 *{box-sizing:border-box;font-family:Arial,sans-serif}
 body{margin:0;background:#101522;color:white}
-header{padding:17px;background:#1b2435;border-bottom:1px solid #303c52}
+header{padding:17px;background:#1b2435}
 header a{color:#83b3ff;text-decoration:none}
 main{max-width:900px;margin:auto;padding:18px}
-h1{font-size:25px}
 .tabs{display:flex;gap:8px;flex-wrap:wrap;margin:20px 0}
 .tabs button{flex:1;min-width:100px;background:#263249}
 .tabs button.active{background:#2878ff}
 .panel{background:#1b2435;padding:15px;border-radius:12px}
 .hidden{display:none}
-#messages{height:390px;overflow-y:auto;background:#111a2a;padding:12px;border-radius:9px;margin:12px 0}
+.messagesArea,#messages{height:350px;overflow-y:auto;background:#111a2a;padding:12px;border-radius:9px;margin:12px 0}
 .message{background:#263249;padding:11px;border-radius:9px;margin-bottom:10px;overflow-wrap:anywhere}
 .message strong{color:#83b3ff}
 .message small{display:block;color:#aab8cd;margin-top:6px}
@@ -28,388 +26,422 @@ input{min-width:0;flex:1;padding:13px;border-radius:8px;border:1px solid #39465e
 button{border:0;border-radius:8px;padding:12px;background:#2878ff;color:white;font-weight:bold;cursor:pointer}
 button:disabled{opacity:.5}
 #status{color:#ffbd75;min-height:20px}
-#chatList{display:grid;gap:8px;margin:12px 0}
-.chatChoice{background:#263249;text-align:left}
-#recipientForm{margin:12px 0}
+.chatChoice{background:#263249;text-align:left;width:100%;display:flex;align-items:center;gap:12px;margin:6px 0}
+.avatar{width:42px;height:42px;border-radius:50%;object-fit:cover;background:#405574;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0}
 .note{color:#aab8cd;font-size:13px;line-height:1.5}
+@media(max-width:520px){main{padding:12px}.messagesArea,#messages{height:300px}}
 </style>
 </head>
-
 <body>
 <header>
-  <h2>THE MAGUNGA HIGH</h2>
-  <a href="dashboard.html">← Back to Dashboard</a>
+<h2>THE MAGUNGA HIGH</h2>
+<a href="dashboard.html">← Back to Dashboard</a>
 </header>
 
 <main>
-  <h1>💬 Student Chats</h1>
-  <p id="welcome">Checking your account...</p>
+<h1>💬 Student Chats</h1>
+<p id="welcome">Checking your account...</p>
 
-  <div class="tabs">
-    <button class="active" data-tab="streamPanel">Stream Chat</button>
-    <button data-tab="groupPanel">School Group</button>
-    <button data-tab="privatePanel">Private Chat</button>
-  </div>
+<div class="tabs">
+<button class="active" data-tab="streamPanel">Stream Chat</button>
+<button data-tab="groupPanel">School Group</button>
+<button data-tab="privatePanel">Private Chat</button>
+</div>
 
-  <section id="streamPanel" class="panel">
-    <h3 id="streamTitle">Your Stream</h3>
-    <p class="note">Chat with approved students in your own stream.</p>
-    <div id="streamMessages" class="messagesArea"></div>
-  </section>
+<section id="streamPanel" class="panel">
+<h3 id="streamTitle">Your Stream</h3>
+<p class="note">Chat with approved students in your own stream.</p>
+<div id="streamMessages" class="messagesArea"></div>
+</section>
 
-  <section id="groupPanel" class="panel hidden">
-    <h3>School-wide Group Chat</h3>
-    <p class="note">Discuss school matters with approved students from all five streams.</p>
-    <div id="groupMessages" class="messagesArea"></div>
-  </section>
+<section id="groupPanel" class="panel hidden">
+<h3>School-wide Group Chat</h3>
+<p class="note">Chat with approved students from all five streams.</p>
+<div id="groupMessages" class="messagesArea"></div>
+</section>
 
-  <section id="privatePanel" class="panel hidden">
-    <h3>Private Chat</h3>
-    <p class="note">Enter the Firebase UID of an approved student to start a private conversation.</p>
+<section id="privatePanel" class="panel hidden">
+<h3>Private Chat</h3>
+<p class="note">Search by member name or nickname and select the correct person.</p>
+<input id="memberSearch" type="search"
+placeholder="Search approved members..." autocomplete="off">
+<div id="chatList"></div>
+<p id="privateTitle" class="note">Choose a member to start chatting.</p>
+</section>
 
-    <form id="recipientForm">
-      <input id="recipientId" placeholder="Student Firebase UID" required>
-      <button type="submit">Open</button>
-    </form>
+<div id="messages" style="display:none"></div>
 
-    <div id="chatList"></div>
-    <p id="privateTitle"></p>
-  </section>
+<form id="messageForm">
+<input id="messageInput" maxlength="2000"
+placeholder="Write a message..." required>
+<button id="sendButton" type="submit">Send</button>
+</form>
 
-  <div id="messages"></div>
-
-  <form id="messageForm">
-    <input id="messageInput" maxlength="2000"
-      placeholder="Write a message..." required>
-    <button id="sendButton" type="submit">Send</button>
-  </form>
-
-  <p id="status"></p>
+<p id="status"></p>
 </main>
 
 <script type="module">
 import {auth,db} from "./assets/js/firebase.js";
 
-import {
-  onAuthStateChanged
-} from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
+import {onAuthStateChanged} from
+"https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
 
 import {
-  collection,doc,getDoc,setDoc,addDoc,
-  query,where,onSnapshot,serverTimestamp,
-  orderBy
-} from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
+collection,doc,getDoc,getDocs,setDoc,addDoc,
+query,where,onSnapshot,serverTimestamp
+} from
+"https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
 
-const $ = id => document.getElementById(id);
-
-const streamMessages = $("streamMessages");
-const groupMessages = $("groupMessages");
-const messagesBox = $("messages");
-const messageForm = $("messageForm");
-const messageInput = $("messageInput");
-const sendButton = $("sendButton");
-const statusBox = $("status");
+const $=id=>document.getElementById(id);
 
 let user=null;
 let profile=null;
-let activeTab="streamPanel";
 let activeChatType="stream";
 let activeChatId=null;
 let unsubMessages=null;
-let unsubChats=null;
-
-messagesBox.style.display="none";
-
-document.querySelectorAll("[data-tab]").forEach(button=>{
-  button.addEventListener("click",()=>{
-    document.querySelectorAll("[data-tab]").forEach(b=>b.classList.remove("active"));
-    button.classList.add("active");
-
-    activeTab=button.dataset.tab;
-
-    ["streamPanel","groupPanel","privatePanel"].forEach(id=>{
-      $(id).classList.toggle("hidden",id!==activeTab);
-    });
-
-    if(activeTab==="streamPanel"){
-      activeChatType="stream";
-      loadStreamChat();
-    }
-
-    if(activeTab==="groupPanel"){
-      activeChatType="group";
-      loadGroupChat();
-    }
-
-    if(activeTab==="privatePanel"){
-      activeChatType="private";
-      showPrivateStart();
-    }
-  });
-});
+let approvedMembers=[];
+let membersLoaded=false;
 
 function showStatus(message){
-  statusBox.textContent=message;
+$("status").textContent=message;
 }
 
 function stopMessages(){
-  if(unsubMessages){
-    unsubMessages();
-    unsubMessages=null;
-  }
+if(unsubMessages){
+unsubMessages();
+unsubMessages=null;
+}
 }
 
-function renderMessages(container,snapshot){
-  container.replaceChildren();
-
-  if(snapshot.empty){
-    container.textContent="No messages yet. Start the conversation!";
-    return;
-  }
-
-  snapshot.forEach(item=>{
-    const data=item.data();
-
-    const card=document.createElement("div");
-    card.className="message";
-
-    const name=document.createElement("strong");
-    name.textContent=data.senderName || "Student";
-
-    const text=document.createElement("p");
-    text.textContent=data.text || "";
-
-    const time=document.createElement("small");
-    time.textContent=data.createdAt?.toDate
-      ? data.createdAt.toDate().toLocaleString()
-      : "Just now";
-
-    card.append(name,text,time);
-    container.appendChild(card);
-  });
-
-  container.scrollTop=container.scrollHeight;
+function sortDocs(docs){
+return [...docs].sort((a,b)=>
+(a.data().createdAt?.toMillis?.()||0)-
+(b.data().createdAt?.toMillis?.()||0)
+);
 }
 
-function watchMessages(path,container){
-  stopMessages();
+function renderMessages(container,docs){
+container.replaceChildren();
 
-  const messagesQuery=query(
-    collection(db,...path),
-    orderBy("createdAt","asc")
-  );
+if(!docs.length){
+container.textContent="No messages yet. Start the conversation!";
+return;
+}
 
-  unsubMessages=onSnapshot(messagesQuery,snapshot=>{
-    renderMessages(container,snapshot);
-  },error=>{
-    console.error(error);
-    showStatus("Could not load messages: "+error.message);
-  });
+docs.forEach(item=>{
+const data=item.data();
+const card=document.createElement("div");
+card.className="message";
+
+const name=document.createElement("strong");
+name.textContent=data.senderName||"Student";
+
+const text=document.createElement("p");
+text.textContent=data.text||"";
+
+const time=document.createElement("small");
+time.textContent=data.createdAt?.toDate
+?data.createdAt.toDate().toLocaleString()
+:"Just now";
+
+card.append(name,text,time);
+container.appendChild(card);
+});
+
+container.scrollTop=container.scrollHeight;
+}
+
+function watchMessages(reference,container){
+stopMessages();
+
+unsubMessages=onSnapshot(reference,snapshot=>{
+renderMessages(container,sortDocs(snapshot.docs));
+},error=>{
+console.error(error);
+showStatus("Could not load messages: "+error.message);
+});
 }
 
 function loadStreamChat(){
-  if(!profile)return;
+if(!profile)return;
 
-  $("streamTitle").textContent=profile.stream+" Stream Chat";
+activeChatType="stream";
+activeChatId=null;
 
-  watchMessages(
-    ["messages"],
-    streamMessages
-  );
+$("streamTitle").textContent=profile.stream+" Stream Chat";
+$("messages").style.display="none";
+$("messageForm").style.display="flex";
 
-  // Stream filtering is applied in the Firestore query.
-  stopMessages();
-
-  const q=query(
-    collection(db,"messages"),
-    where("stream","==",profile.stream)
-  );
-
-  unsubMessages=onSnapshot(q,snapshot=>{
-    const docs=snapshot.docs.sort((a,b)=>{
-      const x=a.data().createdAt?.toMillis?.()||0;
-      const y=b.data().createdAt?.toMillis?.()||0;
-      return x-y;
-    });
-
-    renderMessages(streamMessages,{
-      empty:docs.length===0,
-      forEach:callback=>docs.forEach(callback)
-    });
-  },error=>{
-    showStatus("Stream chat error: "+error.message);
-  });
+watchMessages(
+query(collection(db,"messages"),
+where("stream","==",profile.stream)),
+$("streamMessages")
+);
 }
 
 function loadGroupChat(){
-  const q=query(
-    collection(db,"groupMessages"),
-    orderBy("createdAt","asc")
-  );
+activeChatType="group";
+activeChatId=null;
 
-  stopMessages();
+$("messages").style.display="none";
+$("messageForm").style.display="flex";
 
-  unsubMessages=onSnapshot(q,snapshot=>{
-    renderMessages(groupMessages,snapshot);
-  },error=>{
-    showStatus("Group chat error: "+error.message);
-  });
+watchMessages(
+collection(db,"groupMessages"),
+$("groupMessages")
+);
 }
 
-function showPrivateStart(){
-  stopMessages();
-  activeChatId=null;
-  $("privateTitle").textContent="Choose a student to start chatting.";
+async function loadApprovedMembers(){
+if(membersLoaded)return;
+
+showStatus("Loading approved members...");
+
+const result=await getDocs(query(
+collection(db,"users"),
+where("status","==","approved")
+));
+
+approvedMembers=result.docs
+.filter(item=>item.id!==user.uid)
+.map(item=>({id:item.id,...item.data()}));
+
+membersLoaded=true;
+showStatus("");
+displayMemberMatches();
 }
 
-$("recipientForm").addEventListener("submit",async event=>{
-  event.preventDefault();
+function makeInitial(member){
+const span=document.createElement("span");
+span.className="avatar";
+span.textContent=(member.nickname||member.name||"M")
+.charAt(0).toUpperCase();
+return span;
+}
 
-  const recipientId=$("recipientId").value.trim();
+function displayMemberMatches(){
+const list=$("chatList");
+list.replaceChildren();
 
-  if(!recipientId || recipientId===user.uid){
-    showStatus("Enter another student's UID.");
-    return;
-  }
+const term=$("memberSearch").value.trim().toLowerCase();
 
-  try{
-    showStatus("Checking student account...");
+const matches=approvedMembers.filter(member=>{
+const name=(member.name||"").toLowerCase();
+const nickname=(member.nickname||"").toLowerCase();
 
-    const recipientRef=doc(db,"users",recipientId);
-    const recipientSnap=await getDoc(recipientRef);
+return !term||name.includes(term)||nickname.includes(term);
+}).slice(0,40);
 
-    if(!recipientSnap.exists() ||
-       recipientSnap.data().status!=="approved"){
-      showStatus("Student not found or account not approved.");
-      return;
-    }
+if(!matches.length){
+list.textContent=term
+?"No matching approved members found."
+:"No other approved members found.";
+return;
+}
 
-    const participants=[user.uid,recipientId].sort();
-    const chatId=participants.join("_");
-    const chatRef=doc(db,"privateChats",chatId);
+matches.forEach(member=>{
+const button=document.createElement("button");
+button.type="button";
+button.className="chatChoice";
 
-    const chatSnap=await getDoc(chatRef);
+const photo=member.photoURL||member.photoUrl||"";
+let avatar=makeInitial(member);
 
-    if(!chatSnap.exists()){
-      await setDoc(chatRef,{
-        participants:participants,
-        createdAt:serverTimestamp()
-      });
-    }
+if(/^https?:\/\//i.test(photo)){
+const img=document.createElement("img");
+img.src=photo;
+img.alt="";
+img.className="avatar";
+img.onerror=()=>img.replaceWith(makeInitial(member));
+avatar=img;
+}
 
-    activeChatId=chatId;
-    activeChatType="private";
+const label=document.createElement("span");
 
-    $("privateTitle").textContent=
-      "Private conversation with "+(recipientSnap.data().name||"Student");
+const displayName=document.createElement("strong");
+displayName.textContent=member.nickname||member.name||"Member";
 
-    stopMessages();
+const detail=document.createElement("small");
+detail.style.display="block";
+detail.style.color="#aab8cd";
+detail.textContent=
+(member.nickname&&member.name?member.name+" · ":"")+
+(member.stream||"");
 
-    const q=query(
-      collection(db,"privateChats",chatId,"messages"),
-      orderBy("createdAt","asc")
-    );
+label.append(displayName,detail);
+button.append(avatar,label);
 
-    unsubMessages=onSnapshot(q,snapshot=>{
-      renderMessages(messagesBox,snapshot);
-    },error=>{
-      showStatus("Private chat error: "+error.message);
-    });
+button.addEventListener("click",()=>openPrivateChat(member));
+list.appendChild(button);
+});
+}
 
-    messagesBox.style.display="block";
-    showStatus("");
+async function openPrivateChat(member){
+if(!user||!member?.id)return;
 
-  }catch(error){
-    console.error(error);
-    showStatus("Could not open private chat: "+error.message);
-  }
+try{
+showStatus("Opening conversation...");
+
+const participants=[user.uid,member.id].sort();
+const chatId=participants.join("_");
+const chatRef=doc(db,"privateChats",chatId);
+
+const chatSnap=await getDoc(chatRef);
+
+if(!chatSnap.exists()){
+await setDoc(chatRef,{
+participants,
+createdAt:serverTimestamp()
+});
+}
+
+activeChatId=chatId;
+activeChatType="private";
+
+$("privateTitle").textContent=
+"Private conversation with "+
+(member.nickname||member.name||"Member");
+
+$("messages").style.display="block";
+$("messageForm").style.display="flex";
+
+watchMessages(
+collection(db,"privateChats",chatId,"messages"),
+$("messages")
+);
+
+showStatus("");
+
+}catch(error){
+console.error(error);
+showStatus("Could not open private chat: "+error.message);
+}
+}
+
+document.querySelectorAll("[data-tab]").forEach(button=>{
+button.addEventListener("click",async()=>{
+document.querySelectorAll("[data-tab]")
+.forEach(item=>item.classList.remove("active"));
+
+button.classList.add("active");
+
+const tab=button.dataset.tab;
+
+["streamPanel","groupPanel","privatePanel"].forEach(id=>{
+$(id).classList.toggle("hidden",id!==tab);
 });
 
-messageForm.addEventListener("submit",async event=>{
-  event.preventDefault();
+stopMessages();
 
-  const text=messageInput.value.trim();
+if(tab==="streamPanel")loadStreamChat();
 
-  if(!text || !user || !profile)return;
+if(tab==="groupPanel")loadGroupChat();
 
-  let targetCollection;
+if(tab==="privatePanel"){
+activeChatType="private";
+activeChatId=null;
 
-  if(activeChatType==="stream"){
-    targetCollection=collection(db,"messages");
-  }else if(activeChatType==="group"){
-    targetCollection=collection(db,"groupMessages");
-  }else{
-    if(!activeChatId){
-      showStatus("Open a private conversation first.");
-      return;
-    }
+$("messages").style.display="none";
+$("messageForm").style.display="none";
 
-    targetCollection=collection(
-      db,"privateChats",activeChatId,"messages"
-    );
-  }
+$("privateTitle").textContent=
+"Choose a member to start a private conversation.";
 
-  sendButton.disabled=true;
+try{
+await loadApprovedMembers();
+}catch(error){
+console.error(error);
+showStatus("Could not load members: "+error.message);
+}
+}
+});
+});
 
-  try{
-    const message={
-      senderId:user.uid,
-      senderName:profile.name || "Student",
-      text:text,
-      createdAt:serverTimestamp()
-    };
+$("memberSearch").addEventListener("input",displayMemberMatches);
 
-    if(activeChatType==="stream"){
-      message.stream=profile.stream;
-    }
+$("messageForm").addEventListener("submit",async event=>{
+event.preventDefault();
 
-    await addDoc(targetCollection,message);
+const text=$("messageInput").value.trim();
 
-    messageInput.value="";
-    showStatus("");
+if(!text||!user||!profile)return;
 
-  }catch(error){
-    console.error(error);
-    showStatus("Message failed: "+error.message);
-  }finally{
-    sendButton.disabled=false;
-  }
+let target;
+
+if(activeChatType==="stream"){
+target=collection(db,"messages");
+}else if(activeChatType==="group"){
+target=collection(db,"groupMessages");
+}else{
+if(!activeChatId){
+showStatus("Select a member before sending a private message.");
+return;
+}
+
+target=collection(
+db,"privateChats",activeChatId,"messages"
+);
+}
+
+$("sendButton").disabled=true;
+
+try{
+const message={
+senderId:user.uid,
+senderName:profile.nickname||profile.name||"Student",
+text,
+createdAt:serverTimestamp()
+};
+
+if(activeChatType==="stream"){
+message.stream=profile.stream;
+}
+
+await addDoc(target,message);
+
+$("messageInput").value="";
+showStatus("");
+
+}catch(error){
+console.error(error);
+showStatus("Message failed: "+error.message);
+}finally{
+$("sendButton").disabled=false;
+}
 });
 
 onAuthStateChanged(auth,async currentUser=>{
-  if(!currentUser){
-    window.location.href="login.html";
-    return;
-  }
+if(!currentUser){
+location.href="login.html";
+return;
+}
 
-  user=currentUser;
+user=currentUser;
 
-  try{
-    const profileSnap=await getDoc(doc(db,"users",user.uid));
+try{
+const profileSnap=await getDoc(doc(db,"users",user.uid));
 
-    if(!profileSnap.exists() ||
-       profileSnap.data().status!=="approved"){
-      window.location.href="login.html";
-      return;
-    }
+if(!profileSnap.exists()||
+profileSnap.data().status!=="approved"){
+location.href="login.html";
+return;
+}
 
-    profile=profileSnap.data();
+profile=profileSnap.data();
 
-    $("welcome").textContent=
-      "Welcome, "+(profile.name||"Student")+" · "+profile.stream;
+$("welcome").textContent=
+"Welcome, "+(profile.nickname||profile.name||"Student")+
+" · "+profile.stream;
 
-    loadStreamChat();
+loadStreamChat();
 
-  }catch(error){
-    console.error(error);
-    showStatus("Could not load your profile.");
-  }
+}catch(error){
+console.error(error);
+showStatus("Could not load your profile: "+error.message);
+}
 });
 
-window.addEventListener("beforeunload",()=>{
-  stopMessages();
-  if(unsubChats)unsubChats();
-});
+window.addEventListener("beforeunload",stopMessages);
 </script>
 </body>
 </html>
