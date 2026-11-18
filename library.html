@@ -1,0 +1,431 @@
+ 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#090d16">
+<title>Digital Library | The Magunga High</title>
+
+<style>
+*{box-sizing:border-box}
+
+body{
+ margin:0;
+ background:#090d16;
+ color:#f4f6fb;
+ font-family:Arial,sans-serif;
+}
+
+header{
+ padding:17px 5%;
+ background:#111827;
+ border-bottom:1px solid #34445f;
+ display:flex;
+ justify-content:space-between;
+ align-items:center;
+ gap:12px;
+}
+
+header h2{
+ margin:0;
+ color:#f4d58a;
+ font-size:18px;
+}
+
+a{
+ color:#f4d58a;
+ text-decoration:none;
+}
+
+main{
+ max-width:1050px;
+ margin:auto;
+ padding:24px 16px;
+}
+
+.hero{
+ padding:23px;
+ border-radius:15px;
+ background:linear-gradient(130deg,#18263d,#111827);
+ margin-bottom:20px;
+}
+
+.hero h1{
+ margin:0 0 8px;
+ color:#f4d58a;
+}
+
+.muted{
+ color:#aebbd0;
+ line-height:1.5;
+}
+
+.tools{
+ display:flex;
+ gap:10px;
+ flex-wrap:wrap;
+ margin:18px 0;
+}
+
+input,select{
+ min-height:44px;
+ padding:10px 12px;
+ border-radius:8px;
+ border:1px solid #40516c;
+ background:#121c2d;
+ color:white;
+ font-size:15px;
+}
+
+input{
+ flex:1;
+ min-width:190px;
+}
+
+select{
+ min-width:150px;
+}
+
+.grid{
+ display:grid;
+ grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+ gap:14px;
+}
+
+.item{
+ background:#141e30;
+ border:1px solid #34445f;
+ border-radius:12px;
+ padding:17px;
+}
+
+.item h3{
+ margin:0 0 9px;
+ color:#f4d58a;
+ overflow-wrap:anywhere;
+}
+
+.meta{
+ font-size:12px;
+ color:#aebbd0;
+ line-height:1.7;
+}
+
+.desc{
+ font-size:14px;
+ line-height:1.5;
+ color:#d4dbea;
+ overflow-wrap:anywhere;
+}
+
+button{
+ display:inline-block;
+ border:0;
+ border-radius:8px;
+ padding:11px 14px;
+ background:#d5a52b;
+ color:#17120a;
+ font-weight:bold;
+ cursor:pointer;
+}
+
+button:disabled{
+ opacity:.6;
+ cursor:wait;
+}
+
+#status{
+ color:#f4d58a;
+ line-height:1.5;
+}
+
+.empty{
+ padding:22px;
+ text-align:center;
+ color:#aebbd0;
+ background:#121c2d;
+ border-radius:10px;
+}
+
+@media(max-width:500px){
+ header h2{font-size:15px}
+ main{padding:16px 12px}
+}
+</style>
+</head>
+
+<body>
+
+<header>
+ <h2>THE MAGUNGA HIGH · LIBRARY</h2>
+ <a href="dashboard.html">Back to Dashboard</a>
+</header>
+
+<main>
+
+ <section class="hero">
+  <h1>Digital Learning Library</h1>
+  <p class="muted">
+   Find approved revision notes, study materials
+   and past papers shared by your school community.
+  </p>
+ </section>
+
+ <div class="tools">
+
+  <input
+   id="search"
+   type="search"
+   placeholder="Search title, topic or subject"
+  >
+
+  <select id="subject">
+   <option value="">All subjects</option>
+  </select>
+
+  <select id="level">
+   <option value="">All classes</option>
+   <option>Form 1</option>
+   <option>Form 2</option>
+   <option>Form 3</option>
+   <option>Form 4</option>
+   <option>All Forms</option>
+  </select>
+
+ </div>
+
+ <p id="status">Checking your account...</p>
+
+ <section class="grid" id="resources"></section>
+
+</main>
+
+<script type="module">
+
+import {auth,db,app}
+from "./assets/js/firebase.js";
+
+import {
+ onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
+
+import {
+ collection,
+ getDocs,
+ query,
+ where,
+ doc,
+ getDoc
+} from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
+
+import {
+ getStorage,
+ ref,
+ getDownloadURL
+} from "https://www.gstatic.com/firebasejs/11.6.0/firebase-storage.js";
+
+
+const storage=getStorage(app);
+
+const status=document.getElementById("status");
+
+const container=document.getElementById("resources");
+
+let items=[];
+
+
+function render(){
+
+ const term=document
+  .getElementById("search")
+  .value.trim().toLowerCase();
+
+ const subject=document.getElementById("subject").value;
+
+ const level=document.getElementById("level").value;
+
+ const filtered=items.filter(x=>
+  (!subject||x.subject===subject)&&
+  (!level||x.classLevel===level)&&
+  [
+   x.title,
+   x.subject,
+   x.topic,
+   x.description
+  ].join(" ").toLowerCase().includes(term)
+ );
+
+ container.replaceChildren();
+
+ if(!filtered.length){
+
+  const empty=document.createElement("div");
+
+  empty.className="empty";
+
+  empty.textContent="No matching approved materials yet.";
+
+  container.append(empty);
+
+  return;
+ }
+
+ filtered.forEach(x=>{
+
+  const card=document.createElement("article");
+
+  card.className="item";
+
+  const title=document.createElement("h3");
+
+  title.textContent=x.title;
+
+  const meta=document.createElement("div");
+
+  meta.className="meta";
+
+  meta.textContent=[
+   x.subject,
+   x.classLevel,
+   x.topic
+  ].filter(Boolean).join(" · ");
+
+  const desc=document.createElement("p");
+
+  desc.className="desc";
+
+  desc.textContent=x.description||"Revision material";
+
+  const button=document.createElement("button");
+
+  button.textContent="Download PDF";
+
+  button.onclick=async()=>{
+
+   button.disabled=true;
+
+   button.textContent="Preparing download...";
+
+   try{
+
+    const url=await getDownloadURL(
+     ref(storage,x.filePath)
+    );
+
+    window.open(url,"_blank","noopener");
+
+   }catch(error){
+
+    console.error(error);
+
+    alert("Could not open this file. Please contact an administrator.");
+
+   }finally{
+
+    button.disabled=false;
+
+    button.textContent="Download PDF";
+
+   }
+
+  };
+
+  card.append(title,meta,desc,button);
+
+  container.append(card);
+
+ });
+
+}
+
+
+onAuthStateChanged(auth,async user=>{
+
+ if(!user){
+
+  location.href="login.html";
+
+  return;
+
+ }
+
+ try{
+
+  const profile=await getDoc(
+   doc(db,"users",user.uid)
+  );
+
+  if(!profile.exists()||
+     profile.data().status!=="approved"){
+
+   status.textContent=
+    "Your account must be approved to access the library.";
+
+   return;
+
+  }
+
+  const snap=await getDocs(
+   query(
+    collection(db,"libraryResources"),
+    where("status","==","approved")
+   )
+  );
+
+  items=snap.docs.map(d=>({
+   id:d.id,
+   ...d.data()
+  })).sort((a,b)=>
+   (b.createdAt?.seconds||0)-
+   (a.createdAt?.seconds||0)
+  );
+
+  const subjects=[
+   ...new Set(
+    items.map(x=>x.subject).filter(Boolean)
+   )
+  ].sort();
+
+  subjects.forEach(s=>{
+
+   const option=document.createElement("option");
+
+   option.value=s;
+
+   option.textContent=s;
+
+   document.getElementById("subject").append(option);
+
+  });
+
+  status.textContent=
+   items.length+" approved resource(s) available.";
+
+  render();
+
+ }catch(error){
+
+  console.error(error);
+
+  status.textContent=
+   "Could not load the library. "+error.message;
+
+ }
+
+});
+
+
+["search","subject","level"].forEach(id=>{
+
+ document.getElementById(id).addEventListener(
+  id==="search"?"input":"change",
+  render
+ );
+
+});
+
+</script>
+
+</body>
+</html>
