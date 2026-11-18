@@ -4,328 +4,295 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#090d16">
-
-<title>Phone Notifications | Magunga High</title>
+<meta name="theme-color" content="#101827">
+<title>Notifications | The Magunga High</title>
 
 <style>
-* {
-  box-sizing: border-box;
-  font-family: Arial, sans-serif;
+*{box-sizing:border-box}
+
+body{
+ margin:0;
+ min-height:100vh;
+ display:grid;
+ place-items:center;
+ padding:18px;
+ background:radial-gradient(circle at top,#26334b,#0b101b 65%);
+ color:white;
+ font-family:Arial,sans-serif;
 }
 
-body {
-  margin: 0;
-  background: #090d16;
-  color: white;
-  min-height: 100vh;
+.card{
+ width:100%;
+ max-width:370px;
+ padding:27px 23px;
+ border:1px solid #b98b35;
+ border-radius:16px;
+ background:rgba(18,26,41,.97);
+ box-shadow:0 15px 45px #0008;
+ text-align:center;
+ animation:appear .6s ease both;
 }
 
-header {
-  padding: 18px;
-  background: #111827;
-  border-bottom: 1px solid #d6a83e;
+@keyframes appear{
+ from{opacity:0;transform:translateY(18px)}
+ to{opacity:1;transform:translateY(0)}
 }
 
-header h2 {
-  margin: 0;
-  color: #ffd36a;
-  font-size: 18px;
+.logo{
+ width:48px;
+ height:48px;
+ margin:auto;
+ display:grid;
+ place-items:center;
+ border:1px solid #d8ae52;
+ border-radius:13px;
+ background:#202c40;
+ color:#ffda81;
+ font-size:25px;
 }
 
-main {
-  max-width: 520px;
-  margin: 35px auto;
-  padding: 15px;
+.brand{
+ margin:13px 0 5px;
+ color:#f3d58d;
+ font-family:Georgia,serif;
+ font-size:17px;
+ letter-spacing:1px;
 }
 
-.card {
-  background: #151c2a;
-  border: 1px solid #b98d32;
-  border-radius: 12px;
-  padding: 22px;
+h1{
+ margin:18px 0 9px;
+ font-family:Georgia,serif;
+ font-size:25px;
+ color:#ffe4a4;
 }
 
-.icon {
-  font-size: 45px;
-  text-align: center;
+.description{
+ margin:0;
+ color:#bac5d5;
+ font-size:13px;
+ line-height:1.7;
 }
 
-h1 {
-  text-align: center;
-  color: #ffdc87;
-  font-size: 23px;
+.notice{
+ margin:20px 0;
+ padding:12px;
+ border:1px solid #35445b;
+ border-radius:9px;
+ background:#111a29;
+ color:#c9d3e2;
+ font-size:12px;
+ line-height:1.6;
+ text-align:left;
 }
 
-.description {
-  color: #bdc6d4;
-  text-align: center;
-  line-height: 1.6;
-  font-size: 14px;
+button,.continue{
+ display:block;
+ width:100%;
+ min-height:45px;
+ padding:12px;
+ margin-top:11px;
+ border-radius:9px;
+ font-size:14px;
+ font-weight:bold;
+ cursor:pointer;
+ text-decoration:none;
 }
 
-button {
-  width: 100%;
-  border: none;
-  padding: 14px;
-  border-radius: 8px;
-  background: linear-gradient(135deg,#e5bd55,#a87920);
-  color: #17120a;
-  font-weight: bold;
-  font-size: 15px;
-  cursor: pointer;
-  margin-top: 15px;
+.primary{
+ border:0;
+ color:#17120a;
+ background:linear-gradient(100deg,#f7d37b,#d9a53a);
 }
 
-button:disabled {
-  opacity: .5;
-  cursor: not-allowed;
+.secondary{
+ border:1px solid #53627a;
+ background:#202c40;
+ color:white;
 }
 
-#status {
-  text-align: center;
-  color: #ffd36a;
-  font-size: 13px;
-  margin-top: 18px;
-  overflow-wrap: anywhere;
-  line-height: 1.6;
+button:disabled{
+ opacity:.6;
+ cursor:wait;
 }
 
-.back {
-  display: block;
-  text-align: center;
-  margin-top: 20px;
-  color: #ffd36a;
-  text-decoration: none;
-  font-size: 13px;
+#status{
+ min-height:35px;
+ margin:14px 0 0;
+ color:#f2d58e;
+ font-size:12px;
+ line-height:1.5;
+ overflow-wrap:anywhere;
+}
+
+footer{
+ margin-top:20px;
+ color:#77869d;
+ font-size:11px;
 }
 </style>
 </head>
 
 <body>
 
-<header>
-  <h2>THE MAGUNGA HIGH</h2>
-</header>
+<main class="card">
 
-<main>
-  <section class="card">
+ <div class="logo">♜</div>
 
-    <div class="icon">🔔</div>
+ <div class="brand">THE MAGUNGA HIGH</div>
 
-    <h1>Phone Notifications</h1>
+ <h1>Stay Connected</h1>
 
-    <p class="description">
-      Enable notifications to receive important school
-      announcements and updates directly on your phone.
-    </p>
+ <p class="description">
+  Receive important school announcements and updates
+  directly on your phone.
+ </p>
 
-    <button id="enableButton">
-      Enable Phone Notifications
-    </button>
+ <div class="notice">
+  <strong>Notifications include:</strong><br>
+  • School announcements<br>
+  • Stream updates<br>
+  • Important school information
+ </div>
 
-    <p id="status" role="status" aria-live="polite">
-      Checking your account...
-    </p>
+ <button class="primary" id="enableButton">
+  Enable Notifications
+ </button>
 
-  </section>
+ <p id="status" role="status" aria-live="polite">
+  Enable notifications before continuing.
+ </p>
 
-  <a href="dashboard.html" class="back">
-    ← Return to Dashboard
-  </a>
+ <button class="secondary" id="loginButton" disabled>
+  Continue to Login
+ </button>
+
+ <button class="secondary" id="registerButton" disabled>
+  Create Student Account
+ </button>
+
+ <footer>Knowledge · Discipline · Success</footer>
+
 </main>
 
 <script type="module">
 
-import { auth, db, app } from "./assets/js/firebase.js";
+import {app} from "./assets/js/firebase.js";
 
 import {
-  onAuthStateChanged
-} from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
-
-import {
-  doc,
-  getDoc,
-  setDoc,
-  serverTimestamp
-} from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
-
-import {
-  getMessaging,
-  getToken,
-  isSupported,
-  onMessage
+ getMessaging,
+ getToken,
+ isSupported
 } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-messaging.js";
 
 const VAPID_KEY =
 "BCMYFIf-7BThw-uo0xVZdJ1IZ8_a3UwkggNwPk5ViOTLpQ599S0zP8Ppq3D16C035eof8f36mJGjIE6Jn3uvBlo";
 
-const button = document.getElementById("enableButton");
-const status = document.getElementById("status");
+const enableButton=document.getElementById("enableButton");
+const loginButton=document.getElementById("loginButton");
+const registerButton=document.getElementById("registerButton");
+const status=document.getElementById("status");
 
-let currentUser = null;
-let messaging = null;
+let ready=false;
 
-onAuthStateChanged(auth, async (user) => {
+function allowContinue(message){
+ ready=true;
+ loginButton.disabled=false;
+ registerButton.disabled=false;
+ status.textContent=message;
+}
 
-  if (!user) {
-    window.location.href = "login.html";
-    return;
+function continueTo(page){
+ localStorage.setItem("magunga_notification_gate_completed","yes");
+ window.location.href=page;
+}
+
+loginButton.onclick=()=>continueTo("login.html");
+registerButton.onclick=()=>continueTo("register.html");
+
+enableButton.onclick=async()=>{
+
+ enableButton.disabled=true;
+ status.textContent="Preparing notifications...";
+
+ try{
+
+  if(!("Notification" in window)){
+   throw new Error("This browser does not support notifications.");
   }
 
-  try {
-
-    const profile = await getDoc(
-      doc(db, "users", user.uid)
-    );
-
-    if (!profile.exists() ||
-        profile.data().status !== "approved") {
-
-      status.textContent =
-        "Your account is not approved.";
-
-      button.disabled = true;
-      return;
-    }
-
-    currentUser = user;
-
-    status.textContent =
-      "Your account is ready. Enable notifications below.";
-
-  } catch (error) {
-
-    console.error("Account verification error:", error);
-
-    status.textContent =
-      "Account verification failed: " +
-      (error.code || error.message);
-
-    button.disabled = true;
-  }
-});
-
-button.addEventListener("click", async () => {
-
-  if (!currentUser) {
-    status.textContent =
-      "Please wait for account verification.";
-    return;
+  if(!("serviceWorker" in navigator)){
+   throw new Error("This browser does not support service workers.");
   }
 
-  button.disabled = true;
+  const supported=await isSupported();
 
-  let stage = "Starting registration";
-
-  try {
-
-    stage = "Checking browser support";
-
-    if (!("serviceWorker" in navigator)) {
-      throw new Error(
-        "This browser does not support service workers."
-      );
-    }
-
-    if (!("Notification" in window)) {
-      throw new Error(
-        "This browser does not support notifications."
-      );
-    }
-
-    const supported = await isSupported();
-
-    if (!supported) {
-      throw new Error(
-        "Firebase Messaging is not supported on this browser."
-      );
-    }
-
-    stage = "Requesting notification permission";
-
-    const permission =
-      await Notification.requestPermission();
-
-    if (permission !== "granted") {
-      throw new Error(
-        "Notification permission was not granted."
-      );
-    }
-
-    stage = "Registering service worker";
-
-    const registration =
-      await navigator.serviceWorker.register(
-        "/firebase-messaging-sw.js"
-      );
-
-    stage = "Generating Firebase notification token";
-
-    messaging = getMessaging(app);
-
-    const token = await getToken(messaging, {
-      vapidKey: VAPID_KEY,
-      serviceWorkerRegistration: registration
-    });
-
-    if (!token) {
-      throw new Error(
-        "Firebase did not generate a device token."
-      );
-    }
-
-    stage = "Saving notification token to Firestore";
-
-    await setDoc(
-      doc(
-        db,
-        "users",
-        currentUser.uid,
-        "fcmTokens",
-        token
-      ),
-      {
-        token: token,
-        platform: "web",
-        createdAt: serverTimestamp(),
-        updatedAt: serverTimestamp()
-      },
-      { merge: true }
-    );
-
-    status.textContent =
-      "Notifications successfully enabled on this device!";
-
-    button.textContent =
-      "Notifications Enabled";
-
-    onMessage(messaging, (payload) => {
-
-      status.textContent =
-        payload.notification?.title ||
-        "New Magunga High notification received.";
-
-    });
-
-  } catch (error) {
-
-    console.error("Notification registration failed:", {
-      stage: stage,
-      code: error.code,
-      message: error.message,
-      error: error
-    });
-
-    status.textContent =
-      "FAILED AT: " + stage +
-      " | ERROR: " +
-      (error.code || error.message);
-
-    button.disabled = false;
+  if(!supported){
+   throw new Error("Notifications are not supported by this browser.");
   }
 
-});
+  let permission=Notification.permission;
+
+  if(permission==="default"){
+   permission=await Notification.requestPermission();
+  }
+
+  if(permission!=="granted"){
+   throw new Error("Permission was not granted. You can continue without notifications.");
+  }
+
+  status.textContent="Registering your device...";
+
+  const registration=await navigator.serviceWorker.register(
+   "/firebase-messaging-sw.js"
+  );
+
+  const messaging=getMessaging(app);
+
+  const token=await getToken(messaging,{
+   vapidKey:VAPID_KEY,
+   serviceWorkerRegistration:registration
+  });
+
+  if(!token){
+   throw new Error("Could not generate a notification token.");
+  }
+
+  // Save temporarily until the student signs in.
+  localStorage.setItem("magunga_pending_fcm_token",token);
+
+  localStorage.setItem("magunga_notification_permission","granted");
+
+  allowContinue("Notifications are enabled on this device. Choose where to continue.");
+
+  enableButton.textContent="Notifications Enabled";
+
+ }catch(error){
+
+  console.error("Notification setup:",error);
+
+  allowContinue(
+   "Notifications could not be enabled: "+
+   (error.code||error.message)+
+   ". You can still continue."
+  );
+
+  enableButton.textContent="Try Again";
+  enableButton.disabled=false;
+
+ }
+
+};
+
+// If permission was granted previously, reuse it.
+if(
+ "Notification" in window &&
+ Notification.permission==="granted" &&
+ localStorage.getItem("magunga_pending_fcm_token")
+){
+ allowContinue("Notifications are already enabled. Continue below.");
+ enableButton.textContent="Already Enabled";
+ enableButton.disabled=true;
+}
 
 </script>
 
