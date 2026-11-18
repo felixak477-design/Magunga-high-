@@ -88,6 +88,7 @@ button:disabled {
   font-size: 13px;
   margin-top: 18px;
   overflow-wrap: anywhere;
+  line-height: 1.6;
 }
 
 .back {
@@ -195,10 +196,11 @@ onAuthStateChanged(auth, async (user) => {
 
   } catch (error) {
 
-    console.error(error);
+    console.error("Account verification error:", error);
 
     status.textContent =
-      "Could not verify your account.";
+      "Account verification failed: " +
+      (error.code || error.message);
 
     button.disabled = true;
   }
@@ -207,14 +209,18 @@ onAuthStateChanged(auth, async (user) => {
 button.addEventListener("click", async () => {
 
   if (!currentUser) {
-    status.textContent = "Please wait for account verification.";
+    status.textContent =
+      "Please wait for account verification.";
     return;
   }
 
   button.disabled = true;
-  status.textContent = "Registering your device...";
+
+  let stage = "Starting registration";
 
   try {
+
+    stage = "Checking browser support";
 
     if (!("serviceWorker" in navigator)) {
       throw new Error(
@@ -232,11 +238,14 @@ button.addEventListener("click", async () => {
 
     if (!supported) {
       throw new Error(
-        "Firebase messaging is not supported on this browser."
+        "Firebase Messaging is not supported on this browser."
       );
     }
 
-    const permission = await Notification.requestPermission();
+    stage = "Requesting notification permission";
+
+    const permission =
+      await Notification.requestPermission();
 
     if (permission !== "granted") {
       throw new Error(
@@ -244,10 +253,14 @@ button.addEventListener("click", async () => {
       );
     }
 
+    stage = "Registering service worker";
+
     const registration =
       await navigator.serviceWorker.register(
         "/firebase-messaging-sw.js"
       );
+
+    stage = "Generating Firebase notification token";
 
     messaging = getMessaging(app);
 
@@ -261,6 +274,8 @@ button.addEventListener("click", async () => {
         "Firebase did not generate a device token."
       );
     }
+
+    stage = "Saving notification token to Firestore";
 
     await setDoc(
       doc(
@@ -282,24 +297,34 @@ button.addEventListener("click", async () => {
     status.textContent =
       "Notifications successfully enabled on this device!";
 
-    button.textContent = "Notifications Enabled";
+    button.textContent =
+      "Notifications Enabled";
 
     onMessage(messaging, (payload) => {
 
       status.textContent =
         payload.notification?.title ||
         "New Magunga High notification received.";
+
     });
 
   } catch (error) {
 
-    console.error("Notification error:", error);
+    console.error("Notification registration failed:", {
+      stage: stage,
+      code: error.code,
+      message: error.message,
+      error: error
+    });
 
     status.textContent =
-      error.message || "Registration failed.";
+      "FAILED AT: " + stage +
+      " | ERROR: " +
+      (error.code || error.message);
 
     button.disabled = false;
   }
+
 });
 
 </script>
