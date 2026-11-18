@@ -28,7 +28,7 @@ body{
  font-family:Arial,sans-serif;
  background:
  linear-gradient(#0009,#000e),
- url("assets/images/login-student.png") center/cover no-repeat,
+ url("assets/images/login-student.png") center/cover fixed no-repeat,
  #080706;
 }
 
@@ -38,88 +38,89 @@ body{
  flex-direction:column;
  align-items:center;
  justify-content:center;
- padding:25px 16px 65px;
+ padding:35px 16px 30px;
 }
 
 .brand{
  display:flex;
  align-items:center;
- gap:13px;
- margin-bottom:23px;
+ gap:12px;
+ margin-bottom:22px;
  animation:fadeDown .8s ease both;
 }
 
 .crest{
- width:62px;
- height:68px;
+ width:52px;
+ height:56px;
  display:grid;
  place-items:center;
- border:2px solid var(--gold);
- border-radius:14px;
+ border-radius:12px;
  background:#111a2b;
  color:var(--light);
- font-size:31px;
- box-shadow:0 0 20px #f6b91b55;
+ font-size:28px;
 }
 
 .brand h1{
  margin:0;
  color:var(--gold);
  font-family:Georgia,serif;
- font-size:clamp(20px,4vw,30px);
+ font-size:clamp(20px,4vw,28px);
 }
 
 .brand p{
  margin:5px 0 0;
- color:var(--light);
+ color:#ddd;
  font-style:italic;
- font-size:13px;
+ font-size:12px;
 }
 
 .card{
- width:min(100%,470px);
- padding:29px 25px;
- border:1px solid var(--gold);
- border-radius:19px;
- background:rgba(12,11,10,.96);
- box-shadow:0 0 35px #d99d2944;
+ width:min(100%,430px);
+ padding:27px 24px;
+ border:0;
+ border-radius:17px;
+ background:rgba(12,11,10,.94);
+ box-shadow:0 12px 40px #0008;
  animation:fadeUp .8s ease both;
 }
 
 .card h2{
  margin:0;
  text-align:center;
- color:var(--light);
- font: bold 34px Georgia,serif;
+ color:white;
+ font:bold 31px Georgia,serif;
 }
 
 .intro{
  text-align:center;
- color:#ddd;
+ color:#bbb;
  font-size:13px;
- margin:12px 0 24px;
+ margin:11px 0 23px;
 }
 
 .field{
  display:flex;
  align-items:center;
  gap:12px;
- height:58px;
+ height:56px;
  margin:15px 0;
  padding:0 14px;
- border:1px solid #a87921;
- border-radius:11px;
- background:#211d18;
+ border:1px solid #555;
+ border-radius:10px;
+ background:#211f1c;
  transition:.25s;
 }
 
 .field:focus-within{
- border-color:var(--light);
- box-shadow:0 0 14px #f6b91b55;
- transform:translateY(-2px);
+ border-color:#ddd;
+ background:#292621;
+ transform:translateY(-1px);
 }
 
-.field-icon{color:var(--gold);font-size:21px}
+.field-icon{
+ color:var(--gold);
+ font-size:20px;
+}
 
 .field input{
  flex:1;
@@ -141,33 +142,31 @@ body{
  cursor:pointer;
 }
 
-button{
- cursor:pointer;
-}
+button{cursor:pointer}
 
 .sign-in{
  width:100%;
- height:57px;
+ height:54px;
  margin-top:10px;
  border:0;
- border-radius:11px;
+ border-radius:10px;
  background:linear-gradient(100deg,#ffcf48,#f2a900);
  color:#100d06;
- font-size:19px;
+ font-size:18px;
  font-weight:bold;
  transition:.25s;
 }
 
 .sign-in:hover{
  transform:translateY(-2px);
- box-shadow:0 7px 22px #eaa51d77;
+ box-shadow:0 7px 20px #eaa51d55;
 }
 
 .google-btn{
  width:100%;
- min-height:55px;
- border:1px solid #b78326;
- border-radius:35px;
+ min-height:53px;
+ border:1px solid #555;
+ border-radius:30px;
  background:#15120e;
  color:white;
  font-size:16px;
@@ -190,18 +189,22 @@ button{
  display:flex;
  align-items:center;
  gap:15px;
- margin:21px 0;
- color:var(--light);
+ margin:20px 0;
+ color:#bbb;
+ font-size:13px;
 }
 
 .or:before,.or:after{
  content:"";
  flex:1;
  height:1px;
- background:#99702b;
+ background:#555;
 }
 
-button:disabled{opacity:.6;cursor:wait}
+button:disabled{
+ opacity:.6;
+ cursor:wait;
+}
 
 #message{
  min-height:22px;
@@ -217,24 +220,114 @@ button:disabled{opacity:.6;cursor:wait}
  display:flex;
  justify-content:center;
  flex-wrap:wrap;
- gap:15px;
- margin-top:20px;
+ gap:12px;
+ margin-top:19px;
+ font-size:12px;
+}
+
+.links a{
+ color:var(--gold);
+ text-decoration:none;
+}
+
+.links a:hover{
+ text-decoration:underline;
+ color:white;
+}
+
+/* Website benefits and animated greeting */
+
+.switch-panel{
+ width:min(100%,430px);
+ min-height:112px;
+ display:grid;
+ align-items:center;
+ margin-top:24px;
+ text-align:center;
+}
+
+.benefits,.greeting{
+ grid-area:1/1;
+ transition:
+ opacity .5s ease,
+ transform .5s ease,
+ visibility 0s linear .5s;
+}
+
+.benefits{
+ opacity:1;
+ visibility:visible;
+ transform:translateY(0);
+}
+
+.benefits h3{
+ margin:0 0 13px;
+ color:var(--light);
+ font:20px Georgia,serif;
+}
+
+.benefit-list{
+ display:flex;
+ justify-content:center;
+ flex-wrap:wrap;
+ gap:10px 17px;
+ color:#eee;
+ font-size:12px;
+ line-height:1.6;
+}
+
+.benefit-list span{
+ white-space:nowrap;
+}
+
+.greeting{
+ opacity:0;
+ visibility:hidden;
+ transform:translateY(15px);
+}
+
+.greeting h3{
+ margin:0;
+ color:var(--light);
+ font:clamp(20px,5vw,25px) Georgia,serif;
+}
+
+.greeting p{
+ margin:9px 0 0;
+ color:#ddd;
  font-size:13px;
 }
 
-.links a{color:var(--gold);text-decoration:none}
-.links a:hover{text-decoration:underline;color:white}
+/* Active animation when an input is focused */
 
-.footer{
- position:fixed;
- bottom:15px;
- width:100%;
- text-align:center;
- color:var(--light);
- font:italic 14px Georgia,serif;
+.switch-panel.engaged .benefits{
+ opacity:0;
+ visibility:hidden;
+ transform:translateY(-15px);
+ transition:
+ opacity .45s ease,
+ transform .45s ease,
+ visibility 0s linear .45s;
 }
 
-/* Book opening */
+.switch-panel.engaged .greeting{
+ opacity:1;
+ visibility:visible;
+ transform:translateY(0);
+ transition:
+ opacity .55s ease .12s,
+ transform .55s ease .12s,
+ visibility 0s;
+}
+
+.footer{
+ margin-top:20px;
+ text-align:center;
+ color:#ccc;
+ font:italic 13px Georgia,serif;
+}
+
+/* Book opening animation */
 
 .book-screen{
  position:fixed;
@@ -262,7 +355,7 @@ button:disabled{opacity:.6;cursor:wait}
  font:clamp(21px,5vw,35px) Georgia,serif;
  letter-spacing:2px;
  opacity:0;
- animation:welcome  .7s ease 1.5s forwards;
+ animation:welcome .7s ease 1.5s forwards;
 }
 
 .book{
@@ -372,7 +465,10 @@ button:disabled{opacity:.6;cursor:wait}
  to{opacity:1;transform:translateY(0)}
 }
 
-@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes fadeIn{
+ from{opacity:0}
+ to{opacity:1}
+}
 
 @keyframes welcome{
  to{opacity:1;transform:translateY(0)}
@@ -389,10 +485,14 @@ button:disabled{opacity:.6;cursor:wait}
 @media(max-width:500px){
  .card{padding:25px 18px}
  .brand h1{font-size:20px}
+ .switch-panel{margin-top:20px}
 }
 
 @media(prefers-reduced-motion:reduce){
- *,*::before,*::after{animation:none!important;transition:none!important}
+ *,*::before,*::after{
+  animation:none!important;
+  transition:none!important;
+ }
 }
 </style>
 </head>
@@ -447,6 +547,27 @@ button:disabled{opacity:.6;cursor:wait}
    <span>|</span>
    <a href="index.html">Home</a>
   </nav>
+
+ </section>
+
+ <!-- Animated benefits and greeting -->
+
+ <section class="switch-panel" id="switchPanel">
+
+  <div class="benefits">
+   <h3>Everything you need in one place</h3>
+   <div class="benefit-list">
+    <span>📚 Learning Resources</span>
+    <span>📊 Student Results</span>
+    <span>📢 School Announcements</span>
+    <span>🔔 Important Notifications</span>
+   </div>
+  </div>
+
+  <div class="greeting">
+   <h3>Happy to have you as one of us!</h3>
+   <p>Welcome to The Magunga High family.</p>
+  </div>
 
  </section>
 
@@ -506,6 +627,27 @@ const loginButton=document.getElementById("loginButton");
 const googleButton=document.getElementById("googleButton");
 const email=document.getElementById("email");
 const password=document.getElementById("password");
+const switchPanel=document.getElementById("switchPanel");
+
+/* Show greeting when an input is focused */
+
+[email,password].forEach(input=>{
+
+ input.addEventListener("focus",()=>{
+  switchPanel.classList.add("engaged");
+ });
+
+ input.addEventListener("blur",()=>{
+  setTimeout(()=>{
+   const active=document.activeElement;
+
+   if(active!==email && active!==password){
+    switchPanel.classList.remove("engaged");
+   }
+  },100);
+ });
+
+});
 
 function showMessage(text,success=false){
  message.textContent=text;
@@ -543,7 +685,6 @@ async function savePendingNotificationToken(user){
 
  }catch(error){
 
-  // Do not prevent login if notification saving fails.
   console.warn("Notification token could not be saved:",error);
 
  }
@@ -616,6 +757,11 @@ form.addEventListener("submit",async event=>{
 
   await finishLogin(user);
 
+  if(!document.getElementById("bookScreen").classList.contains("active")){
+   loginButton.disabled=false;
+   googleButton.disabled=false;
+  }
+
  }catch(error){
 
   console.error(error);
@@ -658,7 +804,8 @@ googleButton.onclick=async()=>{
 
 };
 
-// Complete Google sign-in after returning from Google.
+/* Complete Google sign-in after returning from Google */
+
 try{
 
  const result=await getRedirectResult(auth);
