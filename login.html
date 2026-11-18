@@ -3,9 +3,15 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#080706">
-<title>Student Login | The Magunga High</title>
+<title>Login | The Magunga High</title>
+
+<script>
+if(localStorage.getItem("magunga_notification_gate_completed")!=="yes"){
+ window.location.replace("enable-notifications.html");
+}
+</script>
 
 <style>
 *{box-sizing:border-box}
@@ -19,105 +25,101 @@ body{
  margin:0;
  min-height:100vh;
  color:white;
- font-family:Arial,Helvetica,sans-serif;
+ font-family:Arial,sans-serif;
  background:
- linear-gradient(rgba(0,0,0,.65),rgba(0,0,0,.9)),
+ linear-gradient(#0009,#000e),
  url("assets/images/login-student.png") center/cover no-repeat,
  #080706;
- overflow-x:hidden;
 }
 
 .page{
  min-height:100vh;
  display:flex;
  flex-direction:column;
- justify-content:center;
  align-items:center;
- padding:30px 16px 75px;
+ justify-content:center;
+ padding:25px 16px 65px;
 }
 
 .brand{
  display:flex;
  align-items:center;
- gap:16px;
- margin-bottom:25px;
- animation:fadeDown .9s ease both;
+ gap:13px;
+ margin-bottom:23px;
+ animation:fadeDown .8s ease both;
 }
 
 .crest{
- width:70px;
- height:78px;
+ width:62px;
+ height:68px;
  display:grid;
  place-items:center;
  border:2px solid var(--gold);
- border-radius:16px;
- color:var(--light);
- font-size:36px;
+ border-radius:14px;
  background:#111a2b;
- box-shadow:0 0 24px #f6b91b55;
+ color:var(--light);
+ font-size:31px;
+ box-shadow:0 0 20px #f6b91b55;
 }
 
 .brand h1{
  margin:0;
  color:var(--gold);
  font-family:Georgia,serif;
- font-size:clamp(22px,4vw,34px);
+ font-size:clamp(20px,4vw,30px);
 }
 
 .brand p{
- margin:6px 0 0;
+ margin:5px 0 0;
  color:var(--light);
  font-style:italic;
+ font-size:13px;
 }
 
-.login-card{
- width:min(100%,520px);
- padding:32px;
- border:2px solid var(--gold);
- border-radius:20px;
- background:rgba(12,11,10,.94);
+.card{
+ width:min(100%,470px);
+ padding:29px 25px;
+ border:1px solid var(--gold);
+ border-radius:19px;
+ background:rgba(12,11,10,.96);
  box-shadow:0 0 35px #d99d2944;
- backdrop-filter:blur(10px);
- animation:fadeUp .9s ease both;
+ animation:fadeUp .8s ease both;
 }
 
-.login-card h2{
- text-align:center;
+.card h2{
  margin:0;
+ text-align:center;
  color:var(--light);
- font-family:Georgia,serif;
- font-size:36px;
+ font: bold 34px Georgia,serif;
 }
 
 .intro{
  text-align:center;
  color:#ddd;
- margin:12px 0 25px;
+ font-size:13px;
+ margin:12px 0 24px;
 }
 
 .field{
  display:flex;
  align-items:center;
- gap:13px;
- height:62px;
- margin:16px 0;
- padding:0 15px;
+ gap:12px;
+ height:58px;
+ margin:15px 0;
+ padding:0 14px;
  border:1px solid #a87921;
- border-radius:12px;
+ border-radius:11px;
  background:#211d18;
- transition:.3s;
+ transition:.25s;
 }
 
 .field:focus-within{
  border-color:var(--light);
- box-shadow:0 0 15px #f6b91b66;
+ box-shadow:0 0 14px #f6b91b55;
  transform:translateY(-2px);
 }
 
-.field-icon{
- color:var(--gold);
- font-size:23px;
-}
+.field-icon{color:var(--gold);font-size:21px}
 
 .field input{
  flex:1;
@@ -135,58 +137,40 @@ body{
  border:0;
  background:none;
  color:var(--gold);
- font-size:21px;
+ font-size:20px;
+ cursor:pointer;
+}
+
+button{
  cursor:pointer;
 }
 
 .sign-in{
  width:100%;
- height:62px;
+ height:57px;
  margin-top:10px;
  border:0;
- border-radius:12px;
+ border-radius:11px;
  background:linear-gradient(100deg,#ffcf48,#f2a900);
  color:#100d06;
- font-size:20px;
+ font-size:19px;
  font-weight:bold;
- cursor:pointer;
  transition:.25s;
 }
 
 .sign-in:hover{
- transform:translateY(-3px);
+ transform:translateY(-2px);
  box-shadow:0 7px 22px #eaa51d77;
-}
-
-.sign-in:disabled,.google-btn:disabled{
- opacity:.6;
- cursor:wait;
-}
-
-.or{
- display:flex;
- align-items:center;
- gap:15px;
- margin:22px 0;
- color:var(--light);
-}
-
-.or:before,.or:after{
- content:"";
- flex:1;
- height:1px;
- background:#99702b;
 }
 
 .google-btn{
  width:100%;
- min-height:57px;
+ min-height:55px;
  border:1px solid #b78326;
  border-radius:35px;
  background:#15120e;
  color:white;
- font-size:17px;
- cursor:pointer;
+ font-size:16px;
  transition:.25s;
 }
 
@@ -197,50 +181,60 @@ body{
 
 .google-g{
  color:#4285f4;
- font-size:24px;
+ font-size:23px;
  font-weight:bold;
  margin-right:10px;
+}
+
+.or{
+ display:flex;
+ align-items:center;
+ gap:15px;
+ margin:21px 0;
+ color:var(--light);
+}
+
+.or:before,.or:after{
+ content:"";
+ flex:1;
+ height:1px;
+ background:#99702b;
+}
+
+button:disabled{opacity:.6;cursor:wait}
+
+#message{
+ min-height:22px;
+ margin:14px 0 0;
+ text-align:center;
+ color:var(--light);
+ font-size:13px;
+ line-height:1.5;
+ overflow-wrap:anywhere;
 }
 
 .links{
  display:flex;
  justify-content:center;
- gap:15px;
  flex-wrap:wrap;
- margin-top:22px;
+ gap:15px;
+ margin-top:20px;
+ font-size:13px;
 }
 
-.links a{
- color:var(--gold);
- text-decoration:none;
-}
-
-.links a:hover{
- color:white;
- text-decoration:underline;
-}
-
-#message{
- min-height:22px;
- margin:15px 0 0;
- text-align:center;
- color:var(--light);
- font-size:14px;
- line-height:1.5;
-}
+.links a{color:var(--gold);text-decoration:none}
+.links a:hover{text-decoration:underline;color:white}
 
 .footer{
  position:fixed;
- bottom:17px;
- left:0;
- right:0;
+ bottom:15px;
+ width:100%;
  text-align:center;
  color:var(--light);
- font-family:Georgia,serif;
- font-style:italic;
+ font:italic 14px Georgia,serif;
 }
 
-/* BOOK OPENING SCREEN */
+/* Book opening */
 
 .book-screen{
  position:fixed;
@@ -250,114 +244,80 @@ body{
  align-items:center;
  justify-content:center;
  flex-direction:column;
- background:
- radial-gradient(ellipse at center,#30230d 0%,#100d08 55%,#030303 100%);
- perspective:1600px;
+ background:radial-gradient(ellipse at center,#30230d,#100d08 60%,#030303);
+ perspective:1500px;
  overflow:hidden;
 }
 
 .book-screen.active{
  display:flex;
- animation:screenAppear .5s ease both;
+ animation:fadeIn .5s ease both;
 }
 
-.welcome-text{
+.welcome{
  position:absolute;
- top:12%;
- width:100%;
- text-align:center;
+ top:13%;
  color:var(--gold);
- font-family:Georgia,serif;
- font-size:clamp(23px,5vw,38px);
+ text-align:center;
+ font:clamp(21px,5vw,35px) Georgia,serif;
  letter-spacing:2px;
  opacity:0;
- animation:welcomeAppear .8s ease 1.6s forwards;
+ animation:welcome  .7s ease 1.5s forwards;
 }
 
 .book{
  position:relative;
- width:min(78vw,440px);
- height:min(58vw,300px);
+ width:min(85vw,430px);
+ height:min(58vw,280px);
  min-height:190px;
  transform-style:preserve-3d;
- filter:drop-shadow(0 15px 35px #000);
+ filter:drop-shadow(0 15px 30px #000);
 }
 
-.book-pages{
+.pages{
  position:absolute;
  inset:4px;
  display:flex;
  border:2px solid #c58b24;
- border-radius:5px;
  background:#f7e6b8;
  overflow:hidden;
- box-shadow:0 0 35px #e8a51d55;
 }
 
-.book-page{
+.page-side{
  flex:1;
  display:flex;
  flex-direction:column;
- align-items:center;
  justify-content:center;
- padding:15px;
+ align-items:center;
+ padding:12px;
  color:#30200b;
  text-align:center;
  font-family:Georgia,serif;
  background:linear-gradient(90deg,#f4dfac,#fff4d6);
 }
 
-.book-page h2{
- font-size:clamp(17px,4vw,27px);
- margin:0 0 12px;
+.page-side h2{
  color:#8a5a0c;
+ font-size:clamp(16px,4vw,25px);
 }
 
-.book-page p{
- font-size:clamp(11px,2.5vw,16px);
+.page-side p{
+ font-size:clamp(11px,2.5vw,15px);
  line-height:1.5;
- margin:5px;
 }
 
-.book-page.right{
- background:linear-gradient(90deg,#fff4d6,#ead19a);
-}
-
-.book-cover{
+.cover{
  position:absolute;
  top:0;
  bottom:0;
  width:50%;
  z-index:3;
- background:linear-gradient(135deg,#48300b,#171006 75%);
+ background:linear-gradient(135deg,#48300b,#171006);
  border:3px solid #e0aa39;
- box-shadow:inset 0 0 25px #f2bc4a33;
  transform-style:preserve-3d;
 }
 
-.book-cover.left{
- left:0;
- transform-origin:left center;
- border-radius:9px 2px 2px 9px;
- animation:openLeft 1.5s cubic-bezier(.65,0,.2,1) .35s forwards;
-}
-
-.book-cover.right{
- right:0;
- transform-origin:right center;
- border-radius:2px 9px 9px 2px;
- animation:openRight 1.5s cubic-bezier(.65,0,.2,1) .35s forwards;
-}
-
-.book-cover:before{
- content:"";
- position:absolute;
- inset:12px;
- border:1px solid #e6b64f;
- border-radius:4px;
-}
-
-.book-cover:after{
+.cover:after{
  content:"THE MAGUNGA HIGH";
  position:absolute;
  top:50%;
@@ -365,92 +325,74 @@ body{
  width:100%;
  text-align:center;
  color:#ffdc83;
- font-family:Georgia,serif;
- font-size:clamp(10px,2vw,15px);
- letter-spacing:1px;
+ font:clamp(10px,2vw,15px) Georgia,serif;
  transform:translate(-50%,-50%);
 }
 
-.book-spine{
+.left{
+ left:0;
+ transform-origin:left center;
+ animation:openLeft 1.5s ease .3s forwards;
+}
+
+.right{
+ right:0;
+ transform-origin:right center;
+ animation:openRight 1.5s ease .3s forwards;
+}
+
+.spine{
  position:absolute;
+ z-index:4;
+ left:50%;
  top:0;
  bottom:0;
- left:50%;
- width:10px;
- z-index:4;
+ width:9px;
  transform:translateX(-50%);
  background:linear-gradient(90deg,#4d2e08,#e2ad43,#4d2e08);
 }
 
-.book-glow{
- position:absolute;
- width:400px;
- height:180px;
- background:#f6b91b;
- opacity:0;
- filter:blur(100px);
- animation:glowAppear 1s ease 1.2s forwards;
-}
-
-.opening-message{
+.opening{
  position:absolute;
  bottom:13%;
  color:#ffe7a0;
- font-family:Georgia,serif;
- font-size:15px;
+ font:14px Georgia,serif;
  letter-spacing:2px;
  opacity:0;
- animation:welcomeAppear .7s ease 1.7s forwards;
+ animation:welcome .7s ease 1.6s forwards;
 }
 
-/* ANIMATIONS */
-
 @keyframes fadeDown{
- from{opacity:0;transform:translateY(-25px)}
+ from{opacity:0;transform:translateY(-20px)}
  to{opacity:1;transform:translateY(0)}
 }
 
 @keyframes fadeUp{
- from{opacity:0;transform:translateY(30px)}
+ from{opacity:0;transform:translateY(25px)}
  to{opacity:1;transform:translateY(0)}
 }
 
-@keyframes screenAppear{
- from{opacity:0}
- to{opacity:1}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+
+@keyframes welcome{
+ to{opacity:1;transform:translateY(0)}
 }
 
 @keyframes openLeft{
- from{transform:rotateY(0deg)}
  to{transform:rotateY(-155deg)}
 }
 
 @keyframes openRight{
- from{transform:rotateY(0deg)}
  to{transform:rotateY(155deg)}
 }
 
-@keyframes welcomeAppear{
- from{opacity:0;transform:translateY(15px)}
- to{opacity:1;transform:translateY(0)}
-}
-
-@keyframes glowAppear{
- from{opacity:0}
- to{opacity:.2}
-}
-
-@media(max-width:600px){
- .login-card{padding:24px 18px}
- .brand{gap:10px}
- .crest{width:55px;height:62px;font-size:27px}
+@media(max-width:500px){
+ .card{padding:25px 18px}
  .brand h1{font-size:20px}
- .brand p{font-size:12px}
- .book{width:86vw;height:58vw}
 }
 
 @media(prefers-reduced-motion:reduce){
- .brand,.login-card{animation:none}
+ *,*::before,*::after{animation:none!important;transition:none!important}
 }
 </style>
 </head>
@@ -459,94 +401,83 @@ body{
 
 <main class="page">
 
-<header class="brand">
- <div class="crest">♜</div>
- <div>
-  <h1>THE MAGUNGA HIGH</h1>
-  <p>Knowledge · Discipline · Success</p>
- </div>
-</header>
-
-<section class="login-card">
-
- <h2>Student Login</h2>
- <p class="intro">Access Magunga AI and your learning resources</p>
-
- <form id="loginForm">
-
-  <div class="field">
-   <span class="field-icon">✉</span>
-   <input id="email" type="email"
-    placeholder="Enter your Gmail address"
-    autocomplete="username" required>
+ <header class="brand">
+  <div class="crest">♜</div>
+  <div>
+   <h1>THE MAGUNGA HIGH</h1>
+   <p>Knowledge · Discipline · Success</p>
   </div>
+ </header>
 
-  <div class="field">
-   <span class="field-icon">🔒</span>
-   <input id="password" type="password"
-    placeholder="Enter your password"
-    autocomplete="current-password" required>
-   <button class="show-password" type="button"
-    id="togglePassword">◉</button>
-  </div>
+ <section class="card">
 
-  <button class="sign-in" id="loginButton" type="submit">
-   ↪ Sign In
+  <h2>Student Login</h2>
+  <p class="intro">Access your school portal and learning resources</p>
+
+  <form id="loginForm">
+
+   <div class="field">
+    <span class="field-icon">✉</span>
+    <input id="email" type="email" placeholder="Email address" required autocomplete="username">
+   </div>
+
+   <div class="field">
+    <span class="field-icon">🔒</span>
+    <input id="password" type="password" placeholder="Password" required autocomplete="current-password">
+    <button class="show-password" id="togglePassword" type="button">◉</button>
+   </div>
+
+   <button class="sign-in" id="loginButton" type="submit">Sign In</button>
+
+  </form>
+
+  <div class="or">or</div>
+
+  <button class="google-btn" id="googleButton" type="button">
+   <span class="google-g">G</span>
+   Continue with Google
   </button>
 
- </form>
+  <p id="message" role="status" aria-live="polite"></p>
 
- <div class="or">or</div>
+  <nav class="links">
+   <a href="#" id="forgotPassword">Forgot Password?</a>
+   <span>|</span>
+   <a href="register.html">Create Account</a>
+   <span>|</span>
+   <a href="index.html">Home</a>
+  </nav>
 
- <button class="google-btn" id="googleButton" type="button">
-  <span class="google-g">G</span>
-  Continue with Google
- </button>
+ </section>
 
- <p id="message" role="status" aria-live="polite"></p>
+ <div class="footer">Together for a brighter future</div>
 
- <nav class="links">
-  <a href="#" id="forgotPassword">Forgot Password?</a>
-  <span>|</span>
-  <a href="index.html">Back to Home</a>
- </nav>
-
-</section>
-
-<div class="footer">Together for a brighter future</div>
 </main>
-
-<!-- BOOK ANIMATION -->
 
 <div class="book-screen" id="bookScreen">
 
- <div class="welcome-text">WELCOME TO THE MAGUNGA HIGH</div>
-
- <div class="book-glow"></div>
+ <div class="welcome">WELCOME TO THE MAGUNGA HIGH</div>
 
  <div class="book">
 
-  <div class="book-pages">
-
-   <div class="book-page">
+  <div class="pages">
+   <div class="page-side">
     <h2>Knowledge</h2>
     <p>Every new day is an opportunity to learn.</p>
    </div>
-
-   <div class="book-page right">
+   <div class="page-side">
     <h2>Success</h2>
     <p>Your journey towards a brighter future begins here.</p>
    </div>
-
   </div>
 
-  <div class="book-cover left"></div>
-  <div class="book-cover right"></div>
-  <div class="book-spine"></div>
+  <div class="cover left"></div>
+  <div class="cover right"></div>
+  <div class="spine"></div>
 
  </div>
 
- <div class="opening-message">YOUR JOURNEY CONTINUES...</div>
+ <div class="opening">YOUR JOURNEY CONTINUES...</div>
 
 </div>
 
@@ -557,12 +488,16 @@ import {auth,db} from "./assets/js/firebase.js";
 
 import {
  GoogleAuthProvider,
- signInWithPopup,
+ signInWithRedirect,
+ getRedirectResult,
  sendPasswordResetEmail
 } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
 
 import {
- doc,getDoc
+ doc,
+ getDoc,
+ setDoc,
+ serverTimestamp
 } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
 
 const form=document.getElementById("loginForm");
@@ -577,13 +512,52 @@ function showMessage(text,success=false){
  message.style.color=success?"#b8efbd":"#ffd36c";
 }
 
+async function savePendingNotificationToken(user){
+
+ const token=localStorage.getItem("magunga_pending_fcm_token");
+
+ if(!token || !("Notification" in window) ||
+    Notification.permission!=="granted"){
+  return;
+ }
+
+ const tokenRef=doc(db,"users",user.uid,"fcmTokens",token);
+
+ try{
+
+  const existing=await getDoc(tokenRef);
+
+  const data={
+   token,
+   platform:"web",
+   updatedAt:serverTimestamp()
+  };
+
+  if(!existing.exists()){
+   data.createdAt=serverTimestamp();
+  }
+
+  await setDoc(tokenRef,data,{merge:true});
+
+  localStorage.removeItem("magunga_pending_fcm_token");
+
+ }catch(error){
+
+  // Do not prevent login if notification saving fails.
+  console.warn("Notification token could not be saved:",error);
+
+ }
+
+}
+
 function openBook(destination){
+
  document.getElementById("bookScreen").classList.add("active");
 
- // Allow the book to open before navigating.
  setTimeout(()=>{
   window.location.href=destination;
  },3000);
+
 }
 
 async function finishLogin(user){
@@ -591,7 +565,7 @@ async function finishLogin(user){
  const profile=await getDoc(doc(db,"users",user.uid));
 
  if(!profile.exists()){
-  showMessage("Account profile not found. Please contact the administrator.");
+  showMessage("Account profile not found. Contact the administrator.");
   return;
  }
 
@@ -602,21 +576,26 @@ async function finishLogin(user){
   return;
  }
 
- let destination;
+ await savePendingNotificationToken(user);
 
- if(data.role==="superadmin" || data.role==="streamAdmin"){
-  destination="admin.html";
- }else{
-  destination="dashboard.html";
- }
+ const destination=
+  data.role==="superadmin" || data.role==="streamAdmin"
+  ? "admin.html"
+  : "dashboard.html";
 
  openBook(destination);
+
 }
 
 document.getElementById("togglePassword").onclick=()=>{
+
  const hidden=password.type==="password";
+
  password.type=hidden?"text":"password";
- document.getElementById("togglePassword").textContent=hidden?"◎":"◉";
+
+ document.getElementById("togglePassword").textContent=
+  hidden?"◎":"◉";
+
 };
 
 form.addEventListener("submit",async event=>{
@@ -639,13 +618,68 @@ form.addEventListener("submit",async event=>{
 
  }catch(error){
 
-  showMessage("Login failed: "+error.message);
+  console.error(error);
+  showMessage("Login failed: "+(error.code||error.message));
 
   loginButton.disabled=false;
   googleButton.disabled=false;
+
  }
 
 });
+
+googleButton.onclick=async()=>{
+
+ googleButton.disabled=true;
+ loginButton.disabled=true;
+
+ showMessage("Opening Google account selection...");
+
+ try{
+
+  const provider=new GoogleAuthProvider();
+
+  provider.setCustomParameters({
+   prompt:"select_account"
+  });
+
+  await signInWithRedirect(auth,provider);
+
+ }catch(error){
+
+  console.error("Google redirect error:",error);
+
+  showMessage("Google sign-in failed: "+(error.code||error.message));
+
+  googleButton.disabled=false;
+  loginButton.disabled=false;
+
+ }
+
+};
+
+// Complete Google sign-in after returning from Google.
+try{
+
+ const result=await getRedirectResult(auth);
+
+ if(result && result.user){
+  loginButton.disabled=true;
+  googleButton.disabled=true;
+  showMessage("Checking your Google account...");
+  await finishLogin(result.user);
+ }
+
+}catch(error){
+
+ console.error("Google return error:",error);
+
+ showMessage("Google sign-in failed: "+(error.code||error.message));
+
+ loginButton.disabled=false;
+ googleButton.disabled=false;
+
+}
 
 document.getElementById("forgotPassword").onclick=async event=>{
 
@@ -662,36 +696,12 @@ document.getElementById("forgotPassword").onclick=async event=>{
  try{
 
   await sendPasswordResetEmail(auth,address);
+
   showMessage("Password reset email sent. Check your inbox.",true);
 
  }catch(error){
 
-  showMessage("Could not send reset email: "+error.message);
-
- }
-
-};
-
-googleButton.onclick=async()=>{
-
- googleButton.disabled=true;
- loginButton.disabled=true;
-
- showMessage("Connecting to Google...");
-
- try{
-
-  const provider=new GoogleAuthProvider();
-  const result=await signInWithPopup(auth,provider);
-
-  await finishLogin(result.user);
-
- }catch(error){
-
-  showMessage("Google sign-in failed: "+error.message);
-
-  googleButton.disabled=false;
-  loginButton.disabled=false;
+  showMessage("Could not send reset email: "+(error.code||error.message));
 
  }
 
