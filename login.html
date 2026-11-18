@@ -15,32 +15,16 @@
  --light:#ffe18a;
 }
 
-html{scroll-behavior:smooth}
-
 body{
  margin:0;
  min-height:100vh;
  color:white;
  font-family:Arial,Helvetica,sans-serif;
  background:
- linear-gradient(90deg,rgba(0,0,0,.08) 0%,rgba(0,0,0,.12) 40%,rgba(0,0,0,.88) 67%,#080706 100%),
- linear-gradient(0deg,rgba(0,0,0,.7),transparent 30%),
+ linear-gradient(rgba(0,0,0,.65),rgba(0,0,0,.9)),
  url("assets/images/login-student.png") center/cover no-repeat,
- #100d08;
+ #080706;
  overflow-x:hidden;
-}
-
-/* Subtle animated background glow */
-body::before{
- content:"";
- position:fixed;
- inset:-30%;
- pointer-events:none;
- z-index:0;
- background:
- radial-gradient(circle at 70% 35%,rgba(246,185,27,.13),transparent 35%),
- radial-gradient(circle at 20% 80%,rgba(246,185,27,.07),transparent 30%);
- animation:backgroundGlow 9s ease-in-out infinite alternate;
 }
 
 .page{
@@ -48,221 +32,187 @@ body::before{
  display:flex;
  flex-direction:column;
  justify-content:center;
- align-items:flex-end;
- padding:35px 5% 75px;
- position:relative;
- z-index:1;
+ align-items:center;
+ padding:30px 16px 75px;
 }
 
 .brand{
- width:min(100%,660px);
  display:flex;
  align-items:center;
- justify-content:center;
- gap:18px;
- margin-bottom:28px;
- animation:brandEntrance 1s ease both;
+ gap:16px;
+ margin-bottom:25px;
+ animation:fadeDown .9s ease both;
 }
 
 .crest{
- width:76px;
- height:86px;
+ width:70px;
+ height:78px;
  display:grid;
  place-items:center;
  border:2px solid var(--gold);
- border-radius:18px 18px 24px 24px;
- background:linear-gradient(145deg,#14213a,#080b12);
+ border-radius:16px;
  color:var(--light);
- font-size:38px;
- box-shadow:0 0 22px #f5b51b55;
- animation:crestGlow 3s ease-in-out infinite;
+ font-size:36px;
+ background:#111a2b;
+ box-shadow:0 0 24px #f6b91b55;
 }
 
 .brand h1{
  margin:0;
  color:var(--gold);
  font-family:Georgia,serif;
- font-size:clamp(22px,3vw,36px);
- letter-spacing:1px;
+ font-size:clamp(22px,4vw,34px);
 }
 
 .brand p{
- margin:7px 0 0;
+ margin:6px 0 0;
  color:var(--light);
- font-family:Georgia,serif;
  font-style:italic;
 }
 
 .login-card{
- width:min(100%,590px);
- padding:32px 38px 28px;
+ width:min(100%,520px);
+ padding:32px;
  border:2px solid var(--gold);
- border-radius:22px;
- background:linear-gradient(145deg,rgba(18,15,13,.95),rgba(8,8,8,.93));
- box-shadow:0 0 12px #ffca35aa,0 0 42px #d9971733;
- backdrop-filter:blur(12px);
- animation:cardEntrance 1s cubic-bezier(.2,.8,.2,1) both;
- animation-delay:.15s;
+ border-radius:20px;
+ background:rgba(12,11,10,.94);
+ box-shadow:0 0 35px #d99d2944;
+ backdrop-filter:blur(10px);
+ animation:fadeUp .9s ease both;
 }
 
 .login-card h2{
- margin:0;
  text-align:center;
- font-family:Georgia,serif;
- font-size:40px;
+ margin:0;
  color:var(--light);
- text-shadow:0 0 15px #e8a91e55;
- animation:titleGlow 3s ease-in-out infinite;
+ font-family:Georgia,serif;
+ font-size:36px;
 }
 
 .intro{
  text-align:center;
- margin:12px 0 28px;
- color:#eee;
- line-height:1.5;
+ color:#ddd;
+ margin:12px 0 25px;
 }
 
-/* Input fields */
 .field{
- height:72px;
  display:flex;
  align-items:center;
- gap:15px;
- padding:0 18px;
- margin:18px 0;
+ gap:13px;
+ height:62px;
+ margin:16px 0;
+ padding:0 15px;
  border:1px solid #a87921;
- border-radius:13px;
- background:rgba(48,42,38,.75);
- transition:border-color .3s,box-shadow .3s,transform .3s,background .3s;
+ border-radius:12px;
+ background:#211d18;
+ transition:.3s;
 }
 
 .field:focus-within{
  border-color:var(--light);
- background:rgba(62,51,35,.85);
- box-shadow:0 0 15px #f6b91b55;
+ box-shadow:0 0 15px #f6b91b66;
  transform:translateY(-2px);
 }
 
 .field-icon{
- font-size:25px;
  color:var(--gold);
- transition:transform .3s;
-}
-
-.field:focus-within .field-icon{
- transform:scale(1.12);
+ font-size:23px;
 }
 
 .field input{
- width:100%;
+ flex:1;
  min-width:0;
  border:0;
  outline:0;
  background:transparent;
  color:white;
- font-size:18px;
+ font-size:16px;
 }
 
-.field input::placeholder{color:#bcb8b5}
+.field input::placeholder{color:#aaa}
 
 .show-password{
  border:0;
- background:transparent;
- color:var(--light);
- font-size:22px;
+ background:none;
+ color:var(--gold);
+ font-size:21px;
  cursor:pointer;
- padding:6px;
- transition:transform .2s;
 }
 
-.show-password:hover{transform:scale(1.15)}
-
-/* Sign in button */
 .sign-in{
  width:100%;
- height:72px;
- margin-top:8px;
- border:1px solid #ffdc75;
- border-radius:13px;
- color:#100d06;
- font-size:21px;
- font-weight:bold;
+ height:62px;
+ margin-top:10px;
+ border:0;
+ border-radius:12px;
  background:linear-gradient(100deg,#ffcf48,#f2a900);
- box-shadow:0 0 20px #eaa51d55;
+ color:#100d06;
+ font-size:20px;
+ font-weight:bold;
  cursor:pointer;
- transition:transform .25s,box-shadow .25s,filter .25s;
+ transition:.25s;
 }
 
 .sign-in:hover{
  transform:translateY(-3px);
- box-shadow:0 7px 25px #eaa51d88;
- filter:brightness(1.08);
+ box-shadow:0 7px 22px #eaa51d77;
 }
-
-.sign-in:active{transform:scale(.98)}
 
 .sign-in:disabled,.google-btn:disabled{
  opacity:.6;
  cursor:wait;
 }
 
-/* OR separator */
 .or{
  display:flex;
  align-items:center;
- gap:16px;
- margin:24px 0 18px;
- color:#f7e7c4;
- font-family:Georgia,serif;
- font-size:20px;
+ gap:15px;
+ margin:22px 0;
+ color:var(--light);
 }
 
 .or:before,.or:after{
  content:"";
- height:1px;
  flex:1;
+ height:1px;
  background:#99702b;
 }
 
-/* Google button */
 .google-btn{
  width:100%;
- min-height:64px;
+ min-height:57px;
  border:1px solid #b78326;
- border-radius:40px;
- background:rgba(0,0,0,.35);
+ border-radius:35px;
+ background:#15120e;
  color:white;
- font-size:18px;
+ font-size:17px;
  cursor:pointer;
- transition:background .3s,transform .3s,box-shadow .3s;
+ transition:.25s;
 }
 
 .google-btn:hover{
- background:rgba(246,185,27,.12);
+ background:#302515;
  transform:translateY(-2px);
- box-shadow:0 0 16px #f6b91b33;
 }
 
 .google-g{
- font-size:25px;
- font-weight:bold;
  color:#4285f4;
- margin-right:12px;
+ font-size:24px;
+ font-weight:bold;
+ margin-right:10px;
 }
 
 .links{
  display:flex;
  justify-content:center;
- gap:16px;
+ gap:15px;
  flex-wrap:wrap;
  margin-top:22px;
- color:var(--gold);
 }
 
 .links a{
  color:var(--gold);
  text-decoration:none;
- transition:color .2s;
 }
 
 .links a:hover{
@@ -271,155 +221,242 @@ body::before{
 }
 
 #message{
- min-height:20px;
+ min-height:22px;
  margin:15px 0 0;
  text-align:center;
- color:#ffd36c;
+ color:var(--light);
  font-size:14px;
  line-height:1.5;
 }
 
 .footer{
- position:absolute;
- bottom:20px;
- left:4%;
- right:4%;
- display:flex;
- align-items:center;
- gap:18px;
+ position:fixed;
+ bottom:17px;
+ left:0;
+ right:0;
+ text-align:center;
  color:var(--light);
  font-family:Georgia,serif;
- font-size:clamp(17px,2.5vw,29px);
  font-style:italic;
+}
+
+/* BOOK OPENING SCREEN */
+
+.book-screen{
+ position:fixed;
+ inset:0;
+ z-index:1000;
+ display:none;
+ align-items:center;
+ justify-content:center;
+ flex-direction:column;
+ background:
+ radial-gradient(ellipse at center,#30230d 0%,#100d08 55%,#030303 100%);
+ perspective:1600px;
+ overflow:hidden;
+}
+
+.book-screen.active{
+ display:flex;
+ animation:screenAppear .5s ease both;
+}
+
+.welcome-text{
+ position:absolute;
+ top:12%;
+ width:100%;
  text-align:center;
- white-space:nowrap;
- animation:footerEntrance 1.5s ease both;
+ color:var(--gold);
+ font-family:Georgia,serif;
+ font-size:clamp(23px,5vw,38px);
+ letter-spacing:2px;
+ opacity:0;
+ animation:welcomeAppear .8s ease 1.6s forwards;
 }
 
-.footer:before,.footer:after{
- content:"";
- height:2px;
+.book{
+ position:relative;
+ width:min(78vw,440px);
+ height:min(58vw,300px);
+ min-height:190px;
+ transform-style:preserve-3d;
+ filter:drop-shadow(0 15px 35px #000);
+}
+
+.book-pages{
+ position:absolute;
+ inset:4px;
+ display:flex;
+ border:2px solid #c58b24;
+ border-radius:5px;
+ background:#f7e6b8;
+ overflow:hidden;
+ box-shadow:0 0 35px #e8a51d55;
+}
+
+.book-page{
  flex:1;
- background:var(--gold);
- box-shadow:0 0 8px #f4b51e;
+ display:flex;
+ flex-direction:column;
+ align-items:center;
+ justify-content:center;
+ padding:15px;
+ color:#30200b;
+ text-align:center;
+ font-family:Georgia,serif;
+ background:linear-gradient(90deg,#f4dfac,#fff4d6);
 }
 
-/* Animation definitions */
-@keyframes brandEntrance{
- from{opacity:0;transform:translateY(-30px)}
+.book-page h2{
+ font-size:clamp(17px,4vw,27px);
+ margin:0 0 12px;
+ color:#8a5a0c;
+}
+
+.book-page p{
+ font-size:clamp(11px,2.5vw,16px);
+ line-height:1.5;
+ margin:5px;
+}
+
+.book-page.right{
+ background:linear-gradient(90deg,#fff4d6,#ead19a);
+}
+
+.book-cover{
+ position:absolute;
+ top:0;
+ bottom:0;
+ width:50%;
+ z-index:3;
+ background:linear-gradient(135deg,#48300b,#171006 75%);
+ border:3px solid #e0aa39;
+ box-shadow:inset 0 0 25px #f2bc4a33;
+ transform-style:preserve-3d;
+}
+
+.book-cover.left{
+ left:0;
+ transform-origin:left center;
+ border-radius:9px 2px 2px 9px;
+ animation:openLeft 1.5s cubic-bezier(.65,0,.2,1) .35s forwards;
+}
+
+.book-cover.right{
+ right:0;
+ transform-origin:right center;
+ border-radius:2px 9px 9px 2px;
+ animation:openRight 1.5s cubic-bezier(.65,0,.2,1) .35s forwards;
+}
+
+.book-cover:before{
+ content:"";
+ position:absolute;
+ inset:12px;
+ border:1px solid #e6b64f;
+ border-radius:4px;
+}
+
+.book-cover:after{
+ content:"THE MAGUNGA HIGH";
+ position:absolute;
+ top:50%;
+ left:50%;
+ width:100%;
+ text-align:center;
+ color:#ffdc83;
+ font-family:Georgia,serif;
+ font-size:clamp(10px,2vw,15px);
+ letter-spacing:1px;
+ transform:translate(-50%,-50%);
+}
+
+.book-spine{
+ position:absolute;
+ top:0;
+ bottom:0;
+ left:50%;
+ width:10px;
+ z-index:4;
+ transform:translateX(-50%);
+ background:linear-gradient(90deg,#4d2e08,#e2ad43,#4d2e08);
+}
+
+.book-glow{
+ position:absolute;
+ width:400px;
+ height:180px;
+ background:#f6b91b;
+ opacity:0;
+ filter:blur(100px);
+ animation:glowAppear 1s ease 1.2s forwards;
+}
+
+.opening-message{
+ position:absolute;
+ bottom:13%;
+ color:#ffe7a0;
+ font-family:Georgia,serif;
+ font-size:15px;
+ letter-spacing:2px;
+ opacity:0;
+ animation:welcomeAppear .7s ease 1.7s forwards;
+}
+
+/* ANIMATIONS */
+
+@keyframes fadeDown{
+ from{opacity:0;transform:translateY(-25px)}
  to{opacity:1;transform:translateY(0)}
 }
 
-@keyframes cardEntrance{
- from{opacity:0;transform:translateY(40px) scale(.97)}
- to{opacity:1;transform:translateY(0) scale(1)}
+@keyframes fadeUp{
+ from{opacity:0;transform:translateY(30px)}
+ to{opacity:1;transform:translateY(0)}
 }
 
-@keyframes crestGlow{
- 0%,100%{box-shadow:0 0 15px #f5b51b44}
- 50%{box-shadow:0 0 32px #f5b51baa}
-}
-
-@keyframes titleGlow{
- 0%,100%{text-shadow:0 0 10px #e8a91e33}
- 50%{text-shadow:0 0 22px #e8a91e99}
-}
-
-@keyframes backgroundGlow{
- from{transform:translate(-2%,0) scale(1)}
- to{transform:translate(2%,2%) scale(1.08)}
-}
-
-@keyframes footerEntrance{
+@keyframes screenAppear{
  from{opacity:0}
  to{opacity:1}
 }
 
-/* Mobile layout */
-@media(max-width:760px){
- body{
-  background:
-  linear-gradient(180deg,rgba(0,0,0,.3),rgba(0,0,0,.85) 38%,#080706 100%),
-  url("assets/images/login-student.png") center top/auto 48vh no-repeat,
-  #080706;
- }
-
- .page{
-  align-items:center;
-  justify-content:flex-start;
-  padding:22vh 16px 82px;
- }
-
- .brand{
-  gap:12px;
-  margin-bottom:18px;
- }
-
- .crest{
-  width:54px;
-  height:62px;
-  font-size:27px;
- }
-
- .brand h1{font-size:clamp(19px,5vw,27px)}
- .brand p{font-size:13px}
-
- .login-card{
-  padding:25px 19px 22px;
-  border-radius:18px;
- }
-
- .login-card h2{font-size:32px}
-
- .intro{
-  font-size:14px;
-  margin-bottom:20px;
- }
-
- .field{
-  height:61px;
-  margin:14px 0;
-  padding:0 13px;
- }
-
- .field input{font-size:16px}
- .sign-in{height:60px;font-size:19px}
- .google-btn{min-height:56px;font-size:16px}
-
- .footer{
-  bottom:16px;
-  gap:9px;
-  font-size:16px;
- }
+@keyframes openLeft{
+ from{transform:rotateY(0deg)}
+ to{transform:rotateY(-155deg)}
 }
 
-@media(max-width:360px){
- .page{
-  padding-left:11px;
-  padding-right:11px;
- }
-
- .login-card{
-  padding-left:14px;
-  padding-right:14px;
- }
-
- .brand h1{font-size:18px}
- .footer{font-size:13px}
+@keyframes openRight{
+ from{transform:rotateY(0deg)}
+ to{transform:rotateY(155deg)}
 }
 
-/* Respect users who prefer reduced motion */
+@keyframes welcomeAppear{
+ from{opacity:0;transform:translateY(15px)}
+ to{opacity:1;transform:translateY(0)}
+}
+
+@keyframes glowAppear{
+ from{opacity:0}
+ to{opacity:.2}
+}
+
+@media(max-width:600px){
+ .login-card{padding:24px 18px}
+ .brand{gap:10px}
+ .crest{width:55px;height:62px;font-size:27px}
+ .brand h1{font-size:20px}
+ .brand p{font-size:12px}
+ .book{width:86vw;height:58vw}
+}
+
 @media(prefers-reduced-motion:reduce){
- *,*::before,*::after{
-  animation:none!important;
-  scroll-behavior:auto!important;
-  transition:none!important;
- }
+ .brand,.login-card{animation:none}
 }
 </style>
 </head>
 
 <body>
+
 <main class="page">
 
 <header class="brand">
@@ -431,10 +468,12 @@ body::before{
 </header>
 
 <section class="login-card">
+
  <h2>Student Login</h2>
  <p class="intro">Access Magunga AI and your learning resources</p>
 
  <form id="loginForm">
+
   <div class="field">
    <span class="field-icon">✉</span>
    <input id="email" type="email"
@@ -454,12 +493,14 @@ body::before{
   <button class="sign-in" id="loginButton" type="submit">
    ↪ Sign In
   </button>
+
  </form>
 
  <div class="or">or</div>
 
  <button class="google-btn" id="googleButton" type="button">
-  <span class="google-g">G</span> Continue with Google
+  <span class="google-g">G</span>
+  Continue with Google
  </button>
 
  <p id="message" role="status" aria-live="polite"></p>
@@ -469,12 +510,48 @@ body::before{
   <span>|</span>
   <a href="index.html">Back to Home</a>
  </nav>
+
 </section>
 
 <div class="footer">Together for a brighter future</div>
 </main>
 
+<!-- BOOK ANIMATION -->
+
+<div class="book-screen" id="bookScreen">
+
+ <div class="welcome-text">WELCOME TO THE MAGUNGA HIGH</div>
+
+ <div class="book-glow"></div>
+
+ <div class="book">
+
+  <div class="book-pages">
+
+   <div class="book-page">
+    <h2>Knowledge</h2>
+    <p>Every new day is an opportunity to learn.</p>
+   </div>
+
+   <div class="book-page right">
+    <h2>Success</h2>
+    <p>Your journey towards a brighter future begins here.</p>
+   </div>
+
+  </div>
+
+  <div class="book-cover left"></div>
+  <div class="book-cover right"></div>
+  <div class="book-spine"></div>
+
+ </div>
+
+ <div class="opening-message">YOUR JOURNEY CONTINUES...</div>
+
+</div>
+
 <script type="module">
+
 import {loginStudent} from "./assets/js/auth.js";
 import {auth,db} from "./assets/js/firebase.js";
 
@@ -500,11 +577,21 @@ function showMessage(text,success=false){
  message.style.color=success?"#b8efbd":"#ffd36c";
 }
 
+function openBook(destination){
+ document.getElementById("bookScreen").classList.add("active");
+
+ // Allow the book to open before navigating.
+ setTimeout(()=>{
+  window.location.href=destination;
+ },3000);
+}
+
 async function finishLogin(user){
+
  const profile=await getDoc(doc(db,"users",user.uid));
 
  if(!profile.exists()){
-  showMessage("Account profile not found. Please register first.");
+  showMessage("Account profile not found. Please contact the administrator.");
   return;
  }
 
@@ -515,13 +602,15 @@ async function finishLogin(user){
   return;
  }
 
- showMessage("Login successful. Opening your portal...",true);
+ let destination;
 
  if(data.role==="superadmin" || data.role==="streamAdmin"){
-  window.location.href="admin.html";
+  destination="admin.html";
  }else{
-  window.location.href="dashboard.html";
+  destination="dashboard.html";
  }
+
+ openBook(destination);
 }
 
 document.getElementById("togglePassword").onclick=()=>{
@@ -531,57 +620,84 @@ document.getElementById("togglePassword").onclick=()=>{
 };
 
 form.addEventListener("submit",async event=>{
+
  event.preventDefault();
+
  loginButton.disabled=true;
  googleButton.disabled=true;
- showMessage("Signing in...");
+
+ showMessage("Verifying your login details...");
 
  try{
-  const user=await loginStudent(email.value.trim(),password.value);
+
+  const user=await loginStudent(
+   email.value.trim(),
+   password.value
+  );
+
   await finishLogin(user);
+
  }catch(error){
+
   showMessage("Login failed: "+error.message);
- }finally{
+
   loginButton.disabled=false;
   googleButton.disabled=false;
  }
+
 });
 
 document.getElementById("forgotPassword").onclick=async event=>{
+
  event.preventDefault();
 
  const address=email.value.trim();
 
  if(!address){
-  showMessage("Enter your Gmail address first.");
+  showMessage("Enter your email address first.");
   email.focus();
   return;
  }
 
  try{
+
   await sendPasswordResetEmail(auth,address);
   showMessage("Password reset email sent. Check your inbox.",true);
+
  }catch(error){
+
   showMessage("Could not send reset email: "+error.message);
+
  }
+
 };
 
 googleButton.onclick=async()=>{
+
  googleButton.disabled=true;
  loginButton.disabled=true;
+
  showMessage("Connecting to Google...");
 
  try{
+
   const provider=new GoogleAuthProvider();
   const result=await signInWithPopup(auth,provider);
+
   await finishLogin(result.user);
+
  }catch(error){
+
   showMessage("Google sign-in failed: "+error.message);
- }finally{
+
   googleButton.disabled=false;
   loginButton.disabled=false;
+
  }
+
 };
+
 </script>
+
 </body>
 </html>
