@@ -1,0 +1,308 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#090d16">
+
+<title>Phone Notifications | Magunga High</title>
+
+<style>
+* {
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
+}
+
+body {
+  margin: 0;
+  background: #090d16;
+  color: white;
+  min-height: 100vh;
+}
+
+header {
+  padding: 18px;
+  background: #111827;
+  border-bottom: 1px solid #d6a83e;
+}
+
+header h2 {
+  margin: 0;
+  color: #ffd36a;
+  font-size: 18px;
+}
+
+main {
+  max-width: 520px;
+  margin: 35px auto;
+  padding: 15px;
+}
+
+.card {
+  background: #151c2a;
+  border: 1px solid #b98d32;
+  border-radius: 12px;
+  padding: 22px;
+}
+
+.icon {
+  font-size: 45px;
+  text-align: center;
+}
+
+h1 {
+  text-align: center;
+  color: #ffdc87;
+  font-size: 23px;
+}
+
+.description {
+  color: #bdc6d4;
+  text-align: center;
+  line-height: 1.6;
+  font-size: 14px;
+}
+
+button {
+  width: 100%;
+  border: none;
+  padding: 14px;
+  border-radius: 8px;
+  background: linear-gradient(135deg,#e5bd55,#a87920);
+  color: #17120a;
+  font-weight: bold;
+  font-size: 15px;
+  cursor: pointer;
+  margin-top: 15px;
+}
+
+button:disabled {
+  opacity: .5;
+  cursor: not-allowed;
+}
+
+#status {
+  text-align: center;
+  color: #ffd36a;
+  font-size: 13px;
+  margin-top: 18px;
+  overflow-wrap: anywhere;
+}
+
+.back {
+  display: block;
+  text-align: center;
+  margin-top: 20px;
+  color: #ffd36a;
+  text-decoration: none;
+  font-size: 13px;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <h2>THE MAGUNGA HIGH</h2>
+</header>
+
+<main>
+  <section class="card">
+
+    <div class="icon">🔔</div>
+
+    <h1>Phone Notifications</h1>
+
+    <p class="description">
+      Enable notifications to receive important school
+      announcements and updates directly on your phone.
+    </p>
+
+    <button id="enableButton">
+      Enable Phone Notifications
+    </button>
+
+    <p id="status" role="status" aria-live="polite">
+      Checking your account...
+    </p>
+
+  </section>
+
+  <a href="dashboard.html" class="back">
+    ← Return to Dashboard
+  </a>
+</main>
+
+<script type="module">
+
+import { auth, db, app } from "./assets/js/firebase.js";
+
+import {
+  onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
+
+import {
+  doc,
+  getDoc,
+  setDoc,
+  serverTimestamp
+} from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
+
+import {
+  getMessaging,
+  getToken,
+  isSupported,
+  onMessage
+} from "https://www.gstatic.com/firebasejs/11.6.0/firebase-messaging.js";
+
+const VAPID_KEY =
+"BCMYFIf-7BThw-uo0xVZdJ1IZ8_a3UwkggNwPk5ViOTLpQ599S0zP8Ppq3D16C035eof8f36mJGjIE6Jn3uvBlo";
+
+const button = document.getElementById("enableButton");
+const status = document.getElementById("status");
+
+let currentUser = null;
+let messaging = null;
+
+onAuthStateChanged(auth, async (user) => {
+
+  if (!user) {
+    window.location.href = "login.html";
+    return;
+  }
+
+  try {
+
+    const profile = await getDoc(
+      doc(db, "users", user.uid)
+    );
+
+    if (!profile.exists() ||
+        profile.data().status !== "approved") {
+
+      status.textContent =
+        "Your account is not approved.";
+
+      button.disabled = true;
+      return;
+    }
+
+    currentUser = user;
+
+    status.textContent =
+      "Your account is ready. Enable notifications below.";
+
+  } catch (error) {
+
+    console.error(error);
+
+    status.textContent =
+      "Could not verify your account.";
+
+    button.disabled = true;
+  }
+});
+
+button.addEventListener("click", async () => {
+
+  if (!currentUser) {
+    status.textContent = "Please wait for account verification.";
+    return;
+  }
+
+  button.disabled = true;
+  status.textContent = "Registering your device...";
+
+  try {
+
+    if (!("serviceWorker" in navigator)) {
+      throw new Error(
+        "This browser does not support service workers."
+      );
+    }
+
+    if (!("Notification" in window)) {
+      throw new Error(
+        "This browser does not support notifications."
+      );
+    }
+
+    const supported = await isSupported();
+
+    if (!supported) {
+      throw new Error(
+        "Firebase messaging is not supported on this browser."
+      );
+    }
+
+    const permission = await Notification.requestPermission();
+
+    if (permission !== "granted") {
+      throw new Error(
+        "Notification permission was not granted."
+      );
+    }
+
+    const registration =
+      await navigator.serviceWorker.register(
+        "/firebase-messaging-sw.js"
+      );
+
+    messaging = getMessaging(app);
+
+    const token = await getToken(messaging, {
+      vapidKey: VAPID_KEY,
+      serviceWorkerRegistration: registration
+    });
+
+    if (!token) {
+      throw new Error(
+        "Firebase did not generate a device token."
+      );
+    }
+
+    await setDoc(
+      doc(
+        db,
+        "users",
+        currentUser.uid,
+        "fcmTokens",
+        token
+      ),
+      {
+        token: token,
+        platform: "web",
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp()
+      },
+      { merge: true }
+    );
+
+    status.textContent =
+      "Notifications successfully enabled on this device!";
+
+    button.textContent = "Notifications Enabled";
+
+    onMessage(messaging, (payload) => {
+
+      status.textContent =
+        payload.notification?.title ||
+        "New Magunga High notification received.";
+    });
+
+  } catch (error) {
+
+    console.error("Notification error:", error);
+
+    status.textContent =
+      error.message || "Registration failed.";
+
+    button.disabled = false;
+  }
+});
+
+</script>
+
+</body>
+</html>
