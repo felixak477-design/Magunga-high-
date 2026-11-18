@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,128 +9,333 @@
 
 <style>
 *{box-sizing:border-box}
-:root{--gold:#f6b91b;--light:#ffe18a}
+
+:root{
+ --gold:#f6b91b;
+ --light:#ffe18a;
+}
+
+html{scroll-behavior:smooth}
 
 body{
- margin:0;min-height:100vh;color:white;
+ margin:0;
+ min-height:100vh;
+ color:white;
  font-family:Arial,Helvetica,sans-serif;
  background:
  linear-gradient(90deg,rgba(0,0,0,.08) 0%,rgba(0,0,0,.12) 40%,rgba(0,0,0,.88) 67%,#080706 100%),
  linear-gradient(0deg,rgba(0,0,0,.7),transparent 30%),
  url("assets/images/login-student.png") center/cover no-repeat,
  #100d08;
+ overflow-x:hidden;
+}
+
+/* Subtle animated background glow */
+body::before{
+ content:"";
+ position:fixed;
+ inset:-30%;
+ pointer-events:none;
+ z-index:0;
+ background:
+ radial-gradient(circle at 70% 35%,rgba(246,185,27,.13),transparent 35%),
+ radial-gradient(circle at 20% 80%,rgba(246,185,27,.07),transparent 30%);
+ animation:backgroundGlow 9s ease-in-out infinite alternate;
 }
 
 .page{
- min-height:100vh;display:flex;flex-direction:column;
- justify-content:center;align-items:flex-end;
- padding:35px 5% 75px;position:relative;
+ min-height:100vh;
+ display:flex;
+ flex-direction:column;
+ justify-content:center;
+ align-items:flex-end;
+ padding:35px 5% 75px;
+ position:relative;
+ z-index:1;
 }
 
 .brand{
- width:min(100%,660px);display:flex;align-items:center;
- justify-content:center;gap:18px;margin-bottom:28px;
+ width:min(100%,660px);
+ display:flex;
+ align-items:center;
+ justify-content:center;
+ gap:18px;
+ margin-bottom:28px;
+ animation:brandEntrance 1s ease both;
 }
 
 .crest{
- width:76px;height:86px;display:grid;place-items:center;
- border:2px solid var(--gold);border-radius:18px 18px 24px 24px;
+ width:76px;
+ height:86px;
+ display:grid;
+ place-items:center;
+ border:2px solid var(--gold);
+ border-radius:18px 18px 24px 24px;
  background:linear-gradient(145deg,#14213a,#080b12);
- color:var(--light);font-size:38px;
+ color:var(--light);
+ font-size:38px;
  box-shadow:0 0 22px #f5b51b55;
+ animation:crestGlow 3s ease-in-out infinite;
 }
 
 .brand h1{
- margin:0;color:var(--gold);
- font-family:Georgia,serif;font-size:clamp(22px,3vw,36px);
+ margin:0;
+ color:var(--gold);
+ font-family:Georgia,serif;
+ font-size:clamp(22px,3vw,36px);
  letter-spacing:1px;
 }
+
 .brand p{
- margin:7px 0 0;color:var(--light);
- font-family:Georgia,serif;font-style:italic;
+ margin:7px 0 0;
+ color:var(--light);
+ font-family:Georgia,serif;
+ font-style:italic;
 }
 
 .login-card{
- width:min(100%,590px);padding:32px 38px 28px;
- border:2px solid var(--gold);border-radius:22px;
+ width:min(100%,590px);
+ padding:32px 38px 28px;
+ border:2px solid var(--gold);
+ border-radius:22px;
  background:linear-gradient(145deg,rgba(18,15,13,.95),rgba(8,8,8,.93));
  box-shadow:0 0 12px #ffca35aa,0 0 42px #d9971733;
  backdrop-filter:blur(12px);
+ animation:cardEntrance 1s cubic-bezier(.2,.8,.2,1) both;
+ animation-delay:.15s;
 }
 
 .login-card h2{
- margin:0;text-align:center;
- font-family:Georgia,serif;font-size:40px;
- color:var(--light);text-shadow:0 0 15px #e8a91e55;
+ margin:0;
+ text-align:center;
+ font-family:Georgia,serif;
+ font-size:40px;
+ color:var(--light);
+ text-shadow:0 0 15px #e8a91e55;
+ animation:titleGlow 3s ease-in-out infinite;
 }
-.intro{text-align:center;margin:12px 0 28px;color:#eee;line-height:1.5}
 
+.intro{
+ text-align:center;
+ margin:12px 0 28px;
+ color:#eee;
+ line-height:1.5;
+}
+
+/* Input fields */
 .field{
- height:72px;display:flex;align-items:center;gap:15px;
- padding:0 18px;margin:18px 0;
- border:1px solid #a87921;border-radius:13px;
+ height:72px;
+ display:flex;
+ align-items:center;
+ gap:15px;
+ padding:0 18px;
+ margin:18px 0;
+ border:1px solid #a87921;
+ border-radius:13px;
  background:rgba(48,42,38,.75);
+ transition:border-color .3s,box-shadow .3s,transform .3s,background .3s;
 }
-.field-icon{font-size:25px;color:var(--gold)}
+
+.field:focus-within{
+ border-color:var(--light);
+ background:rgba(62,51,35,.85);
+ box-shadow:0 0 15px #f6b91b55;
+ transform:translateY(-2px);
+}
+
+.field-icon{
+ font-size:25px;
+ color:var(--gold);
+ transition:transform .3s;
+}
+
+.field:focus-within .field-icon{
+ transform:scale(1.12);
+}
+
 .field input{
- width:100%;min-width:0;border:0;outline:0;
- background:transparent;color:white;font-size:18px;
+ width:100%;
+ min-width:0;
+ border:0;
+ outline:0;
+ background:transparent;
+ color:white;
+ font-size:18px;
 }
+
 .field input::placeholder{color:#bcb8b5}
+
 .show-password{
- border:0;background:transparent;color:var(--light);
- font-size:22px;cursor:pointer;padding:6px;
+ border:0;
+ background:transparent;
+ color:var(--light);
+ font-size:22px;
+ cursor:pointer;
+ padding:6px;
+ transition:transform .2s;
 }
 
+.show-password:hover{transform:scale(1.15)}
+
+/* Sign in button */
 .sign-in{
- width:100%;height:72px;margin-top:8px;
- border:1px solid #ffdc75;border-radius:13px;
- color:#100d06;font-size:21px;font-weight:bold;
+ width:100%;
+ height:72px;
+ margin-top:8px;
+ border:1px solid #ffdc75;
+ border-radius:13px;
+ color:#100d06;
+ font-size:21px;
+ font-weight:bold;
  background:linear-gradient(100deg,#ffcf48,#f2a900);
- box-shadow:0 0 20px #eaa51d55;cursor:pointer;
+ box-shadow:0 0 20px #eaa51d55;
+ cursor:pointer;
+ transition:transform .25s,box-shadow .25s,filter .25s;
 }
-.sign-in:disabled,.google-btn:disabled{opacity:.6;cursor:wait}
 
+.sign-in:hover{
+ transform:translateY(-3px);
+ box-shadow:0 7px 25px #eaa51d88;
+ filter:brightness(1.08);
+}
+
+.sign-in:active{transform:scale(.98)}
+
+.sign-in:disabled,.google-btn:disabled{
+ opacity:.6;
+ cursor:wait;
+}
+
+/* OR separator */
 .or{
- display:flex;align-items:center;gap:16px;
- margin:24px 0 18px;color:#f7e7c4;
- font-family:Georgia,serif;font-size:20px;
-}
-.or:before,.or:after{
- content:"";height:1px;flex:1;background:#99702b;
+ display:flex;
+ align-items:center;
+ gap:16px;
+ margin:24px 0 18px;
+ color:#f7e7c4;
+ font-family:Georgia,serif;
+ font-size:20px;
 }
 
-.google-btn{
- width:100%;min-height:64px;border:1px solid #b78326;
- border-radius:40px;background:rgba(0,0,0,.35);
- color:white;font-size:18px;cursor:pointer;
+.or:before,.or:after{
+ content:"";
+ height:1px;
+ flex:1;
+ background:#99702b;
 }
-.google-g{font-size:25px;font-weight:bold;color:#4285f4;margin-right:12px}
+
+/* Google button */
+.google-btn{
+ width:100%;
+ min-height:64px;
+ border:1px solid #b78326;
+ border-radius:40px;
+ background:rgba(0,0,0,.35);
+ color:white;
+ font-size:18px;
+ cursor:pointer;
+ transition:background .3s,transform .3s,box-shadow .3s;
+}
+
+.google-btn:hover{
+ background:rgba(246,185,27,.12);
+ transform:translateY(-2px);
+ box-shadow:0 0 16px #f6b91b33;
+}
+
+.google-g{
+ font-size:25px;
+ font-weight:bold;
+ color:#4285f4;
+ margin-right:12px;
+}
 
 .links{
- display:flex;justify-content:center;gap:16px;
- flex-wrap:wrap;margin-top:22px;color:var(--gold);
+ display:flex;
+ justify-content:center;
+ gap:16px;
+ flex-wrap:wrap;
+ margin-top:22px;
+ color:var(--gold);
 }
-.links a{color:var(--gold);text-decoration:none}
-.links a:hover{text-decoration:underline}
+
+.links a{
+ color:var(--gold);
+ text-decoration:none;
+ transition:color .2s;
+}
+
+.links a:hover{
+ color:white;
+ text-decoration:underline;
+}
 
 #message{
- min-height:20px;margin:15px 0 0;text-align:center;
- color:#ffd36c;font-size:14px;line-height:1.5;
+ min-height:20px;
+ margin:15px 0 0;
+ text-align:center;
+ color:#ffd36c;
+ font-size:14px;
+ line-height:1.5;
 }
 
 .footer{
- position:absolute;bottom:20px;left:4%;right:4%;
- display:flex;align-items:center;gap:18px;
- color:var(--light);font-family:Georgia,serif;
+ position:absolute;
+ bottom:20px;
+ left:4%;
+ right:4%;
+ display:flex;
+ align-items:center;
+ gap:18px;
+ color:var(--light);
+ font-family:Georgia,serif;
  font-size:clamp(17px,2.5vw,29px);
- font-style:italic;text-align:center;white-space:nowrap;
+ font-style:italic;
+ text-align:center;
+ white-space:nowrap;
+ animation:footerEntrance 1.5s ease both;
 }
+
 .footer:before,.footer:after{
- content:"";height:2px;flex:1;background:var(--gold);
+ content:"";
+ height:2px;
+ flex:1;
+ background:var(--gold);
  box-shadow:0 0 8px #f4b51e;
 }
 
+/* Animation definitions */
+@keyframes brandEntrance{
+ from{opacity:0;transform:translateY(-30px)}
+ to{opacity:1;transform:translateY(0)}
+}
+
+@keyframes cardEntrance{
+ from{opacity:0;transform:translateY(40px) scale(.97)}
+ to{opacity:1;transform:translateY(0) scale(1)}
+}
+
+@keyframes crestGlow{
+ 0%,100%{box-shadow:0 0 15px #f5b51b44}
+ 50%{box-shadow:0 0 32px #f5b51baa}
+}
+
+@keyframes titleGlow{
+ 0%,100%{text-shadow:0 0 10px #e8a91e33}
+ 50%{text-shadow:0 0 22px #e8a91e99}
+}
+
+@keyframes backgroundGlow{
+ from{transform:translate(-2%,0) scale(1)}
+ to{transform:translate(2%,2%) scale(1.08)}
+}
+
+@keyframes footerEntrance{
+ from{opacity:0}
+ to{opacity:1}
+}
+
+/* Mobile layout */
 @media(max-width:760px){
  body{
   background:
@@ -137,25 +343,78 @@ body{
   url("assets/images/login-student.png") center top/auto 48vh no-repeat,
   #080706;
  }
- .page{align-items:center;justify-content:flex-start;padding:22vh 16px 82px}
- .brand{gap:12px;margin-bottom:18px}
- .crest{width:54px;height:62px;font-size:27px}
+
+ .page{
+  align-items:center;
+  justify-content:flex-start;
+  padding:22vh 16px 82px;
+ }
+
+ .brand{
+  gap:12px;
+  margin-bottom:18px;
+ }
+
+ .crest{
+  width:54px;
+  height:62px;
+  font-size:27px;
+ }
+
  .brand h1{font-size:clamp(19px,5vw,27px)}
  .brand p{font-size:13px}
- .login-card{padding:25px 19px 22px;border-radius:18px}
+
+ .login-card{
+  padding:25px 19px 22px;
+  border-radius:18px;
+ }
+
  .login-card h2{font-size:32px}
- .intro{font-size:14px;margin-bottom:20px}
- .field{height:61px;margin:14px 0;padding:0 13px}
+
+ .intro{
+  font-size:14px;
+  margin-bottom:20px;
+ }
+
+ .field{
+  height:61px;
+  margin:14px 0;
+  padding:0 13px;
+ }
+
  .field input{font-size:16px}
  .sign-in{height:60px;font-size:19px}
  .google-btn{min-height:56px;font-size:16px}
- .footer{bottom:16px;gap:9px;font-size:16px}
+
+ .footer{
+  bottom:16px;
+  gap:9px;
+  font-size:16px;
+ }
 }
+
 @media(max-width:360px){
- .page{padding-left:11px;padding-right:11px}
- .login-card{padding-left:14px;padding-right:14px}
+ .page{
+  padding-left:11px;
+  padding-right:11px;
+ }
+
+ .login-card{
+  padding-left:14px;
+  padding-right:14px;
+ }
+
  .brand h1{font-size:18px}
  .footer{font-size:13px}
+}
+
+/* Respect users who prefer reduced motion */
+@media(prefers-reduced-motion:reduce){
+ *,*::before,*::after{
+  animation:none!important;
+  scroll-behavior:auto!important;
+  transition:none!important;
+ }
 }
 </style>
 </head>
