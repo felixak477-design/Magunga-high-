@@ -8,194 +8,232 @@
 <title>Digital Library | The Magunga High</title>
 
 <style>
-*{box-sizing:border-box}
-
-body{
- margin:0;
- background:#090d16;
- color:#f4f6fb;
- font-family:Arial,sans-serif;
+* {
+ box-sizing: border-box;
+ font-family: Arial, sans-serif;
 }
 
-header{
- padding:17px 5%;
- background:#111827;
- border-bottom:1px solid #34445f;
- display:flex;
- justify-content:space-between;
- align-items:center;
- gap:12px;
+body {
+ margin: 0;
+ background: #090d16;
+ color: #f4f6fb;
+ padding-top: 70px;
 }
 
-header h2{
- margin:0;
- color:#f4d58a;
- font-size:18px;
+/* FIXED TOP NAVIGATION */
+
+.topbar {
+ position: fixed;
+ top: 0;
+ left: 0;
+ right: 0;
+ height: 65px;
+ background: #111827;
+ border-bottom: 1px solid #34445f;
+ display: flex;
+ align-items: center;
+ justify-content: space-around;
+ gap: 5px;
+ padding: 0 8px;
+ z-index: 1000;
 }
 
-a{
- color:#f4d58a;
- text-decoration:none;
+.topbar a {
+ color: #aebbd0;
+ text-decoration: none;
+ font-size: 13px;
+ font-weight: bold;
+ padding: 12px 10px;
+ border-radius: 8px;
+ white-space: nowrap;
 }
 
-main{
- max-width:1050px;
- margin:auto;
- padding:24px 16px;
+.topbar a.active {
+ color: #f4d58a;
+ background: #302511;
 }
 
-.hero{
- padding:23px;
- border-radius:15px;
- background:linear-gradient(130deg,#18263d,#111827);
- margin-bottom:20px;
+.topbar a:hover {
+ color: #f4d58a;
 }
 
-.hero h1{
- margin:0 0 8px;
- color:#f4d58a;
+main {
+ max-width: 1050px;
+ margin: auto;
+ padding: 24px 16px;
 }
 
-.muted{
- color:#aebbd0;
- line-height:1.5;
+.hero {
+ padding: 23px 5px;
+ border-bottom: 1px solid #34445f;
+ margin-bottom: 20px;
 }
 
-.tools{
- display:flex;
- gap:10px;
- flex-wrap:wrap;
- margin:18px 0;
+.hero h1 {
+ margin: 0 0 8px;
+ color: #f4d58a;
 }
 
-input,select{
- min-height:44px;
- padding:10px 12px;
- border-radius:8px;
- border:1px solid #40516c;
- background:#121c2d;
- color:white;
- font-size:15px;
+.muted {
+ color: #aebbd0;
+ line-height: 1.5;
 }
 
-input{
- flex:1;
- min-width:190px;
+.tools {
+ display: flex;
+ gap: 10px;
+ flex-wrap: wrap;
+ margin: 18px 0;
 }
 
-select{min-width:150px}
-
-.grid{
- display:grid;
- grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
- gap:14px;
+input, select {
+ min-height: 44px;
+ padding: 10px 12px;
+ border-radius: 8px;
+ border: 1px solid #40516c;
+ background: #121c2d;
+ color: white;
+ font-size: 15px;
 }
 
-.item{
- background:#141e30;
- border:1px solid #34445f;
- border-radius:12px;
- padding:17px;
+input {
+ flex: 1;
+ min-width: 190px;
 }
 
-.item h3{
- margin:0 0 9px;
- color:#f4d58a;
- overflow-wrap:anywhere;
+select {
+ min-width: 150px;
 }
 
-.meta{
- font-size:12px;
- color:#aebbd0;
- line-height:1.7;
+.grid {
+ display: grid;
+ grid-template-columns: repeat(auto-fit,minmax(240px,1fr));
+ gap: 14px;
 }
 
-.desc{
- font-size:14px;
- line-height:1.5;
- color:#d4dbea;
- overflow-wrap:anywhere;
+.item {
+ background: #141e30;
+ border: 1px solid #34445f;
+ border-radius: 12px;
+ padding: 17px;
 }
 
-button{
- display:inline-block;
- border:0;
- border-radius:8px;
- padding:11px 14px;
- background:#d5a52b;
- color:#17120a;
- font-weight:bold;
- cursor:pointer;
+.item h3 {
+ margin: 0 0 9px;
+ color: #f4d58a;
+ overflow-wrap: anywhere;
 }
 
-button:disabled{
- opacity:.6;
- cursor:wait;
+.meta {
+ font-size: 12px;
+ color: #aebbd0;
+ line-height: 1.7;
 }
 
-#status{
- color:#f4d58a;
- line-height:1.5;
+.desc {
+ font-size: 14px;
+ line-height: 1.5;
+ color: #d4dbea;
+ overflow-wrap: anywhere;
 }
 
-.empty{
- padding:22px;
- text-align:center;
- color:#aebbd0;
- background:#121c2d;
- border-radius:10px;
+button {
+ display: inline-block;
+ border: 0;
+ border-radius: 8px;
+ padding: 11px 14px;
+ background: #d5a52b;
+ color: #17120a;
+ font-weight: bold;
+ cursor: pointer;
 }
 
-@media(max-width:500px){
- header h2{font-size:15px}
- main{padding:16px 12px}
+button:disabled {
+ opacity: .6;
+ cursor: wait;
+}
+
+#status {
+ color: #f4d58a;
+ line-height: 1.5;
+}
+
+.empty {
+ padding: 22px;
+ text-align: center;
+ color: #aebbd0;
+ background: #121c2d;
+ border-radius: 10px;
+}
+
+@media(max-width:500px) {
+ .topbar {
+  justify-content: flex-start;
+  overflow-x: auto;
+ }
+
+ .topbar a {
+  font-size: 12px;
+  padding: 12px 9px;
+ }
+
+ main {
+  padding: 16px 12px;
+ }
 }
 </style>
 </head>
 
 <body>
 
-<header>
- <h2>THE MAGUNGA HIGH · LIBRARY</h2>
- <a href="dashboard.html">Back to Dashboard</a>
-</header>
+<!-- FIXED NAVIGATION -->
+
+<nav class="topbar">
+ <a href="dashboard.html">Home</a>
+ <a href="community.html">Friends</a>
+ <a href="chat.html">Messages</a>
+ <a href="notifications.html">Alerts</a>
+ <a href="profile.html">Account</a>
+ <a href="library.html" class="active">Library</a>
+</nav>
 
 <main>
 
- <section class="hero">
-  <h1>Digital Learning Library</h1>
-  <p class="muted">
-   Find approved revision notes, study materials
-   and past papers shared by your school community.
-  </p>
- </section>
+<section class="hero">
+ <h1>📚 Digital Learning Library</h1>
 
- <div class="tools">
+ <p class="muted">
+ Find approved revision notes, study materials
+ and past papers shared by your school community.
+ </p>
+</section>
 
-  <input
-   id="search"
-   type="search"
-   placeholder="Search title, topic or subject"
-  >
+<div class="tools">
 
-  <select id="subject">
-   <option value="">All subjects</option>
-  </select>
+ <input
+  id="search"
+  type="search"
+  placeholder="Search title, topic or subject"
+ >
 
-  <select id="level">
-   <option value="">All classes</option>
-   <option>Form 1</option>
-   <option>Form 2</option>
-   <option>Form 3</option>
-   <option>Form 4</option>
-   <option>All Forms</option>
-  </select>
+ <select id="subject">
+  <option value="">All subjects</option>
+ </select>
 
- </div>
+ <select id="level">
+  <option value="">All classes</option>
+  <option>Form 1</option>
+  <option>Form 2</option>
+  <option>Form 3</option>
+  <option>Form 4</option>
+  <option>All Forms</option>
+ </select>
 
- <p id="status">Checking your account...</p>
+</div>
 
- <section class="grid" id="resources"></section>
+<p id="status">Checking your account...</p>
+
+<section class="grid" id="resources"></section>
 
 </main>
 
@@ -217,206 +255,266 @@ import {
  getDoc
 } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
 
-const status=document.getElementById("status");
-const container=document.getElementById("resources");
+const status = document.getElementById("status");
 
-let items=[];
-let currentUser=null;
+const container = document.getElementById("resources");
 
-function render(){
+let items = [];
 
- const term=document
+let currentUser = null;
+
+// DISPLAY MATERIALS
+
+function render() {
+
+ const term = document
   .getElementById("search")
   .value.trim().toLowerCase();
 
- const subject=document.getElementById("subject").value;
- const level=document.getElementById("level").value;
+ const subject = document.getElementById("subject").value;
 
- const filtered=items.filter(x=>
-  (!subject||x.subject===subject)&&
-  (!level||x.classLevel===level)&&
+ const level = document.getElementById("level").value;
+
+ const filtered = items.filter(x =>
+
+  (!subject || x.subject === subject) &&
+
+  (!level || x.classLevel === level) &&
+
   [
    x.title,
    x.subject,
    x.topic,
    x.description
   ].join(" ").toLowerCase().includes(term)
+
  );
 
  container.replaceChildren();
 
- if(!filtered.length){
+ if(!filtered.length) {
 
-  const empty=document.createElement("div");
-  empty.className="empty";
-  empty.textContent="No matching approved materials yet.";
+  const empty = document.createElement("div");
+
+  empty.className = "empty";
+
+  empty.textContent =
+   "No matching approved materials yet.";
+
   container.append(empty);
+
   return;
+
  }
 
- filtered.forEach(x=>{
+ filtered.forEach(x => {
 
-  const card=document.createElement("article");
-  card.className="item";
+  const card = document.createElement("article");
 
-  const title=document.createElement("h3");
-  title.textContent=x.title||"Untitled material";
+  card.className = "item";
 
-  const meta=document.createElement("div");
-  meta.className="meta";
-  meta.textContent=[
+  const title = document.createElement("h3");
+
+  title.textContent = x.title || "Untitled material";
+
+  const meta = document.createElement("div");
+
+  meta.className = "meta";
+
+  meta.textContent = [
    x.subject,
    x.classLevel,
    x.topic
   ].filter(Boolean).join(" · ");
 
-  const desc=document.createElement("p");
-  desc.className="desc";
-  desc.textContent=x.description||"Revision material";
+  const desc = document.createElement("p");
 
-  const button=document.createElement("button");
-  button.textContent="Download PDF";
+  desc.className = "desc";
 
-  button.onclick=async()=>{
+  desc.textContent = x.description || "Revision material";
 
-   button.disabled=true;
-   button.textContent="Preparing download...";
+  const button = document.createElement("button");
 
-   let newTab=null;
+  button.textContent = "Download PDF";
 
-   try{
+  // SUPABASE SIGNED DOWNLOAD
 
-    // Open the tab immediately to avoid popup blocking.
-    newTab=window.open("about:blank","_blank");
+  button.onclick = async () => {
 
-    const idToken=await currentUser.getIdToken();
+   button.disabled = true;
 
-    const response=await fetch("/api/library-download-url",{
-     method:"POST",
-     headers:{
-      "Content-Type":"application/json",
-      "Authorization":"Bearer "+idToken
+   button.textContent = "Preparing download...";
+
+   let newTab = null;
+
+   try {
+
+    // Open tab immediately to avoid popup blocking.
+
+    newTab = window.open("about:blank","_blank");
+
+    const idToken = await currentUser.getIdToken();
+
+    const response = await fetch("/api/library-download-url", {
+
+     method: "POST",
+
+     headers: {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer " + idToken
      },
-     body:JSON.stringify({
-      resourceId:x.id
+
+     body: JSON.stringify({
+      resourceId: x.id
      })
+
     });
 
-    const result=await response.json();
+    const result = await response.json();
 
-    if(!response.ok){
-     throw new Error(result.error||"Could not prepare download.");
+    if(!response.ok) {
+
+     throw new Error(
+      result.error || "Could not prepare download."
+     );
+
     }
 
-    if(!result.downloadUrl){
-     throw new Error("The server did not return a download link.");
+    if(!result.downloadUrl) {
+
+     throw new Error(
+      "The server did not return a download link."
+     );
+
     }
 
-    if(newTab){
-     newTab.location.href=result.downloadUrl;
-    }else{
-     window.location.href=result.downloadUrl;
+    if(newTab) {
+
+     newTab.location.href = result.downloadUrl;
+
+    } else {
+
+     window.location.href = result.downloadUrl;
+
     }
 
-   }catch(error){
+   } catch(error) {
 
     console.error(error);
 
-    if(newTab) newTab.close();
+    if(newTab) {
+     newTab.close();
+    }
 
-    alert(error.message||"Could not download this file.");
+    alert(
+     error.message || "Could not download this file."
+    );
 
-   }finally{
+   } finally {
 
-    button.disabled=false;
-    button.textContent="Download PDF";
+    button.disabled = false;
+
+    button.textContent = "Download PDF";
 
    }
 
   };
 
   card.append(title,meta,desc,button);
+
   container.append(card);
 
  });
 
 }
 
-onAuthStateChanged(auth,async user=>{
+// AUTHENTICATION AND APPROVED RESOURCES
 
- if(!user){
-  location.href="login.html";
+onAuthStateChanged(auth,async user => {
+
+ if(!user) {
+
+  location.href = "login.html";
+
   return;
+
  }
 
- currentUser=user;
+ currentUser = user;
 
- try{
+ try {
 
-  const profile=await getDoc(
+  const profile = await getDoc(
    doc(db,"users",user.uid)
   );
 
-  if(!profile.exists()||
-     profile.data().status!=="approved"){
+  if(
+   !profile.exists() ||
+   profile.data().status !== "approved"
+  ) {
 
-   status.textContent=
+   status.textContent =
     "Your account must be approved to access the library.";
 
    return;
+
   }
 
-  const snap=await getDocs(
+  const snap = await getDocs(
    query(
     collection(db,"libraryResources"),
     where("status","==","approved")
    )
   );
 
-  items=snap.docs.map(d=>({
-   id:d.id,
+  items = snap.docs.map(d => ({
+   id: d.id,
    ...d.data()
-  })).sort((a,b)=>
-   (b.createdAt?.seconds||0)-
-   (a.createdAt?.seconds||0)
+  })).sort((a,b) =>
+   (b.createdAt?.seconds || 0) -
+   (a.createdAt?.seconds || 0)
   );
 
-  const subjects=[
+  const subjects = [
    ...new Set(
-    items.map(x=>x.subject).filter(Boolean)
+    items.map(x => x.subject).filter(Boolean)
    )
   ].sort();
 
-  subjects.forEach(s=>{
+  subjects.forEach(s => {
 
-   const option=document.createElement("option");
-   option.value=s;
-   option.textContent=s;
+   const option = document.createElement("option");
+
+   option.value = s;
+
+   option.textContent = s;
 
    document.getElementById("subject").append(option);
 
   });
 
-  status.textContent=
-   items.length+" approved resource(s) available.";
+  status.textContent =
+   items.length + " approved resource(s) available.";
 
   render();
 
- }catch(error){
+ } catch(error) {
 
   console.error(error);
 
-  status.textContent=
-   "Could not load the library. "+error.message;
+  status.textContent =
+   "Could not load the library. " + error.message;
 
  }
 
 });
 
-["search","subject","level"].forEach(id=>{
+// SEARCH AND FILTERS
+
+["search","subject","level"].forEach(id => {
 
  document.getElementById(id).addEventListener(
-  id==="search"?"input":"change",
+  id === "search" ? "input" : "change",
   render
  );
 
