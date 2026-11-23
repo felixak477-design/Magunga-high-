@@ -1,108 +1,155 @@
 
-module.exports = async function handler(req, res) {
-  res.setHeader("Cache-Control", "no-store");
-
+export default async function handler(req, res) {
   if (req.method !== "POST") {
-    return res.status(405).json({ error: "Method not allowed" });
+    return res.status(405).json({
+      error: "Method not allowed"
+    });
   }
 
   try {
-    const firebaseKey = process.env.FIREBASE_WEB_API_KEY;
     const supabaseUrl = process.env.SUPABASE_URL;
-    const supabaseKey = process.env.SUPABASE_SECRET_KEY;
+    const supabaseSecretKey = process.env.SUPABASE_SECRET_KEY;
+    const firebaseApiKey = process.env.FIREBASE_WEB_API_KEY;
 
-    if (!firebaseKey || !supabaseUrl || !supabaseKey) {
+    if (!supabaseUrl || !supabaseSecretKey || !firebaseApiKey) {
       return res.status(500).json({
-        error: "Server configuration missing"
+        error: "Server configuration is incomplete."
       });
     }
 
-    const authHeader = req.headers.authorization || "";
-    const idToken = authHeader.startsWith("Bearer ")
-      ? authHeader.slice(7)
+    const authorization = req.headers.authorization || "";
+    const idToken = authorization.startsWith("Bearer ")
+      ? authorization.slice(7)
       : "";
 
     if (!idToken) {
-      return res.status(401).json({ error: "Please log in" });
+      return res.status(401).json({
+        error: "Please sign in first."
+      });
     }
 
+    // Verify the Firebase ID token.
     const verifyResponse = await fetch(
-      `https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=${firebaseKey}`,
+      `https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=${firebaseApiKey}`,
       {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ idToken })
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          idToken
+        })
       }
     );
 
-    if (!verifyResponse.ok) {
-      return res.status(401).json({ error: "Invalid login" });
+    const verifyData = await verifyResponse.json();
+
+    if (!verifyResponse.ok || !verifyData.users?.length) {
+      return res.status(401).json({
+        error: "Your login session is invalid. Please sign in again."
+      });
     }
 
-    const verified = await verifyResponse.json();
-    const uid = verified.users?.[0]?.localId;
+    const user = verifyData.users[0];
+    const uid = user.localId;
 
-    if (!uid) {
-      return res.status(401).json({ error: "User not found" });
+    // Read the user's Firestore profile.
+    const projectId = process.env.FIREBASE_PROJECT_ID;
+
+    if (!projectId) {
+      return res.status(500).json({
+        error: "Firebase project configuration is missing."
+      });
     }
 
     const profileResponse = await fetch(
-      `https://firestore.googleapis.com/v1/projects/magunga-high/databases/(default)/documents/users/${encodeURIComponent(uid)}`,
+      `https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents/users/${uid}`,
       {
-        headers: { Authorization: `Bearer ${idToken}` }
+        headers: {
+          "Authorization": `Bearer ${idToken}`
+        }
       }
     );
 
-    if (!profileResponse.ok) {
+    const profileData = await profileResponse.json();
+
+    if (!profileResponse.ok || !profileData.fields) {
       return res.status(403).json({
-        error: "Unable to verify your profile"
+        error: "Your user profile could not be verified."
       });
     }
 
-    const profile = await profileResponse.json();
-    const fields = profile.fields || {};
+    const status = profileData.fields.status?.stringValue;
 
-    if (fields.status?.stringValue !== "approved") {
+    if (status !== "approved") {
       return res.status(403).json({
-        error: "Your account must be approved before uploading."
+        error: "Only approved accounts can upload library materials."
       });
     }
 
-    const { fileName, fileSize, contentType } = req.body || {};
+    // Validate the submitted PDF.
+    const {
+      fileName,
+      contentType,
+      fileSize
+    } = req.body || {};
 
     if (
       typeof fileName !== "string" ||
-      !fileName.toLowerCase().endsWith(".pdf") ||
-      typeof fileSize !== "number" ||
-      fileSize <= 0 ||
-      fileSize > 20 * 1024 * 1024 ||
-      contentType !== "application/pdf"
+      !fileName.trim() ||
+      fileName.length > 200
     ) {
       return res.status(400).json({
-        error: "Invalid PDF or file size. Maximum size is 20 MB."
+        error: "Invalid file name."
+      });
+    }
+
+    if (
+      contentType !== "application/pdf" ||
+      !fileName.toLowerCase().endsWith(".pdf")
+    ) {
+      return res.status(400).json({
+        error: "Only PDF documents are allowed."
+      });
+    }
+
+    if (
+      typeof fileSize !== "number" ||
+      !Number.isFinite(fileSize) ||
+      fileSize <= 0 ||
+      fileSize > 20 * 1024 * 1024
+    ) {
+      return res.status(400).json({
+        error: "PDF size must be between 1 byte and 20 MB."
       });
     }
 
     const safeName = fileName
-      .replace(/[^\w.-]+/g, "_")
-      .slice(0, 120);
+      .trim()
+      .replace(/[^a-zA-Z0-9._-]/g, "_")
+      .slice(0, 150);
 
-    const path =
-      `library/${uid}/${crypto.randomUUID()}_${safeName}`;
+    const uniqueName =
+      `${crypto.randomUUID()}_${safeName}`;
 
+    const filePath = `library/${uid}/${uniqueName}`;
+
+    // Request a signed upload token from Supabase.
     const signResponse = await fetch(
-      `${supabaseUrl}/storage/v1/object/upload/sign/magunga-library/${path
+      `${supabaseUrl}/storage/v1/object/upload/sign/magunga-library/${filePath
         .split("/")
         .map(encodeURIComponent)
         .join("/")}`,
       {
         method: "POST",
         headers: {
-          apikey: supabaseKey,
-          Authorization: `Bearer ${supabaseKey}`,
+          "Authorization": `Bearer ${supabaseSecretKey}`,
+          "apikey": supabaseSecretKey,
           "Content-Type": "application/json"
         },
-        body: JSON.stringify({ upsert: false })
+        body: JSON.stringify({
+          upsert: false
+        })
       }
     );
 
@@ -111,21 +158,21 @@ module.exports = async function handler(req, res) {
     if (!signResponse.ok || !signData.token) {
       console.error("Supabase signing error:", signData);
 
-      return res.status(502).json({
-        error: "Could not create upload permission"
+      return res.status(500).json({
+        error: "Could not prepare the secure PDF upload."
       });
     }
 
     return res.status(200).json({
-      path,
+      path: filePath,
       token: signData.token
     });
 
   } catch (error) {
-    console.error("Library upload permission error:", error);
+    console.error("Library upload API error:", error);
 
     return res.status(500).json({
-      error: "Server error"
+      error: "An unexpected upload error occurred."
     });
   }
-};
+}
