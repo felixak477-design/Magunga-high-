@@ -3,369 +3,414 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#080d18">
 <title>Announcements | The Magunga High</title>
 
 <style>
 * {
-  box-sizing: border-box;
-  font-family: Arial, sans-serif;
+ box-sizing: border-box;
+ font-family: Arial, sans-serif;
 }
 
 body {
-  margin: 0;
-  background: #080d18;
-  color: #fff;
+ margin: 0;
+ padding-top: 68px;
+ background: #080d18;
+ color: #fff;
 }
 
-header {
-  background: #111a2b;
-  padding: 13px 16px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  border-bottom: 1px solid rgba(255,205,100,.5);
-  box-shadow: 0 3px 15px rgba(0,0,0,.3);
+/* FIXED TOP NAVIGATION */
+
+.topbar {
+ position: fixed;
+ top: 0;
+ left: 0;
+ right: 0;
+ height: 65px;
+ background: #111a2b;
+ border-bottom: 1px solid rgba(255,205,100,.5);
+ display: flex;
+ align-items: center;
+ justify-content: space-around;
+ gap: 5px;
+ padding: 0 8px;
+ z-index: 1000;
 }
 
-header h2 {
-  margin: 0;
-  color: #ffd36a;
-  font-size: 16px;
+.topbar a {
+ color: #aeb9ca;
+ text-decoration: none;
+ font-size: 13px;
+ font-weight: bold;
+ padding: 12px 10px;
+ border-radius: 8px;
+ white-space: nowrap;
 }
 
-.back {
-  color: #ffd36a;
-  text-decoration: none;
-  font-size: 12px;
+.topbar a.active {
+ color: #ffd36a;
+ background: #302511;
+}
+
+.topbar a:hover {
+ color: #ffd36a;
 }
 
 main {
-  max-width: 750px;
-  margin: auto;
-  padding: 15px;
+ max-width: 750px;
+ margin: auto;
+ padding: 15px;
 }
 
 .hero {
-  padding: 22px 17px;
-  border-radius: 13px;
-  background: linear-gradient(130deg,#30220d,#171d2c 65%,#101827);
-  border: 1px solid rgba(255,204,92,.5);
-  box-shadow: 0 0 17px rgba(255,190,60,.12);
-  margin-bottom: 17px;
+ padding: 22px 5px;
+ border-bottom: 1px solid rgba(255,204,92,.3);
+ margin-bottom: 17px;
 }
 
 .hero-tag {
-  color: #ffd36a;
-  font-size: 10px;
-  font-weight: bold;
-  letter-spacing: 2px;
+ color: #ffd36a;
+ font-size: 10px;
+ font-weight: bold;
+ letter-spacing: 2px;
 }
 
 .hero h1 {
-  margin: 10px 0 7px;
-  font-size: 25px;
-  color: #ffe2a0;
+ margin: 10px 0 7px;
+ font-size: 25px;
+ color: #ffe2a0;
 }
 
 .hero p {
-  color: #c2c9d5;
-  font-size: 12px;
-  line-height: 1.6;
-  margin: 0;
+ color: #c2c9d5;
+ font-size: 12px;
+ line-height: 1.6;
+ margin: 0;
 }
 
 .stats {
-  display: flex;
-  gap: 9px;
-  margin-top: 17px;
+ display: flex;
+ gap: 9px;
+ margin-top: 17px;
 }
 
 .stat {
-  flex: 1;
-  background: rgba(255,255,255,.06);
-  border: 1px solid rgba(255,204,92,.2);
-  border-radius: 8px;
-  padding: 10px;
+ flex: 1;
+ background: #121c2d;
+ border: 1px solid rgba(255,204,92,.2);
+ border-radius: 8px;
+ padding: 10px;
 }
 
 .stat strong {
-  display: block;
-  color: #ffd36a;
-  font-size: 19px;
+ display: block;
+ color: #ffd36a;
+ font-size: 19px;
 }
 
 .stat span {
-  color: #aeb9ca;
-  font-size: 10px;
+ color: #aeb9ca;
+ font-size: 10px;
 }
 
 .section-title {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin: 20px 2px 12px;
+ display: flex;
+ justify-content: space-between;
+ align-items: center;
+ margin: 20px 2px 12px;
 }
 
 .section-title h2 {
-  font-size: 16px;
-  margin: 0;
-  color: #ffe0a0;
+ font-size: 16px;
+ margin: 0;
+ color: #ffe0a0;
 }
 
 .section-title span {
-  font-size: 10px;
-  color: #aeb9ca;
+ font-size: 10px;
+ color: #aeb9ca;
 }
 
+/* PUBLISHING AREA */
+
 .panel {
-  background: #121c2d;
-  border: 1px solid rgba(255,204,92,.4);
-  border-radius: 11px;
-  padding: 15px;
-  margin-bottom: 17px;
+ background: #121c2d;
+ border: 1px solid rgba(255,204,92,.4);
+ border-radius: 11px;
+ padding: 15px;
+ margin-bottom: 17px;
 }
 
 .panel h2 {
-  color: #ffd36a;
-  font-size: 15px;
-  margin-top: 0;
+ color: #ffd36a;
+ font-size: 15px;
+ margin-top: 0;
 }
 
 label {
-  display: block;
-  color: #d6deeb;
-  font-size: 11px;
-  margin: 12px 0 5px;
+ display: block;
+ color: #d6deeb;
+ font-size: 11px;
+ margin: 12px 0 5px;
 }
 
 input, textarea, select {
-  width: 100%;
-  padding: 12px;
-  background: #09111f;
-  color: white;
-  border: 1px solid #34445c;
-  border-radius: 7px;
-  outline: none;
-  font-size: 12px;
+ width: 100%;
+ padding: 12px;
+ background: #09111f;
+ color: white;
+ border: 1px solid #34445c;
+ border-radius: 7px;
+ outline: none;
+ font-size: 12px;
 }
 
 input:focus, textarea:focus, select:focus {
-  border-color: #ffd36a;
+ border-color: #ffd36a;
 }
 
 textarea {
-  min-height: 120px;
-  resize: vertical;
-  line-height: 1.5;
+ min-height: 120px;
+ resize: vertical;
+ line-height: 1.5;
 }
 
 button {
-  cursor: pointer;
-  font-weight: bold;
+ cursor: pointer;
+ font-weight: bold;
 }
 
 .publish {
-  width: 100%;
-  margin-top: 13px;
-  padding: 12px;
-  border: none;
-  border-radius: 7px;
-  background: linear-gradient(120deg,#f5d078,#bd872a);
-  color: #17120a;
-  font-size: 12px;
+ width: 100%;
+ margin-top: 13px;
+ padding: 12px;
+ border: none;
+ border-radius: 7px;
+ background: linear-gradient(120deg,#f5d078,#bd872a);
+ color: #17120a;
+ font-size: 12px;
 }
 
 .publish:disabled {
-  opacity: .6;
+ opacity: .6;
 }
+
+/* ANNOUNCEMENT FEED */
 
 .announcement {
-  position: relative;
-  background: linear-gradient(145deg,#172337,#101827);
-  border: 1px solid rgba(255,204,92,.28);
-  border-radius: 11px;
-  padding: 15px;
-  margin-bottom: 11px;
-  overflow: hidden;
-  box-shadow: 0 4px 13px rgba(0,0,0,.18);
-}
-
-.announcement::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 3px;
-  height: 100%;
-  background: #d9ad50;
+ position: relative;
+ background: #111a2b;
+ border-bottom: 1px solid #34445c;
+ padding: 18px 8px;
+ margin-bottom: 5px;
+ overflow: hidden;
 }
 
 .announcement.important {
-  border-color: rgba(255,105,105,.5);
-}
-
-.announcement.important::before {
-  background: #ff7777;
+ border-left: 3px solid #ff7777;
+ padding-left: 12px;
 }
 
 .announcement-top {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 8px;
-  flex-wrap: wrap;
+ display: flex;
+ justify-content: space-between;
+ align-items: center;
+ gap: 8px;
+ flex-wrap: wrap;
 }
 
 .tag {
-  font-size: 9px;
-  font-weight: bold;
-  padding: 5px 8px;
-  border-radius: 20px;
-  color: #ffe1a0;
-  background: #382b15;
-  border: 1px solid #8c6b32;
+ font-size: 9px;
+ font-weight: bold;
+ padding: 5px 8px;
+ border-radius: 20px;
+ color: #ffe1a0;
+ background: #382b15;
+ border: 1px solid #8c6b32;
 }
 
 .announcement.important .tag {
-  color: #ffb6b6;
-  background: #391d24;
-  border-color: #a44b55;
+ color: #ffb6b6;
+ background: #391d24;
+ border-color: #a44b55;
 }
 
 .announcement h3 {
-  font-size: 16px;
-  color: #ffe0a0;
-  margin: 13px 0 9px;
-  overflow-wrap: anywhere;
+ font-size: 16px;
+ color: #ffe0a0;
+ margin: 13px 0 9px;
+ overflow-wrap: anywhere;
 }
 
 .announcement-message {
-  font-size: 12px;
-  color: #d0d7e2;
-  line-height: 1.7;
-  white-space: pre-wrap;
-  overflow-wrap: anywhere;
+ font-size: 13px;
+ color: #d0d7e2;
+ line-height: 1.7;
+ white-space: pre-wrap;
+ overflow-wrap: anywhere;
 }
 
 .meta {
-  color: #8999b0;
-  font-size: 10px;
-  border-top: 1px solid rgba(255,255,255,.08);
-  padding-top: 10px;
-  margin-top: 13px;
+ color: #8999b0;
+ font-size: 10px;
+ padding-top: 10px;
+ margin-top: 13px;
+ border-top: 1px solid rgba(255,255,255,.08);
 }
 
 .delete-btn {
-  margin-top: 12px;
-  background: #3a1c25;
-  color: #ffb5b5;
-  border: 1px solid #a34c58;
-  border-radius: 6px;
-  padding: 7px 11px;
-  font-size: 10px;
+ margin-top: 12px;
+ background: #3a1c25;
+ color: #ffb5b5;
+ border: 1px solid #a34c58;
+ border-radius: 6px;
+ padding: 7px 11px;
+ font-size: 10px;
 }
 
 .delete-btn:hover {
-  background: #60232d;
+ background: #60232d;
 }
 
 #message {
-  text-align: center;
-  color: #b8c3d4;
-  font-size: 12px;
-  padding: 15px;
+ text-align: center;
+ color: #b8c3d4;
+ font-size: 12px;
+ padding: 15px;
 }
 
 .empty {
-  text-align: center;
-  padding: 30px 15px;
-  background: #121c2d;
-  border: 1px dashed #526078;
-  border-radius: 10px;
-  color: #aeb9ca;
-  font-size: 12px;
+ text-align: center;
+ padding: 30px 15px;
+ background: #121c2d;
+ border: 1px dashed #526078;
+ border-radius: 10px;
+ color: #aeb9ca;
+ font-size: 12px;
 }
 
 footer {
-  text-align: center;
-  color: #78869a;
-  padding: 22px;
-  font-size: 10px;
+ text-align: center;
+ color: #78869a;
+ padding: 22px;
+ font-size: 10px;
 }
 
-@media(max-width:400px) {
-  .hero h1 {font-size:21px}
-  main {padding:11px}
+@media(max-width:480px) {
+ .topbar {
+  justify-content: flex-start;
+  overflow-x: auto;
+ }
+
+ .topbar a {
+  font-size: 12px;
+  padding: 12px 9px;
+ }
+
+ .hero h1 {
+  font-size: 21px;
+ }
+
+ main {
+  padding: 11px;
+ }
 }
 </style>
 </head>
 
 <body>
 
-<header>
-  <h2>THE MAGUNGA HIGH</h2>
-  <a class="back" href="dashboard.html">← Dashboard</a>
-</header>
+<!-- FIXED NAVIGATION -->
+
+<nav class="topbar">
+ <a href="dashboard.html">Home</a>
+ <a href="community.html">Friends</a>
+ <a href="chat.html">Messages</a>
+ <a href="notifications.html">Alerts</a>
+ <a href="profile.html">Account</a>
+ <a href="library.html">Library</a>
+</nav>
 
 <main>
 
 <section class="hero">
-  <div class="hero-tag">OFFICIAL SCHOOL NOTICE CENTRE</div>
-  <h1>📢 Announcements</h1>
-  <p>
-    Stay informed. Stay connected.
-    Read the latest school updates, important notices
-    and stream announcements.
-  </p>
 
-  <div class="stats">
-    <div class="stat">
-      <strong id="totalCount">0</strong>
-      <span>Notices</span>
-    </div>
-    <div class="stat">
-      <strong id="audienceName">...</strong>
-      <span>Your stream</span>
-    </div>
+ <div class="hero-tag">OFFICIAL SCHOOL NOTICE CENTRE</div>
+
+ <h1>📢 Announcements</h1>
+
+ <p>
+  Stay informed. Stay connected.
+  Read the latest school updates, important notices
+  and stream announcements.
+ </p>
+
+ <div class="stats">
+
+  <div class="stat">
+   <strong id="totalCount">0</strong>
+   <span>Notices</span>
   </div>
+
+  <div class="stat">
+   <strong id="audienceName">...</strong>
+   <span>Your stream</span>
+  </div>
+
+ </div>
+
 </section>
 
 <section class="panel" id="publishPanel" hidden>
-  <h2>✦ Publish a Notice</h2>
 
-  <form id="announcementForm">
+ <h2>✦ Publish a Notice</h2>
 
-    <label>Announcement title</label>
-    <input id="title" required maxlength="100"
-      placeholder="Enter an attention-grabbing title">
+ <form id="announcementForm">
 
-    <label>Announcement message</label>
-    <textarea id="body" required maxlength="5000"
-      placeholder="Write the full announcement here..."></textarea>
+  <label>Announcement title</label>
 
-    <label>Who should receive it?</label>
-    <select id="audience"></select>
+  <input
+   id="title"
+   required
+   maxlength="100"
+   placeholder="Enter an attention-grabbing title"
+  >
 
-    <button class="publish" id="publishButton" type="submit">
-      Publish Announcement
-    </button>
+  <label>Announcement message</label>
 
-  </form>
+  <textarea
+   id="body"
+   required
+   maxlength="5000"
+   placeholder="Write the full announcement here..."
+  ></textarea>
+
+  <label>Who should receive it?</label>
+
+  <select id="audience"></select>
+
+  <button class="publish" id="publishButton" type="submit">
+   Publish Announcement
+  </button>
+
+ </form>
+
 </section>
 
 <div class="section-title">
-  <h2>Latest Notices</h2>
-  <span id="noticeSubtitle">School updates</span>
+ <h2>Latest Notices</h2>
+ <span id="noticeSubtitle">School updates</span>
 </div>
 
 <p id="message">Loading announcements...</p>
+
 <div id="announcements"></div>
 
 </main>
 
 <footer>
-  THE MAGUNGA HIGH · STUDENT COMMUNITY
+ THE MAGUNGA HIGH · STUDENT COMMUNITY
 </footer>
 
 <script type="module">
@@ -373,346 +418,428 @@ footer {
 import {auth,db} from "./assets/js/firebase.js";
 
 import {
-  onAuthStateChanged
+ onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
 
 import {
-  doc,getDoc,collection,addDoc,getDocs,query,where,
-  serverTimestamp,deleteDoc
+ doc,
+ getDoc,
+ collection,
+ addDoc,
+ getDocs,
+ query,
+ where,
+ serverTimestamp,
+ deleteDoc
 } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
 
 const $ = id => document.getElementById(id);
 
 const streams = [
-  "Victors",
-  "Heroes",
-  "Winners",
-  "Champions",
-  "Archivers"
+ "Victors",
+ "Heroes",
+ "Winners",
+ "Champions",
+ "Archivers"
 ];
 
 let currentUser = null;
 let profile = null;
 
+// AUTHENTICATION AND PROFILE CHECK
+
 onAuthStateChanged(auth,async user => {
 
-  if(!user) {
-    location.href = "login.html";
-    return;
-  }
+ if(!user) {
 
-  currentUser = user;
+  location.href = "login.html";
 
-  try {
+  return;
 
-    const profileSnap = await getDoc(
-      doc(db,"users",user.uid)
-    );
+ }
 
-    if(!profileSnap.exists()) {
-      $("message").textContent =
-        "Your account profile was not found.";
-      return;
-    }
+ currentUser = user;
 
-    profile = profileSnap.data();
+ try {
 
-    if(profile.status !== "approved") {
-      $("message").textContent =
-        "Your account is not approved.";
-      return;
-    }
+  const profileSnap = await getDoc(
+   doc(db,"users",user.uid)
+  );
 
-    const isSuper = profile.role === "superadmin";
-    const isStreamAdmin = profile.role === "streamAdmin";
+  if(!profileSnap.exists()) {
 
-    $("audienceName").textContent =
-      profile.stream || "All";
+   $("message").textContent =
+    "Your account profile was not found.";
 
-    if(isSuper || isStreamAdmin) {
-
-      $("publishPanel").hidden = false;
-
-      const audience = $("audience");
-      audience.replaceChildren();
-
-      if(isSuper) {
-
-        const allOption = document.createElement("option");
-        allOption.value = "All";
-        allOption.textContent = "All students";
-        audience.appendChild(allOption);
-
-        streams.forEach(stream => {
-          const option = document.createElement("option");
-          option.value = stream;
-          option.textContent = stream + " students";
-          audience.appendChild(option);
-        });
-
-      } else {
-
-        const option = document.createElement("option");
-        option.value = profile.stream;
-        option.textContent = profile.stream + " students";
-        audience.appendChild(option);
-
-      }
-    }
-
-    await loadAnnouncements();
-
-  } catch(error) {
-
-    console.error(error);
-    $("message").textContent =
-      "Unable to load notices: " + error.message;
+   return;
 
   }
 
-});
+  profile = profileSnap.data();
 
-$("announcementForm").addEventListener("submit",async event => {
+  if(profile.status !== "approved") {
 
-  event.preventDefault();
+   $("message").textContent =
+    "Your account is not approved.";
 
-  const button = $("publishButton");
-  button.disabled = true;
-  button.textContent = "Publishing...";
+   return;
 
-  try {
+  }
 
-    if(
-      !currentUser ||
-      !profile ||
-      !["superadmin","streamAdmin"].includes(profile.role) ||
-      profile.status !== "approved"
-    ) {
-      throw new Error("You are not authorized to publish.");
-    }
+  const isSuper = profile.role === "superadmin";
 
-    const title = $("title").value.trim();
-    const message = $("body").value.trim();
-    const stream = $("audience").value;
+  const isStreamAdmin = profile.role === "streamAdmin";
 
-    if(!title || !message) {
-      throw new Error("Complete all fields.");
-    }
+  $("audienceName").textContent =
+   profile.stream || "All";
 
-    if(
-      profile.role === "streamAdmin" &&
-      stream !== profile.stream
-    ) {
-      throw new Error("You can only publish to your own stream.");
-    }
+  if(isSuper || isStreamAdmin) {
 
-    if(
-      profile.role === "superadmin" &&
-      stream !== "All" &&
-      !streams.includes(stream)
-    ) {
-      throw new Error("Invalid audience.");
-    }
+   $("publishPanel").hidden = false;
 
-    await addDoc(collection(db,"announcements"),{
+   const audience = $("audience");
 
-      title,
-      message,
-      stream,
-      authorId: currentUser.uid,
-      authorName: profile.name || currentUser.email,
-      createdAt: serverTimestamp()
+   audience.replaceChildren();
+
+   if(isSuper) {
+
+    const allOption = document.createElement("option");
+
+    allOption.value = "All";
+
+    allOption.textContent = "All students";
+
+    audience.appendChild(allOption);
+
+    streams.forEach(stream => {
+
+     const option = document.createElement("option");
+
+     option.value = stream;
+
+     option.textContent = stream + " students";
+
+     audience.appendChild(option);
 
     });
 
-    $("announcementForm").reset();
+   } else {
 
-    $("message").textContent =
-      "Your announcement has been published.";
+    const option = document.createElement("option");
 
-    await loadAnnouncements();
+    option.value = profile.stream;
 
-  } catch(error) {
+    option.textContent = profile.stream + " students";
 
-    console.error(error);
+    audience.appendChild(option);
 
-    $("message").textContent =
-      "Publishing failed: " + error.message;
-
-  } finally {
-
-    button.disabled = false;
-    button.textContent = "Publish Announcement";
+   }
 
   }
+
+  await loadAnnouncements();
+
+ } catch(error) {
+
+  console.error(error);
+
+  $("message").textContent =
+   "Unable to load notices: " + error.message;
+
+ }
 
 });
 
-async function deleteAnnouncement(id,stream,button) {
+// PUBLISH ANNOUNCEMENT
 
-  const isSuper = profile?.role === "superadmin";
-  const isStreamAdmin = profile?.role === "streamAdmin";
+$("announcementForm").addEventListener("submit",async event => {
 
-  if(!isSuper && !isStreamAdmin) {
-    alert("You are not authorized to delete announcements.");
-    return;
-  }
+ event.preventDefault();
 
-  if(isStreamAdmin && stream !== profile.stream) {
-    alert("You can only delete notices for your own stream.");
-    return;
-  }
+ const button = $("publishButton");
 
-  const confirmed = confirm(
-    "Are you sure you want to permanently delete this announcement?"
-  );
+ button.disabled = true;
 
-  if(!confirmed) return;
+ button.textContent = "Publishing...";
 
-  button.disabled = true;
-  button.textContent = "Deleting...";
+ try {
 
-  try {
+  if(
+   !currentUser ||
+   !profile ||
+   !["superadmin","streamAdmin"].includes(profile.role) ||
+   profile.status !== "approved"
+  ) {
 
-    await deleteDoc(doc(db,"announcements",id));
-
-    $("message").textContent =
-      "Announcement deleted successfully.";
-
-    await loadAnnouncements();
-
-  } catch(error) {
-
-    console.error(error);
-
-    alert(
-      "Unable to delete announcement. Check your Firestore security rules."
-    );
-
-    button.disabled = false;
-    button.textContent = "Delete Announcement";
+   throw new Error(
+    "You are not authorized to publish."
+   );
 
   }
 
-}
+  const title = $("title").value.trim();
 
-async function loadAnnouncements() {
+  const message = $("body").value.trim();
 
-  const container = $("announcements");
+  const stream = $("audience").value;
 
-  container.replaceChildren();
+  if(!title || !message) {
 
-  $("message").textContent = "Loading announcements...";
+   throw new Error("Complete all fields.");
 
-  const stream = profile.stream;
-
-  const announcementQuery = query(
-    collection(db,"announcements"),
-    where("stream","in",[stream,"All"])
-  );
-
-  const results = await getDocs(announcementQuery);
-
-  $("totalCount").textContent = results.size;
-
-  if(results.empty) {
-
-    $("message").textContent = "";
-
-    const empty = document.createElement("div");
-    empty.className = "empty";
-    empty.textContent =
-      "📭 No announcements yet. Check again later.";
-
-    container.appendChild(empty);
-
-    return;
   }
 
-  const items = results.docs.map(item => ({
-    id: item.id,
-    ...item.data()
-  }));
+  if(
+   profile.role === "streamAdmin" &&
+   stream !== profile.stream
+  ) {
 
-  items.sort((a,b) =>
-    (b.createdAt?.toMillis?.() || 0) -
-    (a.createdAt?.toMillis?.() || 0)
-  );
+   throw new Error(
+    "You can only publish to your own stream."
+   );
 
-  items.forEach(item => {
+  }
 
-    const card = document.createElement("article");
-    card.className = "announcement";
+  if(
+   profile.role === "superadmin" &&
+   stream !== "All" &&
+   !streams.includes(stream)
+  ) {
 
-    const top = document.createElement("div");
-    top.className = "announcement-top";
+   throw new Error("Invalid audience.");
 
-    const tag = document.createElement("span");
-    tag.className = "tag";
-    tag.textContent =
-      item.stream === "All" ? "ALL STUDENTS" :
-      item.stream.toUpperCase();
+  }
 
-    const heading = document.createElement("h3");
-    heading.textContent = item.title || "Announcement";
+  await addDoc(collection(db,"announcements"),{
 
-    const body = document.createElement("p");
-    body.className = "announcement-message";
-    body.textContent = item.message || "";
-
-    const meta = document.createElement("p");
-    meta.className = "meta";
-
-    const date = item.createdAt?.toDate?.();
-
-    const dateText = date
-      ? date.toLocaleString()
-      : "Recently published";
-
-    meta.textContent =
-      "Published by: " + (item.authorName || "Administrator") +
-      " · " + dateText;
-
-    top.appendChild(tag);
-
-    card.append(
-      top,
-      heading,
-      body,
-      meta
-    );
-
-    const canDelete =
-      profile.role === "superadmin" ||
-      (
-        profile.role === "streamAdmin" &&
-        item.stream === profile.stream
-      );
-
-    if(canDelete) {
-
-      const deleteButton = document.createElement("button");
-
-      deleteButton.className = "delete-btn";
-      deleteButton.textContent = "Delete Announcement";
-
-      deleteButton.addEventListener("click",() => {
-        deleteAnnouncement(
-          item.id,
-          item.stream,
-          deleteButton
-        );
-      });
-
-      card.appendChild(deleteButton);
-
-    }
-
-    container.appendChild(card);
+   title,
+   message,
+   stream,
+   authorId: currentUser.uid,
+   authorName: profile.name || currentUser.email,
+   createdAt: serverTimestamp()
 
   });
 
+  $("announcementForm").reset();
+
+  $("message").textContent =
+   "Your announcement has been published.";
+
+  await loadAnnouncements();
+
+ } catch(error) {
+
+  console.error(error);
+
+  $("message").textContent =
+   "Publishing failed: " + error.message;
+
+ } finally {
+
+  button.disabled = false;
+
+  button.textContent = "Publish Announcement";
+
+ }
+
+});
+
+// DELETE ANNOUNCEMENT
+
+async function deleteAnnouncement(id,stream,button) {
+
+ const isSuper = profile?.role === "superadmin";
+
+ const isStreamAdmin = profile?.role === "streamAdmin";
+
+ if(!isSuper && !isStreamAdmin) {
+
+  alert("You are not authorized to delete announcements.");
+
+  return;
+
+ }
+
+ if(isStreamAdmin && stream !== profile.stream) {
+
+  alert("You can only delete notices for your own stream.");
+
+  return;
+
+ }
+
+ const confirmed = confirm(
+  "Are you sure you want to permanently delete this announcement?"
+ );
+
+ if(!confirmed) return;
+
+ button.disabled = true;
+
+ button.textContent = "Deleting...";
+
+ try {
+
+  await deleteDoc(doc(db,"announcements",id));
+
+  $("message").textContent =
+   "Announcement deleted successfully.";
+
+  await loadAnnouncements();
+
+ } catch(error) {
+
+  console.error(error);
+
+  alert(
+   "Unable to delete announcement. Check your Firestore security rules."
+  );
+
+  button.disabled = false;
+
+  button.textContent = "Delete Announcement";
+
+ }
+
+}
+
+// LOAD ANNOUNCEMENTS
+
+async function loadAnnouncements() {
+
+ const container = $("announcements");
+
+ container.replaceChildren();
+
+ $("message").textContent = "Loading announcements...";
+
+ const stream = profile.stream;
+
+ const announcementQuery = query(
+  collection(db,"announcements"),
+  where("stream","in",[stream,"All"])
+ );
+
+ const results = await getDocs(announcementQuery);
+
+ $("totalCount").textContent = results.size;
+
+ if(results.empty) {
+
   $("message").textContent = "";
+
+  const empty = document.createElement("div");
+
+  empty.className = "empty";
+
+  empty.textContent =
+   "📭 No announcements yet. Check again later.";
+
+  container.appendChild(empty);
+
+  return;
+
+ }
+
+ const items = results.docs.map(item => ({
+  id: item.id,
+  ...item.data()
+ }));
+
+ items.sort((a,b) =>
+  (b.createdAt?.toMillis?.() || 0) -
+  (a.createdAt?.toMillis?.() || 0)
+ );
+
+ items.forEach(item => {
+
+  const card = document.createElement("article");
+
+  card.className = "announcement";
+
+  const top = document.createElement("div");
+
+  top.className = "announcement-top";
+
+  const tag = document.createElement("span");
+
+  tag.className = "tag";
+
+  tag.textContent =
+   item.stream === "All"
+    ? "ALL STUDENTS"
+    : (item.stream || "STREAM").toUpperCase();
+
+  const heading = document.createElement("h3");
+
+  heading.textContent =
+   item.title || "Announcement";
+
+  const body = document.createElement("p");
+
+  body.className = "announcement-message";
+
+  body.textContent = item.message || "";
+
+  const meta = document.createElement("p");
+
+  meta.className = "meta";
+
+  const date = item.createdAt?.toDate?.();
+
+  const dateText = date
+   ? date.toLocaleString()
+   : "Recently published";
+
+  meta.textContent =
+   "Published by: " +
+   (item.authorName || "Administrator") +
+   " · " + dateText;
+
+  top.appendChild(tag);
+
+  card.append(
+   top,
+   heading,
+   body,
+   meta
+  );
+
+  const canDelete =
+   profile.role === "superadmin" ||
+   (
+    profile.role === "streamAdmin" &&
+    item.stream === profile.stream
+   );
+
+  if(canDelete) {
+
+   const deleteButton = document.createElement("button");
+
+   deleteButton.className = "delete-btn";
+
+   deleteButton.textContent = "Delete Announcement";
+
+   deleteButton.addEventListener("click",() => {
+
+    deleteAnnouncement(
+     item.id,
+     item.stream,
+     deleteButton
+    );
+
+   });
+
+   card.appendChild(deleteButton);
+
+  }
+
+  container.appendChild(card);
+
+ });
+
+ $("message").textContent = "";
 
 }
 
