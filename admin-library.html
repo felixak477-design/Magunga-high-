@@ -2,1129 +2,1022 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#080b12">
-<title>Digital Library Management | Magunga High</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Digital Library | Magunga High</title>
 
-<style>
-:root {
-  --bg: #080b12;
-  --panel: #121722;
-  --panel2: #191f2c;
-  --border: #30394b;
-  --accent: #ed315c;
-  --accent2: #ff6684;
-  --text: #f7f8fc;
-  --muted: #aab3c3;
-  --green: #55d69a;
-}
+  <style>
+    :root {
+      --red: #b91c1c;
+      --red-dark: #7f1d1d;
+      --bg: #0b0b0f;
+      --panel: #15151c;
+      --panel-light: #1e1e28;
+      --text: #f5f5f5;
+      --muted: #a1a1aa;
+      --border: #30303b;
+      --green: #22c55e;
+    }
 
-* {
-  box-sizing: border-box;
-  font-family: Arial, sans-serif;
-}
+    * {
+      box-sizing: border-box;
+    }
 
-body {
-  margin: 0;
-  padding-top: 112px;
-  background: var(--bg);
-  color: var(--text);
-}
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: Arial, sans-serif;
+    }
 
-.topbar {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  z-index: 1000;
-  background: #100d15;
-  border-bottom: 1px solid #7d142b;
-}
+    .topbar {
+      background: #111116;
+      border-bottom: 1px solid var(--border);
+      padding: 16px 20px;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
 
-.topbar-header {
-  min-height: 55px;
-  padding: 10px 4%;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
+    .topbar-inner {
+      max-width: 1100px;
+      margin: auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
 
-.topbar h2 {
-  margin: 0;
-  color: var(--accent2);
-  font-size: 17px;
-}
+    .brand {
+      font-size: 18px;
+      font-weight: 800;
+    }
 
-.logout {
-  background: #c5163d;
-  color: white;
-  padding: 9px 13px;
-  border: 0;
-  border-radius: 7px;
-  cursor: pointer;
-}
+    .brand span {
+      color: #ef4444;
+    }
 
-.main-nav {
-  display: flex;
-  gap: 5px;
-  padding: 7px 3%;
-  overflow-x: auto;
-  white-space: nowrap;
-}
+    .back-link {
+      color: white;
+      text-decoration: none;
+      background: #292933;
+      padding: 10px 14px;
+      border-radius: 9px;
+      font-size: 13px;
+    }
 
-.main-nav a {
-  color: #cbbcc5;
-  text-decoration: none;
-  padding: 10px 12px;
-  border-radius: 7px;
-  font-size: 13px;
-}
+    main {
+      width: min(100% - 28px, 1000px);
+      margin: 28px auto 60px;
+    }
 
-.main-nav a.active,
-.main-nav a:hover {
-  background: #54152d;
-  color: var(--accent2);
-}
+    .heading {
+      margin-bottom: 24px;
+    }
 
-main {
-  max-width: 900px;
-  margin: auto;
-  padding: 24px 16px 50px;
-}
+    .heading h1 {
+      margin: 0 0 8px;
+      font-size: clamp(25px, 5vw, 34px);
+    }
 
-.heading {
-  margin-bottom: 24px;
-}
+    .heading p {
+      color: var(--muted);
+      margin: 0;
+      line-height: 1.6;
+    }
 
-.heading h1 {
-  color: var(--accent2);
-  margin-bottom: 8px;
-  font-size: 27px;
-}
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 17px;
+      padding: 22px;
+      margin-bottom: 22px;
+    }
 
-.muted {
-  color: var(--muted);
-  line-height: 1.6;
-}
+    .panel h2 {
+      margin: 0 0 7px;
+      font-size: 20px;
+    }
 
-.panel {
-  background: var(--panel);
-  padding: 22px;
-  border: 1px solid #65203a;
-  border-radius: 15px;
-  margin-bottom: 22px;
-  box-shadow: 0 12px 35px rgba(0,0,0,.18);
-}
+    .subtext {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.5;
+      margin: 0 0 20px;
+    }
 
-.panel h2 {
-  color: var(--accent2);
-  margin-top: 0;
-}
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 15px;
+    }
 
-label.field-label {
-  display: block;
-  margin: 19px 0 8px;
-  color: #e9dce3;
-  font-size: 14px;
-  font-weight: bold;
-}
+    .field {
+      min-width: 0;
+    }
 
-input,
-select,
-textarea {
-  width: 100%;
-  padding: 13px;
-  border: 1px solid #394356;
-  border-radius: 9px;
-  background: var(--panel2);
-  color: white;
-  font-size: 15px;
-  outline: none;
-}
+    .field.full {
+      grid-column: 1 / -1;
+    }
 
-input:focus,
-select:focus,
-textarea:focus {
-  border-color: var(--accent2);
-  box-shadow: 0 0 0 3px rgba(237,49,92,.13);
-}
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 13px;
+      font-weight: 700;
+      color: #e4e4e7;
+    }
 
-textarea {
-  min-height: 100px;
-  resize: vertical;
-}
+    input,
+    select,
+    textarea {
+      width: 100%;
+      background: #0d0d13;
+      color: white;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 13px;
+      outline: none;
+      font: inherit;
+      font-size: 14px;
+    }
 
-select option {
-  background: var(--panel2);
-}
+    input:focus,
+    select:focus,
+    textarea:focus {
+      border-color: #ef4444;
+      box-shadow: 0 0 0 3px #ef444422;
+    }
 
-button {
-  border: 0;
-  border-radius: 9px;
-  padding: 12px 17px;
-  font-weight: bold;
-  cursor: pointer;
-  transition: .2s ease;
-}
+    textarea {
+      min-height: 90px;
+      resize: vertical;
+    }
 
-button:disabled {
-  opacity: .55;
-  cursor: not-allowed;
-}
+    .file-picker {
+      position: relative;
+      border: 2px dashed #555563;
+      background: #101017;
+      border-radius: 15px;
+      padding: 28px 18px;
+      text-align: center;
+      cursor: pointer;
+      transition: .2s ease;
+      overflow: hidden;
+    }
 
-.submit {
-  width: 100%;
-  margin-top: 22px;
-  background: linear-gradient(135deg, #c5163d, #ed315c);
-  color: white;
-  font-size: 15px;
-  min-height: 49px;
-}
+    .file-picker:hover,
+    .file-picker.dragover {
+      border-color: #ef4444;
+      background: #251114;
+    }
 
-.submit:not(:disabled):hover {
-  filter: brightness(1.12);
-  transform: translateY(-1px);
-}
+    .file-picker input {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      opacity: 0;
+      pointer-events: none;
+    }
 
-/* PROFESSIONAL FILE PICKER */
+    .upload-icon {
+      width: 58px;
+      height: 58px;
+      margin: 0 auto 13px;
+      border-radius: 17px;
+      background: #351417;
+      color: #ff6868;
+      display: grid;
+      place-items: center;
+      font-size: 27px;
+    }
 
-.file-picker {
-  position: relative;
-  border: 2px dashed #754054;
-  border-radius: 14px;
-  background: linear-gradient(
-    145deg,
-    rgba(237,49,92,.09),
-    rgba(25,31,44,.9)
-  );
-  padding: 25px 16px;
-  text-align: center;
-  cursor: pointer;
-  transition: .2s ease;
-}
+    .file-picker strong {
+      display: block;
+      font-size: 15px;
+      margin-bottom: 7px;
+    }
 
-.file-picker:hover,
-.file-picker.dragover {
-  border-color: var(--accent2);
-  background: rgba(237,49,92,.13);
-}
+    .file-picker small {
+      color: var(--muted);
+      font-size: 12px;
+    }
 
-.file-picker input {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  opacity: 0;
-  pointer-events: none;
-}
+    .file-details {
+      display: none;
+      margin-top: 13px;
+      background: #20202a;
+      border: 1px solid var(--border);
+      padding: 12px;
+      border-radius: 11px;
+      text-align: left;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
 
-.file-icon {
-  width: 58px;
-  height: 58px;
-  margin: 0 auto 13px;
-  display: grid;
-  place-items: center;
-  border-radius: 16px;
-  background: rgba(237,49,92,.16);
-  color: #ff6b88;
-  font-size: 29px;
-}
+    .file-details.visible {
+      display: flex;
+    }
 
-.file-picker strong {
-  display: block;
-  font-size: 15px;
-  margin-bottom: 7px;
-}
+    .file-info {
+      min-width: 0;
+    }
 
-.file-picker .file-hint {
-  color: var(--muted);
-  font-size: 13px;
-  line-height: 1.5;
-}
+    .file-name {
+      font-size: 13px;
+      font-weight: 700;
+      overflow-wrap: anywhere;
+    }
 
-.browse-text {
-  color: var(--accent2);
-  font-weight: bold;
-}
+    .file-size {
+      color: var(--muted);
+      font-size: 11px;
+      margin-top: 5px;
+    }
 
-.selected-file {
-  display: none;
-  margin-top: 13px;
-  padding: 13px;
-  background: #1b2432;
-  border: 1px solid #394356;
-  border-radius: 10px;
-  align-items: center;
-  gap: 11px;
-  text-align: left;
-}
+    .remove-file {
+      background: #3b171b;
+      border: 1px solid #7f1d1d;
+      color: #fca5a5;
+      border-radius: 8px;
+      padding: 8px 10px;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
 
-.selected-file.visible {
-  display: flex;
-}
+    .primary-button {
+      width: 100%;
+      border: 0;
+      border-radius: 11px;
+      padding: 15px;
+      margin-top: 18px;
+      background: linear-gradient(135deg, #dc2626, #991b1b);
+      color: white;
+      font-weight: 800;
+      font-size: 14px;
+      cursor: pointer;
+      transition: .2s;
+    }
 
-.selected-file-icon {
-  width: 42px;
-  height: 42px;
-  flex-shrink: 0;
-  display: grid;
-  place-items: center;
-  background: rgba(237,49,92,.16);
-  color: #ff718e;
-  border-radius: 9px;
-  font-weight: bold;
-  font-size: 12px;
-}
+    .primary-button:hover {
+      filter: brightness(1.12);
+    }
 
-.selected-file-info {
-  flex: 1;
-  min-width: 0;
-}
+    .primary-button:disabled {
+      opacity: .55;
+      cursor: not-allowed;
+    }
 
-.selected-file-name {
-  font-size: 13px;
-  font-weight: bold;
-  overflow-wrap: anywhere;
-}
+    .progress-wrap {
+      display: none;
+      margin-top: 15px;
+    }
 
-.selected-file-size {
-  color: var(--muted);
-  font-size: 12px;
-  margin-top: 5px;
-}
+    .progress-wrap.visible {
+      display: block;
+    }
 
-.remove-file {
-  background: #43202d;
-  color: #ff91a7;
-  padding: 8px 10px;
-  font-size: 12px;
-}
+    .progress-track {
+      height: 8px;
+      background: #30303b;
+      border-radius: 20px;
+      overflow: hidden;
+    }
 
-#message {
-  margin-top: 15px;
-  line-height: 1.5;
-  overflow-wrap: anywhere;
-}
+    .progress-bar {
+      height: 100%;
+      width: 0;
+      background: var(--green);
+      transition: width .2s;
+    }
 
-.success {
-  color: var(--green);
-}
+    .progress-label {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 8px;
+    }
 
-.error {
-  color: #ff718a;
-}
+    .message {
+      display: none;
+      padding: 12px;
+      border-radius: 10px;
+      margin-top: 15px;
+      font-size: 13px;
+      line-height: 1.5;
+    }
 
-.info {
-  color: #f4d58a;
-}
+    .message.show {
+      display: block;
+    }
 
-.resource {
-  padding: 17px 0;
-  border-bottom: 1px solid #30394b;
-}
+    .message.error {
+      color: #fecaca;
+      background: #3b171b;
+      border: 1px solid #7f1d1d;
+    }
 
-.resource:last-child {
-  border-bottom: 0;
-}
+    .message.success {
+      color: #bbf7d0;
+      background: #12321f;
+      border: 1px solid #166534;
+    }
 
-.resource h3 {
-  color: var(--accent2);
-  margin: 0 0 8px;
-  font-size: 16px;
-}
+    .resource {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 15px;
+      padding: 15px 0;
+      border-bottom: 1px solid var(--border);
+    }
 
-.resource p {
-  color: var(--muted);
-  font-size: 13px;
-  line-height: 1.6;
-  overflow-wrap: anywhere;
-}
+    .resource:last-child {
+      border-bottom: 0;
+    }
 
-.resource-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 9px;
-  margin-top: 12px;
-}
+    .resource-info {
+      min-width: 0;
+    }
 
-.view-button {
-  background: #263d58;
-  color: #d9eaff;
-}
+    .resource-title {
+      font-size: 14px;
+      font-weight: 700;
+      overflow-wrap: anywhere;
+    }
 
-.delete-button {
-  background: #4a1d2b;
-  color: #ff91a7;
-}
+    .resource-meta {
+      color: var(--muted);
+      font-size: 12px;
+      margin-top: 6px;
+      line-height: 1.5;
+    }
 
-.empty-state {
-  padding: 22px 10px;
-  color: var(--muted);
-  text-align: center;
-  line-height: 1.6;
-}
+    .resource-actions {
+      display: flex;
+      gap: 8px;
+      flex-shrink: 0;
+    }
 
-.hidden {
-  display: none !important;
-}
+    .small-button {
+      border: 1px solid var(--border);
+      color: white;
+      background: #292933;
+      border-radius: 8px;
+      padding: 9px 11px;
+      text-decoration: none;
+      font-size: 12px;
+      cursor: pointer;
+    }
 
-.small-note {
-  font-size: 12px;
-  color: var(--muted);
-  line-height: 1.5;
-}
+    .delete-button {
+      background: #3b171b;
+      border-color: #7f1d1d;
+      color: #fca5a5;
+    }
 
-@media(max-width:500px) {
-  body {
-    padding-top: 105px;
-  }
+    .empty {
+      color: var(--muted);
+      text-align: center;
+      padding: 25px 10px;
+      font-size: 13px;
+    }
 
-  .topbar h2 {
-    font-size: 14px;
-  }
+    .loading {
+      color: var(--muted);
+      font-size: 13px;
+      padding: 15px 0;
+    }
 
-  .main-nav a {
-    font-size: 12px;
-    padding: 9px;
-  }
+    @media (max-width: 600px) {
+      .panel {
+        padding: 17px;
+      }
 
-  .panel {
-    padding: 16px;
-  }
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
 
-  .heading h1 {
-    font-size: 23px;
-  }
+      .field.full {
+        grid-column: auto;
+      }
 
-  .file-picker {
-    padding: 22px 12px;
-  }
-}
-</style>
+      .resource {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .resource-actions {
+        width: 100%;
+      }
+
+      .resource-actions button,
+      .resource-actions a {
+        flex: 1;
+        text-align: center;
+      }
+    }
+  </style>
 </head>
 
 <body>
 
-<header class="topbar">
-  <div class="topbar-header">
-    <h2>MAGUNGA HIGH</h2>
-    <button class="logout" id="logoutButton">Logout</button>
-  </div>
-
-  <nav class="main-nav">
-    <a href="dashboard.html">Home</a>
-    <a href="community.html">Friends</a>
-    <a href="chat.html">Messages</a>
-    <a href="notifications.html">Alerts</a>
-    <a href="profile.html">Account</a>
-    <a href="library.html">Library</a>
-    <a href="admin.html">Admin</a>
-    <a href="admin-library.html" class="active">Upload Materials</a>
-  </nav>
-</header>
-
-<main>
-
-  <section class="heading">
-    <h1>Digital Library</h1>
-    <p class="muted" id="accountName">
-      Verifying your account...
-    </p>
-  </section>
-
-  <section class="panel hidden" id="uploadPanel">
-
-    <h2>Upload Learning Material</h2>
-
-    <p class="muted">
-      Share PDF notes, revision materials, assignments and past papers
-      with the Magunga High learning community.
-    </p>
-
-    <form id="uploadForm">
-
-      <label class="field-label" for="title">Material Title</label>
-      <input
-        id="title"
-        type="text"
-        placeholder="Example: Form 4 Biology Revision Notes"
-        maxlength="120"
-        required
-      >
-
-      <label class="field-label" for="subject">Subject</label>
-      <select id="subject" required>
-        <option value="">Select subject</option>
-        <option>Mathematics</option>
-        <option>English</option>
-        <option>Kiswahili</option>
-        <option>Biology</option>
-        <option>Chemistry</option>
-        <option>Physics</option>
-        <option>Geography</option>
-        <option>History</option>
-        <option>CRE</option>
-        <option>Business Studies</option>
-        <option>Agriculture</option>
-        <option>Computer Studies</option>
-        <option>Other</option>
-      </select>
-
-      <label class="field-label" for="classLevel">Class</label>
-      <select id="classLevel" required>
-        <option value="">Select class</option>
-        <option>Form 1</option>
-        <option>Form 2</option>
-        <option>Form 3</option>
-        <option>Form 4</option>
-        <option>All Forms</option>
-      </select>
-
-      <label class="field-label" for="topic">Topic</label>
-      <input
-        id="topic"
-        type="text"
-        placeholder="Example: Genetics"
-        maxlength="120"
-        required
-      >
-
-      <label class="field-label" for="description">Description</label>
-      <textarea
-        id="description"
-        placeholder="Briefly describe this learning material..."
-        maxlength="1000"
-      ></textarea>
-
-      <label class="field-label">PDF Document</label>
-
-      <div class="file-picker" id="filePicker" role="button" tabindex="0">
-        <input
-          id="pdfFile"
-          type="file"
-          accept=".pdf,application/pdf"
-          required
-          aria-label="Choose a PDF document"
-        >
-
-        <div class="file-icon">PDF</div>
-
-        <strong>Choose a PDF document</strong>
-
-        <div class="file-hint">
-          Drag and drop your PDF here, or
-          <span class="browse-text">browse files</span>
-          <br>
-          PDF only · Maximum size 20 MB
-        </div>
-      </div>
-
-      <div class="selected-file" id="selectedFile">
-        <div class="selected-file-icon">PDF</div>
-
-        <div class="selected-file-info">
-          <div class="selected-file-name" id="selectedFileName"></div>
-          <div class="selected-file-size" id="selectedFileSize"></div>
-        </div>
-
-        <button
-          type="button"
-          class="remove-file"
-          id="removeFileButton"
-        >
-          Remove
-        </button>
-      </div>
-
-      <button
-        type="submit"
-        class="submit"
-        id="uploadButton"
-      >
-        Upload to Digital Library
-      </button>
-
-    </form>
-
-    <p id="message"></p>
-
-  </section>
-
-  <section class="panel hidden" id="resourcesPanel">
-
-    <h2 id="resourcesHeading">My Uploaded Materials</h2>
-
-    <p class="muted" id="resourcesDescription">
-      Materials you have shared with the school.
-    </p>
-
-    <div id="myResources">
-      Loading materials...
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand">MAGUNGA <span>HIGH</span></div>
+      <a class="back-link" href="dashboard.html">← Back to Home</a>
     </div>
+  </header>
 
-  </section>
+  <main>
+    <section class="heading">
+      <h1>Digital Library</h1>
+      <p>Upload, organize and manage learning materials for Magunga High School.</p>
+    </section>
 
-  <p id="accessMessage" class="error"></p>
+    <section class="panel">
+      <h2>Upload learning material</h2>
+      <p class="subtext">
+        Select a PDF document and provide its details. Uploaded materials become available immediately.
+      </p>
 
-</main>
+      <form id="uploadForm">
+        <div class="form-grid">
 
-<script type="module">
+          <div class="field">
+            <label for="title">Document title *</label>
+            <input id="title" required maxlength="120" placeholder="e.g. Algebra Revision Notes">
+          </div>
 
-import { auth, db } from "./assets/js/firebase.js";
+          <div class="field">
+            <label for="subject">Subject *</label>
+            <select id="subject" required>
+              <option value="">Select subject</option>
+              <option>Mathematics</option>
+              <option>English</option>
+              <option>Kiswahili</option>
+              <option>Biology</option>
+              <option>Chemistry</option>
+              <option>Physics</option>
+              <option>Geography</option>
+              <option>History</option>
+              <option>CRE</option>
+              <option>Business Studies</option>
+              <option>Agriculture</option>
+              <option>Computer Studies</option>
+              <option>Other</option>
+            </select>
+          </div>
 
-import {
-  onAuthStateChanged,
-  signOut
-} from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
+          <div class="field">
+            <label for="classLevel">Class level</label>
+            <select id="classLevel">
+              <option value="">All classes</option>
+              <option>Form 1</option>
+              <option>Form 2</option>
+              <option>Form 3</option>
+              <option>Form 4</option>
+            </select>
+          </div>
 
-import {
-  collection,
-  addDoc,
-  getDoc,
-  getDocs,
-  query,
-  where,
-  doc,
-  deleteDoc,
-  serverTimestamp
-} from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
+          <div class="field">
+            <label for="topic">Topic</label>
+            <input id="topic" maxlength="120" placeholder="e.g. Quadratic equations">
+          </div>
 
-const SUPABASE_URL =
-  "https://kfopwukxanxigsupnfee.supabase.co";
+          <div class="field full">
+            <label for="description">Description</label>
+            <textarea id="description" maxlength="1000" placeholder="Briefly describe this learning material..."></textarea>
+          </div>
 
-const SUPABASE_PUBLIC_KEY =
-  "sb_publishable_kZHYFrW-5z4rp1tRg9tqxg_nhXbK1sP";
+          <div class="field full">
+            <label>Select PDF document *</label>
 
-const $ = id => document.getElementById(id);
+            <div class="file-picker" id="filePicker">
+              <input type="file" id="pdfFile" accept="application/pdf,.pdf">
 
-let currentUser = null;
-let profile = null;
+              <div class="upload-icon">↑</div>
+              <strong>Choose a PDF or drag it here</strong>
+              <small>PDF documents only. Maximum size: 20 MB.</small>
 
-function showMessage(message, type = "info") {
-  $("message").textContent = message;
-  $("message").className = type;
-}
+              <div class="file-details" id="fileDetails">
+                <div class="file-info">
+                  <div class="file-name" id="fileName"></div>
+                  <div class="file-size" id="fileSize"></div>
+                </div>
+                <button type="button" class="remove-file" id="removeFileButton">
+                  Remove
+                </button>
+              </div>
+            </div>
+          </div>
 
-function formatFileSize(bytes) {
-  if (bytes < 1024) return bytes + " B";
-  if (bytes < 1024 * 1024) {
-    return (bytes / 1024).toFixed(1) + " KB";
-  }
-  return (bytes / (1024 * 1024)).toFixed(2) + " MB";
-}
+        </div>
 
-function validPdf(file) {
-  return !!file &&
-    file.type === "application/pdf" &&
-    file.name.toLowerCase().endsWith(".pdf") &&
-    file.size > 0 &&
-    file.size <= 20 * 1024 * 1024;
-}
+        <button class="primary-button" id="uploadButton" type="submit">
+          Upload to Digital Library
+        </button>
 
-function displaySelectedFile(file) {
-  if (!file) {
-    $("selectedFile").classList.remove("visible");
-    return;
-  }
+        <div class="progress-wrap" id="progressWrap">
+          <div class="progress-track">
+            <div class="progress-bar" id="progressBar"></div>
+          </div>
+          <div class="progress-label" id="progressLabel">Preparing upload...</div>
+        </div>
 
-  $("selectedFileName").textContent = file.name;
-  $("selectedFileSize").textContent =
-    formatFileSize(file.size) + " · PDF document";
+        <div class="message" id="uploadMessage"></div>
+      </form>
+    </section>
 
-  $("selectedFile").classList.add("visible");
-}
+    <section class="panel">
+      <h2>Library materials</h2>
+      <p class="subtext">Manage the learning materials available in your library.</p>
 
-function setSelectedFile(file) {
-  if (!file) return;
+      <div id="resourceList">
+        <div class="loading">Loading library materials...</div>
+      </div>
+    </section>
+  </main>
 
-  if (!validPdf(file)) {
-    showMessage(
-      "Choose a valid PDF file smaller than 20 MB.",
-      "error"
-    );
+  <script type="module">
+    import { auth, db } from "./assets/js/firebase.js";
 
-    $("pdfFile").value = "";
-    displaySelectedFile(null);
-    return;
-  }
+    import {
+      onAuthStateChanged
+    } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
 
-  const transfer = new DataTransfer();
-  transfer.items.add(file);
-  $("pdfFile").files = transfer.files;
+    import {
+      collection,
+      addDoc,
+      getDoc,
+      getDocs,
+      query,
+      where,
+      doc,
+      deleteDoc,
+      serverTimestamp
+    } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
 
-  displaySelectedFile(file);
-  showMessage("PDF selected and ready to upload.", "success");
-}
+    const SUPABASE_URL = "https://kfopwukxanxigsupnfee.supabase.co";
+    const SUPABASE_PUBLIC_KEY = "sb_publishable_kZHYFrW-5z4rp1tRg9tqxg_nhXbK1sP";
 
-// CUSTOM FILE PICKER
+    const $ = id => document.getElementById(id);
 
-$("filePicker").addEventListener("click", event => {
-  if (event.target.id !== "removeFileButton") {
-    $("pdfFile").click();
-  }
-});
+    let currentUser = null;
+    let currentProfile = null;
+    let selectedFile = null;
 
-$("filePicker").addEventListener("keydown", event => {
-  if (event.key === "Enter" || event.key === " ") {
-    event.preventDefault();
-    $("pdfFile").click();
-  }
-});
+    const uploadForm = $("uploadForm");
+    const filePicker = $("filePicker");
+    const pdfFile = $("pdfFile");
 
-$("pdfFile").addEventListener("change", () => {
-  const file = $("pdfFile").files[0];
-
-  if (file) {
-    setSelectedFile(file);
-  }
-});
-
-$("removeFileButton").addEventListener("click", event => {
-  event.stopPropagation();
-  $("pdfFile").value = "";
-  displaySelectedFile(null);
-  showMessage("Selected PDF removed.", "info");
-});
-
-["dragenter", "dragover"].forEach(eventName => {
-  $("filePicker").addEventListener(eventName, event => {
-    event.preventDefault();
-    $("filePicker").classList.add("dragover");
-  });
-});
-
-["dragleave", "drop"].forEach(eventName => {
-  $("filePicker").addEventListener(eventName, event => {
-    event.preventDefault();
-    $("filePicker").classList.remove("dragover");
-  });
-});
-
-$("filePicker").addEventListener("drop", event => {
-  const file = event.dataTransfer.files[0];
-  setSelectedFile(file);
-});
-
-// VERIFY APPROVED ACCOUNT
-
-onAuthStateChanged(auth, async user => {
-  if (!user) {
-    location.href = "login.html";
-    return;
-  }
-
-  currentUser = user;
-
-  try {
-    const profileSnapshot = await getDoc(
-      doc(db, "users", user.uid)
-    );
-
-    if (!profileSnapshot.exists()) {
-      throw new Error("Your user profile could not be found.");
+    function showMessage(message, type = "error") {
+      const box = $("uploadMessage");
+      box.textContent = message;
+      box.className = `message show ${type}`;
     }
 
-    profile = profileSnapshot.data();
-
-    if (profile.status !== "approved") {
-      throw new Error(
-        "Your account must be approved before using the Digital Library."
-      );
+    function clearMessage() {
+      $("uploadMessage").className = "message";
+      $("uploadMessage").textContent = "";
     }
 
-    $("accountName").textContent =
-      "Welcome, " + (profile.name || user.email) +
-      " · Approved account";
+    function formatSize(bytes) {
+      if (bytes < 1024 * 1024) {
+        return `${(bytes / 1024).toFixed(1)} KB`;
+      }
 
-    $("uploadPanel").classList.remove("hidden");
-    $("resourcesPanel").classList.remove("hidden");
-
-    if (profile.role === "superadmin") {
-      $("resourcesHeading").textContent =
-        "Manage All Library Materials";
-
-      $("resourcesDescription").textContent =
-        "View and manage materials uploaded by the school community.";
+      return `${(bytes / (1024 * 1024)).toFixed(2)} MB`;
     }
 
-    await loadMyResources();
+    function setFile(file) {
+      clearMessage();
 
-  } catch (error) {
-    console.error(error);
+      if (!file) return;
 
-    $("accountName").textContent =
-      "Account verification failed.";
+      const isPdf =
+        file.type === "application/pdf" ||
+        file.name.toLowerCase().endsWith(".pdf");
 
-    $("accessMessage").textContent =
-      error.message || "You cannot access the Digital Library.";
-  }
-});
+      if (!isPdf) {
+        showMessage("Please select a PDF document only.");
+        return;
+      }
 
-// UPLOAD PDF
+      if (file.size > 20 * 1024 * 1024) {
+        showMessage("The selected PDF is larger than 20 MB.");
+        return;
+      }
 
-$("uploadForm").addEventListener("submit", async event => {
-  event.preventDefault();
+      if (file.size === 0) {
+        showMessage("The selected file is empty.");
+        return;
+      }
 
-  if (!currentUser || !profile || profile.status !== "approved") {
-    showMessage(
-      "Your approved account could not be verified.",
-      "error"
-    );
-    return;
-  }
+      selectedFile = file;
 
-  const file = $("pdfFile").files[0];
+      $("fileName").textContent = file.name;
+      $("fileSize").textContent = formatSize(file.size);
+      $("fileDetails").classList.add("visible");
+    }
 
-  if (!validPdf(file)) {
-    showMessage(
-      "Select a valid PDF file smaller than 20 MB.",
-      "error"
-    );
-    return;
-  }
+    function removeFile() {
+      selectedFile = null;
+      pdfFile.value = "";
+      $("fileDetails").classList.remove("visible");
+      $("fileName").textContent = "";
+      $("fileSize").textContent = "";
+    }
 
-  const title = $("title").value.trim();
-  const subject = $("subject").value;
-  const classLevel = $("classLevel").value;
-  const topic = $("topic").value.trim();
-  const description = $("description").value.trim();
+    filePicker.addEventListener("click", event => {
+      if (event.target.closest("#removeFileButton")) return;
 
-  if (!title || !subject || !classLevel || !topic) {
-    showMessage("Complete all required fields.", "error");
-    return;
-  }
+      if (event.target === pdfFile) return;
 
-  const button = $("uploadButton");
+      pdfFile.click();
+    });
 
-  button.disabled = true;
-  button.textContent = "Preparing upload...";
+    pdfFile.addEventListener("change", () => {
+      setFile(pdfFile.files?.[0]);
+    });
 
-  try {
-    const idToken = await currentUser.getIdToken();
+    $("removeFileButton").addEventListener("click", event => {
+      event.stopPropagation();
+      removeFile();
+    });
 
-    showMessage(
-      "Requesting secure upload permission...",
-      "info"
-    );
+    ["dragenter", "dragover"].forEach(name => {
+      filePicker.addEventListener(name, event => {
+        event.preventDefault();
+        filePicker.classList.add("dragover");
+      });
+    });
 
-    const permissionResponse = await fetch(
-      "/api/library-upload-url",
-      {
+    ["dragleave", "drop"].forEach(name => {
+      filePicker.addEventListener(name, event => {
+        event.preventDefault();
+        filePicker.classList.remove("dragover");
+      });
+    });
+
+    filePicker.addEventListener("drop", event => {
+      const file = event.dataTransfer?.files?.[0];
+      setFile(file);
+    });
+
+    function setProgress(percent, label) {
+      $("progressWrap").classList.add("visible");
+      $("progressBar").style.width = `${percent}%`;
+      $("progressLabel").textContent = label;
+    }
+
+    function setUploading(value) {
+      $("uploadButton").disabled = value;
+      $("uploadButton").textContent = value
+        ? "Uploading..."
+        : "Upload to Digital Library";
+    }
+
+    async function getUploadPermission(file) {
+      const token = await currentUser.getIdToken(true);
+
+      const response = await fetch("/api/library-upload-url", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": "Bearer " + idToken
+          "Authorization": `Bearer ${token}`
         },
         body: JSON.stringify({
           fileName: file.name,
-          fileSize: file.size,
-          contentType: "application/pdf"
+          contentType: "application/pdf",
+          fileSize: file.size
         })
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Could not prepare the upload.");
       }
-    );
 
-    const permission = await permissionResponse.json();
+      if (!data.path || !data.token) {
+        throw new Error("The upload permission response was incomplete.");
+      }
 
-    if (!permissionResponse.ok) {
-      throw new Error(
-        permission.error || "Could not obtain upload permission."
-      );
+      return data;
     }
 
-    if (!permission.path || !permission.token) {
-      throw new Error(
-        "The server returned incomplete upload permission."
-      );
+    async function uploadPdf(file, permission) {
+      const encodedPath = permission.path
+        .split("/")
+        .map(encodeURIComponent)
+        .join("/");
+
+      const uploadUrl =
+        `${SUPABASE_URL}/storage/v1/object/upload/sign/magunga-library/${encodedPath}` +
+        `?token=${encodeURIComponent(permission.token)}`;
+
+      const response = await fetch(uploadUrl, {
+        method: "PUT",
+        headers: {
+          "apikey": SUPABASE_PUBLIC_KEY,
+          "Content-Type": "application/pdf",
+          "x-upsert": "false"
+        },
+        body: file
+      });
+
+      if (!response.ok) {
+        let details = "";
+
+        try {
+          const result = await response.json();
+          details = result.message || result.error || "";
+        } catch {}
+
+        throw new Error(details || "PDF upload failed. Check your storage configuration.");
+      }
     }
 
-    button.textContent = "Uploading PDF...";
-    showMessage("Uploading your PDF. Please wait...", "info");
+    async function saveMetadata(file, permission) {
+      await addDoc(collection(db, "libraryResources"), {
+        title: $("title").value.trim(),
+        subject: $("subject").value,
+        classLevel: $("classLevel").value,
+        topic: $("topic").value.trim(),
+        description: $("description").value.trim(),
 
-    const encodedPath = permission.path
-      .split("/")
-      .map(encodeURIComponent)
-      .join("/");
+        fileName: file.name,
+        filePath: permission.path,
+        fileSize: file.size,
+        contentType: "application/pdf",
 
-    const uploadUrl =
-      SUPABASE_URL +
-      "/storage/v1/object/upload/sign/magunga-library/" +
-      encodedPath +
-      "?token=" +
-      encodeURIComponent(permission.token);
+        uploadedBy: currentUser.uid,
+        uploaderName:
+          currentProfile.name ||
+          currentUser.displayName ||
+          currentUser.email,
 
-    const uploadResponse = await fetch(uploadUrl, {
-      method: "PUT",
-      headers: {
-        "apikey": SUPABASE_PUBLIC_KEY,
-        "Content-Type": "application/pdf",
-        "x-upsert": "false"
-      },
-      body: file
+        status: "approved",
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp()
+      });
+    }
+
+    uploadForm.addEventListener("submit", async event => {
+      event.preventDefault();
+      clearMessage();
+
+      if (!currentUser || !currentProfile) {
+        showMessage("Your account could not be verified. Please sign in again.");
+        return;
+      }
+
+      if (currentProfile.status !== "approved") {
+        showMessage("Your account is not approved for library uploads.");
+        return;
+      }
+
+      if (!selectedFile) {
+        showMessage("Please choose a PDF document first.");
+        return;
+      }
+
+      if (!$("title").value.trim() || !$("subject").value) {
+        showMessage("Please provide the document title and subject.");
+        return;
+      }
+
+      setUploading(true);
+      setProgress(10, "Preparing secure upload...");
+
+      try {
+        const permission = await getUploadPermission(selectedFile);
+
+        setProgress(40, "Uploading PDF document...");
+
+        await uploadPdf(selectedFile, permission);
+
+        setProgress(80, "Saving library information...");
+
+        await saveMetadata(selectedFile, permission);
+
+        setProgress(100, "Upload completed.");
+
+        showMessage(
+          "Your learning material has been uploaded and published successfully.",
+          "success"
+        );
+
+        uploadForm.reset();
+        removeFile();
+
+        await loadResources();
+
+      } catch (error) {
+        console.error("Library upload error:", error);
+        showMessage(error.message || "Upload failed. Please try again.");
+      } finally {
+        setUploading(false);
+      }
     });
 
-    if (!uploadResponse.ok) {
-      const uploadError = await uploadResponse.text();
-      console.error("Supabase upload error:", uploadError);
+    async function getDownloadUrl(resourceId) {
+      const token = await currentUser.getIdToken(true);
 
-      throw new Error(
-        "PDF upload failed. Please try again."
-      );
+      const response = await fetch("/api/library-download-url", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
+        body: JSON.stringify({ resourceId })
+      });
+
+      const data = await response.json();
+
+      if (!response.ok || !data.url) {
+        throw new Error(data.error || "Could not open this document.");
+      }
+
+      return data.url;
     }
 
-    button.textContent = "Saving library details...";
-    showMessage("PDF uploaded. Saving material details...", "info");
-
-    const resourceData = {
-      title,
-      subject,
-      classLevel,
-      topic,
-      description,
-
-      fileName: file.name,
-      filePath: permission.path,
-      fileSize: file.size,
-      contentType: "application/pdf",
-
-      uploadedBy: currentUser.uid,
-      uploaderName: profile.name || currentUser.email,
-
-      status: "approved",
-
-      createdAt: serverTimestamp(),
-      updatedAt: serverTimestamp()
-    };
-
-    await addDoc(
-      collection(db, "libraryResources"),
-      resourceData
-    );
-
-    showMessage(
-      "Upload successful! Your material is now available in the Digital Library.",
-      "success"
-    );
-
-    $("uploadForm").reset();
-    displaySelectedFile(null);
-
-    await loadMyResources();
-
-  } catch (error) {
-    console.error("Library upload error:", error);
-
-    showMessage(
-      error.message || "Something went wrong during upload.",
-      "error"
-    );
-
-  } finally {
-    button.disabled = false;
-    button.textContent = "Upload to Digital Library";
-  }
-});
-
-// LOAD MATERIALS
-
-async function loadMyResources() {
-  const container = $("myResources");
-  container.textContent = "Loading materials...";
-
-  try {
-    let resourcesQuery;
-
-    if (profile.role === "superadmin") {
-      resourcesQuery = query(
-        collection(db, "libraryResources")
-      );
-    } else {
-      resourcesQuery = query(
-        collection(db, "libraryResources"),
-        where("uploadedBy", "==", currentUser.uid)
-      );
+    async function openResource(resourceId) {
+      try {
+        const url = await getDownloadUrl(resourceId);
+        window.open(url, "_blank", "noopener,noreferrer");
+      } catch (error) {
+        console.error(error);
+        alert(error.message || "Could not open this document.");
+      }
     }
 
-    const snapshot = await getDocs(resourcesQuery);
+    async function deleteResource(resourceId) {
+      if (currentProfile?.role !== "superadmin") {
+        alert("Only the superadmin can delete library materials.");
+        return;
+      }
 
-    container.replaceChildren();
+      if (!confirm("Delete this library material permanently?")) return;
 
-    if (snapshot.empty) {
-      const empty = document.createElement("div");
-      empty.className = "empty-state";
-      empty.textContent =
-        "No learning materials have been uploaded yet.";
-      container.append(empty);
-      return;
+      try {
+        const token = await currentUser.getIdToken(true);
+
+        const response = await fetch("/api/library-delete-file", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
+          },
+          body: JSON.stringify({ resourceId })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.error || "Could not delete the PDF file.");
+        }
+
+        await deleteDoc(doc(db, "libraryResources", resourceId));
+
+        await loadResources();
+
+      } catch (error) {
+        console.error(error);
+        alert(error.message || "Could not delete this material.");
+      }
     }
 
-    const resources = snapshot.docs.map(item => ({
-      id: item.id,
-      ...item.data()
-    }));
+    function createResourceElement(resourceId, data) {
+      const wrapper = document.createElement("div");
+      wrapper.className = "resource";
 
-    resources.sort((a, b) =>
-      (b.createdAt?.seconds || 0) -
-      (a.createdAt?.seconds || 0)
-    );
+      const info = document.createElement("div");
+      info.className = "resource-info";
 
-    resources.forEach(resource => {
-      const item = document.createElement("div");
-      item.className = "resource";
+      const title = document.createElement("div");
+      title.className = "resource-title";
+      title.textContent = data.title || data.fileName || "Untitled document";
 
-      const heading = document.createElement("h3");
-      heading.textContent = resource.title || "Untitled material";
+      const meta = document.createElement("div");
+      meta.className = "resource-meta";
+      meta.textContent =
+        `${data.subject || "Uncategorized"} · ${data.classLevel || "All classes"} · ` +
+        `${data.fileSize ? formatSize(data.fileSize) : "PDF"}`;
 
-      const details = document.createElement("p");
-      details.textContent = [
-        resource.subject,
-        resource.classLevel,
-        resource.topic,
-        resource.fileName,
-        formatFileSize(resource.fileSize || 0),
-        profile.role === "superadmin"
-          ? "Uploaded by: " + (resource.uploaderName || "Unknown")
-          : ""
-      ].filter(Boolean).join(" · ");
+      info.append(title, meta);
 
       const actions = document.createElement("div");
       actions.className = "resource-actions";
 
-      const viewButton = document.createElement("button");
-      viewButton.className = "view-button";
-      viewButton.textContent = "Open PDF";
+      const openButton = document.createElement("button");
+      openButton.className = "small-button";
+      openButton.textContent = "Open PDF";
+      openButton.addEventListener("click", () => openResource(resourceId));
 
-      viewButton.addEventListener("click", () => {
-        openMaterial(resource.id, viewButton);
-      });
+      actions.appendChild(openButton);
 
-      actions.append(viewButton);
-
-      if (profile.role === "superadmin") {
+      if (currentProfile.role === "superadmin") {
         const deleteButton = document.createElement("button");
-        deleteButton.className = "delete-button";
-        deleteButton.textContent = "Delete Material";
+        deleteButton.className = "small-button delete-button";
+        deleteButton.textContent = "Delete";
+        deleteButton.addEventListener("click", () => deleteResource(resourceId));
 
-        deleteButton.addEventListener("click", () => {
-          deleteMaterial(resource.id, deleteButton);
+        actions.appendChild(deleteButton);
+      }
+
+      wrapper.append(info, actions);
+      return wrapper;
+    }
+
+    async function loadResources() {
+      const container = $("resourceList");
+      container.innerHTML = '<div class="loading">Loading library materials...</div>';
+
+      try {
+        let snapshot;
+
+        if (currentProfile.role === "superadmin") {
+          snapshot = await getDocs(collection(db, "libraryResources"));
+        } else {
+          const ownResourcesQuery = query(
+            collection(db, "libraryResources"),
+            where("uploadedBy", "==", currentUser.uid)
+          );
+
+          snapshot = await getDocs(ownResourcesQuery);
+        }
+
+        const resources = snapshot.docs
+          .map(item => ({
+            id: item.id,
+            data: item.data()
+          }))
+          .filter(item => item.data.status === "approved")
+          .sort((a, b) => {
+            const first = a.data.createdAt?.seconds || 0;
+            const second = b.data.createdAt?.seconds || 0;
+            return second - first;
+          });
+
+        container.innerHTML = "";
+
+        if (resources.length === 0) {
+          container.innerHTML =
+            '<div class="empty">No library materials found.</div>';
+          return;
+        }
+
+        resources.forEach(item => {
+          container.appendChild(
+            createResourceElement(item.id, item.data)
+          );
         });
 
-        actions.append(deleteButton);
+      } catch (error) {
+        console.error("Library loading error:", error);
+        container.innerHTML =
+          '<div class="empty">Could not load library materials. Check your Firestore permissions.</div>';
+      }
+    }
+
+    onAuthStateChanged(auth, async user => {
+      if (!user) {
+        window.location.href = "login.html";
+        return;
       }
 
-      item.append(heading, details, actions);
-      container.append(item);
+      currentUser = user;
+
+      try {
+        const profileSnapshot = await getDoc(
+          doc(db, "users", user.uid)
+        );
+
+        if (!profileSnapshot.exists()) {
+          alert("Your user profile could not be found.");
+          window.location.href = "login.html";
+          return;
+        }
+
+        currentProfile = profileSnapshot.data();
+
+        if (currentProfile.status !== "approved") {
+          alert("Your account is not approved.");
+          window.location.href = "login.html";
+          return;
+        }
+
+        await loadResources();
+
+      } catch (error) {
+        console.error("Authentication error:", error);
+        alert("Could not verify your account. Please sign in again.");
+        window.location.href = "login.html";
+      }
     });
-
-  } catch (error) {
-    console.error("Loading resources failed:", error);
-
-    container.textContent =
-      "Could not load materials: " + error.message;
-  }
-}
-
-// OPEN PDF USING TEMPORARY SIGNED LINK
-
-async function openMaterial(resourceId, button) {
-  button.disabled = true;
-  button.textContent = "Preparing PDF...";
-
-  try {
-    const idToken = await currentUser.getIdToken();
-
-    const response = await fetch(
-      "/api/library-download-url",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": "Bearer " + idToken
-        },
-        body: JSON.stringify({ resourceId })
-      }
-    );
-
-    const result = await response.json();
-
-    if (!response.ok || !result.downloadUrl) {
-      throw new Error(
-        result.error || "Could not open this PDF."
-      );
-    }
-
-    window.open(result.downloadUrl, "_blank", "noopener");
-
-  } catch (error) {
-    alert(error.message);
-  } finally {
-    button.disabled = false;
-    button.textContent = "Open PDF";
-  }
-}
-
-// DELETE MATERIAL - SUPERADMIN ONLY
-
-async function deleteMaterial(resourceId, button) {
-  if (profile.role !== "superadmin") {
-    alert("Only the superadmin can delete library materials.");
-    return;
-  }
-
-  const confirmed = confirm(
-    "Delete this material permanently? The PDF and its library record will be deleted."
-  );
-
-  if (!confirmed) return;
-
-  button.disabled = true;
-  button.textContent = "Deleting...";
-
-  try {
-    const idToken = await currentUser.getIdToken();
-
-    const response = await fetch(
-      "/api/library-delete-file",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": "Bearer " + idToken
-        },
-        body: JSON.stringify({ resourceId })
-      }
-    );
-
-    const result = await response.json();
-
-    if (!response.ok) {
-      throw new Error(
-        result.error || "Could not delete the PDF from storage."
-      );
-    }
-
-    await deleteDoc(
-      doc(db, "libraryResources", resourceId)
-    );
-
-    await loadMyResources();
-
-  } catch (error) {
-    console.error("Delete failed:", error);
-    alert("Could not delete material: " + error.message);
-
-    button.disabled = false;
-    button.textContent = "Delete Material";
-  }
-}
-
-// LOGOUT
-
-$("logoutButton").addEventListener("click", async () => {
-  await signOut(auth);
-  location.href = "login.html";
-});
-
-</script>
+  </script>
 
 </body>
 </html>
