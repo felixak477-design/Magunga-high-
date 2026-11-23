@@ -8,311 +8,116 @@
 <title>Manage Library | The Magunga High</title>
 
 <style>
-* {
-  box-sizing: border-box;
-}
-
-body {
-  margin: 0;
-  background: #080b0a;
-  color: #f4f4f4;
-  font-family: Arial, sans-serif;
-}
-
-header {
-  padding: 22px;
-  background: #101713;
-  border-bottom: 1px solid #26352b;
-}
-
-header h1 {
-  margin: 0;
-  color: #63dc91;
-  font-size: 23px;
-}
-
-header p {
-  color: #9ca99f;
-  margin-bottom: 0;
-  font-size: 13px;
-}
-
-main {
-  max-width: 950px;
-  margin: auto;
-  padding: 18px;
-}
-
-.card {
-  background: #111814;
-  border: 1px solid #27372d;
-  border-radius: 13px;
-  padding: 18px;
-  margin-bottom: 20px;
-}
-
-h2 {
-  font-size: 18px;
-  margin-top: 0;
-  color: #70e49b;
-}
-
-label {
-  display: block;
-  margin: 14px 0 7px;
-  color: #bdc9c0;
-  font-size: 13px;
-}
-
-input, select, textarea {
-  width: 100%;
-  padding: 12px;
-  background: #080d09;
-  color: white;
-  border: 1px solid #34463a;
-  border-radius: 8px;
-  outline: none;
-  font-size: 14px;
-}
-
-textarea {
-  min-height: 80px;
-  resize: vertical;
-}
-
-input:focus, select:focus, textarea:focus {
-  border-color: #58d987;
-}
-
-button {
-  border: 0;
-  border-radius: 8px;
-  padding: 11px 15px;
-  cursor: pointer;
-  font-weight: bold;
-  margin: 5px 4px 5px 0;
-}
-
-.primary {
-  background: #28a85d;
-  color: white;
-  width: 100%;
-  margin-top: 18px;
-  padding: 14px;
-}
-
-.approve {
-  background: #176e3b;
-  color: white;
-}
-
-.reject {
-  background: #8d3030;
-  color: white;
-}
-
-.edit {
-  background: #344b65;
-  color: white;
-}
-
-.delete {
-  background: #672525;
-  color: white;
-}
-
-.download {
-  background: #315b40;
-  color: white;
-}
-
-.tabs {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 7px;
-  margin-bottom: 15px;
-}
-
-.tab {
-  background: #202b23;
-  color: #c8d4ca;
-}
-
-.tab.active {
-  background: #238c4c;
-  color: white;
-}
-
-.resource {
-  background: #0b100c;
-  border: 1px solid #29372d;
-  border-radius: 10px;
-  padding: 15px;
-  margin-bottom: 12px;
-}
-
-.resource h3 {
-  margin: 0 0 9px;
-  color: #e6f4e9;
-}
-
-.resource p {
-  color: #aebbb1;
-  font-size: 13px;
-  line-height: 1.5;
-  overflow-wrap: anywhere;
-}
-
-.status {
-  display: inline-block;
-  padding: 5px 9px;
-  border-radius: 20px;
-  font-size: 11px;
-  background: #29372d;
-  color: #c4d8c9;
-}
-
-.status.pending {
-  background: #55451b;
-  color: #ffe29a;
-}
-
-.status.approved {
-  background: #17472b;
-  color: #91f5b0;
-}
-
-.status.rejected {
-  background: #512525;
-  color: #ffaaaa;
-}
-
-.small {
-  color: #89988d;
-  font-size: 12px;
-}
-
-#message {
-  padding: 12px;
-  border-radius: 8px;
-  display: none;
-  margin-bottom: 15px;
-  font-size: 13px;
-  overflow-wrap: anywhere;
-}
-
-#message.show {
-  display: block;
-  background: #172c20;
-  color: #a4f0ba;
-}
-
-#message.error {
-  background: #351b1b;
-  color: #ffb1b1;
-}
-
-#loading {
-  color: #9ba99e;
-  padding: 15px 0;
-}
-
-.empty {
-  color: #89988d;
-  text-align: center;
-  padding: 25px;
-}
-
-@media(max-width:600px) {
-  main {
-    padding: 12px;
-  }
-
-  .card {
-    padding: 14px;
-  }
-}
+*{box-sizing:border-box}
+body{margin:0;background:#080b0a;color:#f4f4f4;font-family:Arial,sans-serif}
+header{padding:22px;background:#101713;border-bottom:1px solid #26352b}
+header h1{margin:0;color:#63dc91;font-size:23px}
+header p{color:#9ca99f;margin-bottom:0;font-size:13px}
+main{max-width:950px;margin:auto;padding:18px}
+.card{background:#111814;border:1px solid #27372d;border-radius:13px;padding:18px;margin-bottom:20px}
+h2{font-size:18px;margin-top:0;color:#70e49b}
+label{display:block;margin:14px 0 7px;color:#bdc9c0;font-size:13px}
+input,select,textarea{width:100%;padding:12px;background:#080d09;color:white;border:1px solid #34463a;border-radius:8px;outline:none;font-size:14px}
+textarea{min-height:80px;resize:vertical}
+input:focus,select:focus,textarea:focus{border-color:#58d987}
+button{border:0;border-radius:8px;padding:11px 15px;cursor:pointer;font-weight:bold;margin:5px 4px 5px 0}
+button:disabled{opacity:.55;cursor:not-allowed}
+.primary{background:#28a85d;color:white;width:100%;margin-top:18px;padding:14px}
+.approve{background:#176e3b;color:white}
+.reject{background:#8d3030;color:white}
+.edit{background:#344b65;color:white}
+.delete{background:#672525;color:white}
+.download{background:#315b40;color:white}
+.tabs{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:15px}
+.tab{background:#202b23;color:#c8d4ca}
+.tab.active{background:#238c4c;color:white}
+.resource{background:#0b100c;border:1px solid #29372d;border-radius:10px;padding:15px;margin-bottom:12px}
+.resource h3{margin:0 0 9px;color:#e6f4e9}
+.resource p{color:#aebbb1;font-size:13px;line-height:1.5;overflow-wrap:anywhere}
+.status{display:inline-block;padding:5px 9px;border-radius:20px;font-size:11px;background:#29372d;color:#c4d8c9}
+.status.pending{background:#55451b;color:#ffe29a}
+.status.approved{background:#17472b;color:#91f5b0}
+.status.rejected{background:#512525;color:#ffaaaa}
+.small{color:#89988d;font-size:12px}
+#message{padding:12px;border-radius:8px;display:none;margin-bottom:15px;font-size:13px;overflow-wrap:anywhere}
+#message.show{display:block;background:#172c20;color:#a4f0ba}
+#message.error{background:#351b1b;color:#ffb1b1}
+#loading{color:#9ba99e;padding:15px 0}
+.empty{color:#89988d;text-align:center;padding:25px}
+@media(max-width:600px){main{padding:12px}.card{padding:14px}}
 </style>
 </head>
 
 <body>
 
 <header>
-  <h1>Magunga High Digital Library</h1>
-  <p>Administrator Control Centre</p>
+<h1>Magunga High Digital Library</h1>
+<p>Administrator Control Centre</p>
 </header>
 
 <main>
 
-  <div id="message"></div>
+<div id="message"></div>
 
-  <section class="card">
-    <h2>Upload Learning Material</h2>
+<section class="card">
+<h2>Upload Learning Material</h2>
 
-    <form id="uploadForm">
+<form id="uploadForm">
 
-      <label for="title">Document title</label>
-      <input id="title" type="text" required
-        placeholder="e.g. Mathematics Revision Notes">
+<label for="title">Document title</label>
+<input id="title" type="text" required placeholder="e.g. Mathematics Revision Notes">
 
-      <label for="subject">Subject</label>
-      <input id="subject" type="text" required
-        placeholder="e.g. Mathematics">
+<label for="subject">Subject</label>
+<input id="subject" type="text" required placeholder="e.g. Mathematics">
 
-      <label for="classLevel">Class</label>
-      <select id="classLevel" required>
-        <option value="">Select class</option>
-        <option value="Form 1">Form 1</option>
-        <option value="Form 2">Form 2</option>
-        <option value="Form 3">Form 3</option>
-        <option value="Form 4">Form 4</option>
-        <option value="All Classes">All Classes</option>
-      </select>
+<label for="classLevel">Class</label>
+<select id="classLevel" required>
+<option value="">Select class</option>
+<option value="Form 1">Form 1</option>
+<option value="Form 2">Form 2</option>
+<option value="Form 3">Form 3</option>
+<option value="Form 4">Form 4</option>
+<option value="All Classes">All Classes</option>
+</select>
 
-      <label for="topic">Topic</label>
-      <input id="topic" type="text"
-        placeholder="e.g. Algebra">
+<label for="topic">Topic</label>
+<input id="topic" type="text" placeholder="e.g. Algebra">
 
-      <label for="description">Description</label>
-      <textarea id="description"
-        placeholder="Describe this learning material"></textarea>
+<label for="description">Description</label>
+<textarea id="description" placeholder="Describe this learning material"></textarea>
 
-      <label for="pdfFile">Select PDF document</label>
-      <input id="pdfFile" type="file"
-        accept="application/pdf,.pdf" required>
+<label for="pdfFile">Select PDF document</label>
+<input id="pdfFile" type="file" accept="application/pdf,.pdf" required>
 
-      <p class="small">
-        PDF files only. Maximum file size: 20 MB.
-        Uploaded materials must be approved by another administrator
-        before students can access them.
-      </p>
+<p class="small">
+PDF files only. Maximum file size: 20 MB.
+Uploaded materials must be approved by another administrator before students can access them.
+</p>
 
-      <button class="primary" id="uploadButton" type="submit">
-        Upload Material
-      </button>
+<button class="primary" id="uploadButton" type="submit">Upload Material</button>
 
-    </form>
-  </section>
+</form>
+</section>
 
-  <section class="card">
-    <h2>Manage Library Materials</h2>
+<section class="card">
+<h2>Manage Library Materials</h2>
 
-    <div class="tabs">
-      <button class="tab active" data-filter="all">All</button>
-      <button class="tab" data-filter="pending">Pending</button>
-      <button class="tab" data-filter="approved">Approved</button>
-      <button class="tab" data-filter="rejected">Rejected</button>
-    </div>
+<div class="tabs">
+<button class="tab active" data-filter="all">All</button>
+<button class="tab" data-filter="pending">Pending</button>
+<button class="tab" data-filter="approved">Approved</button>
+<button class="tab" data-filter="rejected">Rejected</button>
+</div>
 
-    <div id="loading">Loading library materials...</div>
-    <div id="resources"></div>
-  </section>
+<div id="loading">Loading library materials...</div>
+<div id="resources"></div>
+</section>
 
 </main>
 
 <script type="module">
 
-import { auth, db, app } from "./assets/js/firebase.js";
+import { auth, db } from "./assets/js/firebase.js";
 
 import {
   onAuthStateChanged
@@ -329,16 +134,14 @@ import {
   serverTimestamp
 } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
 
-import {
-  getStorage,
-  ref,
-  uploadBytes,
-  getDownloadURL,
-  deleteObject
-} from "https://www.gstatic.com/firebasejs/11.6.0/firebase-storage.js";
 
+/* SUPABASE PUBLIC CONFIGURATION */
 
-const storage = getStorage(app);
+const SUPABASE_URL = "https://kfopwukxanxigsupnfee.supabase.co";
+
+const SUPABASE_PUBLISHABLE_KEY =
+"sb_publishable_kZHYFrW-5z4rp1tRg9tqxg_nhXbK1sP";
+
 
 const messageBox = document.getElementById("message");
 const resourcesBox = document.getElementById("resources");
@@ -352,134 +155,161 @@ let allResources = [];
 let activeFilter = "all";
 
 
-function showMessage(message, error = false) {
+function showMessage(message,error=false){
+
   messageBox.textContent = message;
-  messageBox.className = "show" + (error ? " error" : "");
+
+  messageBox.className =
+    "show" + (error ? " error" : "");
 
   window.scrollTo({
-    top: 0,
-    behavior: "smooth"
+    top:0,
+    behavior:"smooth"
   });
+
 }
 
 
-function escapeHTML(value = "") {
-  return String(value).replace(/[&<>"']/g, char => ({
-    "&": "&amp;",
-    "<": "&lt;",
-    ">": "&gt;",
-    '"': "&quot;",
-    "'": "&#039;"
+function escapeHTML(value=""){
+
+  return String(value).replace(/[&<>"']/g,char=>({
+    "&":"&amp;",
+    "<":"&lt;",
+    ">":"&gt;",
+    '"':"&quot;",
+    "'":"&#039;"
   })[char]);
+
 }
 
 
-function isAdmin() {
+function isAdmin(){
+
   return currentProfile &&
     currentProfile.status === "approved" &&
-    ["superadmin", "streamAdmin"].includes(currentProfile.role);
+    ["superadmin","streamAdmin"].includes(currentProfile.role);
+
 }
 
 
-async function checkAdmin(user) {
+async function checkAdmin(user){
 
-  const profileRef = doc(db, "users", user.uid);
+  const profileRef = doc(db,"users",user.uid);
   const profileSnap = await getDoc(profileRef);
 
-  if (!profileSnap.exists()) {
+  if(!profileSnap.exists()){
     throw new Error("Your user profile was not found.");
   }
 
   currentProfile = profileSnap.data();
 
-  if (!isAdmin()) {
+  if(!isAdmin()){
     throw new Error("You are not authorised to manage the library.");
   }
+
 }
 
 
-onAuthStateChanged(auth, async user => {
+/* AUTHENTICATION */
 
-  if (!user) {
+onAuthStateChanged(auth,async user=>{
+
+  if(!user){
     window.location.replace("login.html");
     return;
   }
 
   currentUser = user;
 
-  try {
+  try{
+
     await checkAdmin(user);
     await loadResources();
 
-  } catch (error) {
-    showMessage(error.message, true);
+  }catch(error){
+
+    showMessage(error.message,true);
     loadingBox.textContent = "Access denied.";
+
   }
 
 });
 
 
-async function loadResources() {
+/* LOAD LIBRARY */
+
+async function loadResources(){
 
   loadingBox.style.display = "block";
   loadingBox.textContent = "Loading library materials...";
 
-  try {
+  try{
 
     const snapshot = await getDocs(
-      collection(db, "libraryResources")
+      collection(db,"libraryResources")
     );
 
-    allResources = snapshot.docs.map(item => ({
-      id: item.id,
+    allResources = snapshot.docs.map(item=>({
+      id:item.id,
       ...item.data()
     }));
 
-    allResources.sort((a, b) => {
+    allResources.sort((a,b)=>{
       const first = a.createdAt?.seconds || 0;
       const second = b.createdAt?.seconds || 0;
-      return second - first;
+      return second-first;
     });
 
     loadingBox.style.display = "none";
+
     displayResources();
 
-  } catch (error) {
+  }catch(error){
 
     loadingBox.textContent = "Could not load materials.";
-    showMessage(error.message, true);
+    showMessage(error.message,true);
 
   }
+
 }
 
 
-function displayResources() {
+/* DISPLAY MATERIALS */
+
+function displayResources(){
 
   resourcesBox.innerHTML = "";
 
-  const filtered = allResources.filter(item => {
-    return activeFilter === "all" ||
-      item.status === activeFilter;
-  });
+  const filtered = allResources.filter(item=>
+    activeFilter === "all" ||
+    item.status === activeFilter
+  );
 
-  if (filtered.length === 0) {
+  if(filtered.length === 0){
+
     resourcesBox.innerHTML =
       '<div class="empty">No materials found in this section.</div>';
+
     return;
+
   }
 
-  filtered.forEach(item => {
+  filtered.forEach(item=>{
 
-    const ownUpload = item.uploadedBy === currentUser.uid;
+    const ownUpload =
+      item.uploadedBy === currentUser.uid;
 
-    const status = ["pending", "approved", "rejected"].includes(item.status)
+    const status =
+      ["pending","approved","rejected"].includes(item.status)
       ? item.status
       : "unknown";
 
     const card = document.createElement("div");
+
     card.className = "resource";
 
     card.innerHTML = `
+
       <h3>${escapeHTML(item.title || "Untitled document")}</h3>
 
       <span class="status ${status}">
@@ -493,38 +323,28 @@ function displayResources() {
         <strong>Description:</strong> ${escapeHTML(item.description || "No description")}<br>
         <strong>Uploaded by:</strong> ${escapeHTML(item.uploaderName || "Unknown")}<br>
         <strong>File:</strong> ${escapeHTML(item.fileName || "PDF")}<br>
-        <strong>Size:</strong> ${item.fileSize ? (item.fileSize / 1048576).toFixed(2) + " MB" : "Unknown"}
+        <strong>Size:</strong> ${item.fileSize ? (item.fileSize/1048576).toFixed(2)+" MB" : "Unknown"}
       </p>
 
       <div class="actions">
 
         ${item.status === "pending" && !ownUpload ? `
-          <button class="approve" data-action="approve" data-id="${escapeHTML(item.id)}">
-            Approve
-          </button>
-
-          <button class="reject" data-action="reject" data-id="${escapeHTML(item.id)}">
-            Reject
-          </button>
+          <button class="approve" data-action="approve" data-id="${escapeHTML(item.id)}">Approve</button>
+          <button class="reject" data-action="reject" data-id="${escapeHTML(item.id)}">Reject</button>
         ` : ""}
 
         ${item.status === "pending" && ownUpload ? `
           <p class="small">You cannot approve your own submission.</p>
         ` : ""}
 
-        <button class="edit" data-action="edit" data-id="${escapeHTML(item.id)}">
-          Edit Details
-        </button>
+        <button class="edit" data-action="edit" data-id="${escapeHTML(item.id)}">Edit Details</button>
 
-        <button class="download" data-action="download" data-id="${escapeHTML(item.id)}">
-          Open PDF
-        </button>
+        <button class="download" data-action="download" data-id="${escapeHTML(item.id)}">Open PDF</button>
 
-        <button class="delete" data-action="delete" data-id="${escapeHTML(item.id)}">
-          Delete
-        </button>
+        <button class="delete" data-action="delete" data-id="${escapeHTML(item.id)}">Delete</button>
 
       </div>
+
     `;
 
     resourcesBox.appendChild(card);
@@ -534,17 +354,20 @@ function displayResources() {
 }
 
 
-document.querySelectorAll(".tab").forEach(button => {
+/* FILTER TABS */
 
-  button.addEventListener("click", () => {
+document.querySelectorAll(".tab").forEach(button=>{
 
-    document.querySelectorAll(".tab").forEach(tab => {
-      tab.classList.remove("active");
-    });
+  button.addEventListener("click",()=>{
+
+    document.querySelectorAll(".tab").forEach(tab=>
+      tab.classList.remove("active")
+    );
 
     button.classList.add("active");
 
     activeFilter = button.dataset.filter;
+
     displayResources();
 
   });
@@ -552,36 +375,136 @@ document.querySelectorAll(".tab").forEach(button => {
 });
 
 
-uploadForm.addEventListener("submit", async event => {
+/* REQUEST TEMPORARY UPLOAD PERMISSION */
+
+async function requestUploadPermission(file){
+
+  const idToken = await currentUser.getIdToken();
+
+  const response = await fetch("/api/library-upload-url",{
+
+    method:"POST",
+
+    headers:{
+      "Content-Type":"application/json",
+      "Authorization":`Bearer ${idToken}`
+    },
+
+    body:JSON.stringify({
+
+      fileName:file.name,
+      fileSize:file.size,
+      contentType:"application/pdf"
+
+    })
+
+  });
+
+  const data = await response.json();
+
+  if(!response.ok){
+    throw new Error(data.error || "Could not prepare upload.");
+  }
+
+  return data;
+
+}
+
+
+/* UPLOAD PDF DIRECTLY TO SUPABASE */
+
+async function uploadPDF(file){
+
+  const permission =
+    await requestUploadPermission(file);
+
+  const encodedPath = permission.path
+    .split("/")
+    .map(encodeURIComponent)
+    .join("/");
+
+  const uploadURL =
+    `${SUPABASE_URL}/storage/v1/object/upload/sign/magunga-library/${encodedPath}?token=${encodeURIComponent(permission.token)}`;
+
+  const response = await fetch(uploadURL,{
+
+    method:"PUT",
+
+    headers:{
+      "apikey":SUPABASE_PUBLISHABLE_KEY,
+      "Content-Type":"application/pdf"
+    },
+
+    body:file
+
+  });
+
+  if(!response.ok){
+
+    const errorText = await response.text();
+
+    console.error("Supabase upload response:",errorText);
+
+    throw new Error("Supabase could not save the PDF.");
+
+  }
+
+  return permission.path;
+
+}
+
+
+/* UPLOAD FORM */
+
+uploadForm.addEventListener("submit",async event=>{
 
   event.preventDefault();
 
-  if (!currentUser || !isAdmin()) {
-    showMessage("Administrator access required.", true);
+  if(!currentUser || !isAdmin()){
+    showMessage("Administrator access required.",true);
     return;
   }
 
-  const title = document.getElementById("title").value.trim();
-  const subject = document.getElementById("subject").value.trim();
-  const classLevel = document.getElementById("classLevel").value;
-  const topic = document.getElementById("topic").value.trim();
-  const description = document.getElementById("description").value.trim();
-  const file = document.getElementById("pdfFile").files[0];
+  const title =
+    document.getElementById("title").value.trim();
 
-  if (!title || !subject || !classLevel || !file) {
-    showMessage("Please complete all required fields.", true);
+  const subject =
+    document.getElementById("subject").value.trim();
+
+  const classLevel =
+    document.getElementById("classLevel").value;
+
+  const topic =
+    document.getElementById("topic").value.trim();
+
+  const description =
+    document.getElementById("description").value.trim();
+
+  const file =
+    document.getElementById("pdfFile").files[0];
+
+  if(!title || !subject || !classLevel || !file){
+
+    showMessage("Please complete all required fields.",true);
     return;
+
   }
 
-  if (file.type !== "application/pdf" &&
-      !file.name.toLowerCase().endsWith(".pdf")) {
-    showMessage("Only PDF documents are allowed.", true);
+  if(
+    file.type !== "application/pdf" &&
+    !file.name.toLowerCase().endsWith(".pdf")
+  ){
+
+    showMessage("Only PDF documents are allowed.",true);
     return;
+
   }
 
-  if (file.size > 20 * 1024 * 1024) {
-    showMessage("The PDF must not exceed 20 MB.", true);
+  if(file.size > 20*1024*1024){
+
+    showMessage("The PDF must not exceed 20 MB.",true);
     return;
+
   }
 
   uploadButton.disabled = true;
@@ -590,20 +513,18 @@ uploadForm.addEventListener("submit", async event => {
   let resourceRef = null;
   let filePath = null;
 
-  try {
+  try{
 
-    resourceRef = doc(collection(db, "libraryResources"));
+    resourceRef =
+      doc(collection(db,"libraryResources"));
 
-    filePath =
-      `library/${currentUser.uid}/${resourceRef.id}/${Date.now()}_${file.name.replace(/[\/\\]/g, "_")}`;
+    /* Upload file to Supabase */
 
-    const fileRef = ref(storage, filePath);
+    filePath = await uploadPDF(file);
 
-    await uploadBytes(fileRef, file, {
-      contentType: "application/pdf"
-    });
+    /* Save metadata to Firestore */
 
-    await setDoc(resourceRef, {
+    await setDoc(resourceRef,{
 
       title,
       subject,
@@ -611,54 +532,47 @@ uploadForm.addEventListener("submit", async event => {
       topic,
       description,
 
-      fileName: file.name,
+      fileName:file.name,
       filePath,
-      fileSize: file.size,
-      contentType: "application/pdf",
+      fileSize:file.size,
+      contentType:"application/pdf",
 
-      uploadedBy: currentUser.uid,
-      uploaderName: currentProfile.name || currentUser.email || "Administrator",
+      uploadedBy:currentUser.uid,
 
-      status: "pending",
+      uploaderName:
+        currentProfile.name ||
+        currentUser.email ||
+        "Administrator",
 
-      createdAt: serverTimestamp(),
-      updatedAt: serverTimestamp(),
+      status:"pending",
 
-      reviewedBy: null,
-      reviewedAt: null,
-      reviewerName: null
+      createdAt:serverTimestamp(),
+      updatedAt:serverTimestamp(),
+
+      reviewedBy:null,
+      reviewedAt:null,
+      reviewerName:null
 
     });
 
     uploadForm.reset();
 
     showMessage(
-      "Upload successful. The material is now pending approval by another administrator."
+      "Upload successful. The material is pending approval by another administrator."
     );
 
     await loadResources();
 
-  } catch (error) {
+  }catch(error){
 
-    if (resourceRef) {
-      try {
-        await deleteDoc(resourceRef);
-      } catch (cleanupError) {
-        console.error("Document cleanup failed:", cleanupError);
-      }
-    }
+    console.error("Upload error:",error);
 
-    if (filePath) {
-      try {
-        await deleteObject(ref(storage, filePath));
-      } catch (cleanupError) {
-        console.error("File cleanup failed:", cleanupError);
-      }
-    }
+    showMessage(
+      "Upload failed: "+error.message,
+      true
+    );
 
-    showMessage("Upload failed: " + error.message, true);
-
-  } finally {
+  }finally{
 
     uploadButton.disabled = false;
     uploadButton.textContent = "Upload Material";
@@ -668,138 +582,269 @@ uploadForm.addEventListener("submit", async event => {
 });
 
 
-resourcesBox.addEventListener("click", async event => {
+/* DOWNLOAD THROUGH SECURE BACKEND */
 
-  const button = event.target.closest("button[data-action]");
+async function downloadPDF(resourceId){
 
-  if (!button) return;
+  const idToken = await currentUser.getIdToken();
+
+  const response = await fetch("/api/library-download-url",{
+
+    method:"POST",
+
+    headers:{
+      "Content-Type":"application/json",
+      "Authorization":`Bearer ${idToken}`
+    },
+
+    body:JSON.stringify({
+      resourceId
+    })
+
+  });
+
+  const data = await response.json();
+
+  if(!response.ok){
+    throw new Error(data.error || "Could not open PDF.");
+  }
+
+  if(!data.downloadUrl){
+    throw new Error("Download link was not returned.");
+  }
+
+  window.open(data.downloadUrl,"_blank","noopener");
+
+}
+
+
+/* DELETE THROUGH SECURE BACKEND */
+
+async function deletePDF(resourceId){
+
+  const idToken = await currentUser.getIdToken();
+
+  const response = await fetch("/api/library-delete-file",{
+
+    method:"POST",
+
+    headers:{
+      "Content-Type":"application/json",
+      "Authorization":`Bearer ${idToken}`
+    },
+
+    body:JSON.stringify({
+      resourceId
+    })
+
+  });
+
+  const data = await response.json();
+
+  if(!response.ok){
+    throw new Error(data.error || "Could not delete PDF.");
+  }
+
+  return data;
+
+}
+
+
+/* ADMIN ACTIONS */
+
+resourcesBox.addEventListener("click",async event=>{
+
+  const button =
+    event.target.closest("button[data-action]");
+
+  if(!button) return;
 
   const action = button.dataset.action;
   const id = button.dataset.id;
 
-  const item = allResources.find(resource => resource.id === id);
+  const item =
+    allResources.find(resource=>resource.id===id);
 
-  if (!item) return;
+  if(!item) return;
 
-  if (!isAdmin()) {
-    showMessage("Administrator access required.", true);
+  if(!isAdmin()){
+    showMessage("Administrator access required.",true);
     return;
   }
 
-  try {
+  button.disabled = true;
 
-    if (action === "approve" || action === "reject") {
+  try{
 
-      if (item.uploadedBy === currentUser.uid) {
-        showMessage("You cannot review your own submission.", true);
+    /* APPROVE OR REJECT */
+
+    if(action==="approve" || action==="reject"){
+
+      if(item.uploadedBy===currentUser.uid){
+
+        showMessage(
+          "You cannot review your own submission.",
+          true
+        );
+
+        return;
+
+      }
+
+      if(item.status!=="pending"){
+
+        showMessage(
+          "Only pending submissions can be reviewed.",
+          true
+        );
+
+        return;
+
+      }
+
+      const newStatus =
+        action==="approve" ? "approved" : "rejected";
+
+      if(!confirm(`Are you sure you want to ${newStatus} this material?`)){
         return;
       }
 
-      if (item.status !== "pending") {
-        showMessage("Only pending submissions can be reviewed.", true);
-        return;
-      }
+      await updateDoc(
+        doc(db,"libraryResources",id),
+        {
 
-      const newStatus = action === "approve" ? "approved" : "rejected";
+          status:newStatus,
+          reviewedBy:currentUser.uid,
 
-      const confirmed = confirm(
-        `Are you sure you want to ${newStatus} this material?`
+          reviewerName:
+            currentProfile.name ||
+            currentUser.email,
+
+          reviewedAt:serverTimestamp(),
+          updatedAt:serverTimestamp()
+
+        }
       );
 
-      if (!confirmed) return;
+      showMessage("Material "+newStatus+" successfully.");
 
-      await updateDoc(doc(db, "libraryResources", id), {
-
-        status: newStatus,
-        reviewedBy: currentUser.uid,
-        reviewerName: currentProfile.name || currentUser.email,
-        reviewedAt: serverTimestamp(),
-        updatedAt: serverTimestamp()
-
-      });
-
-      showMessage("Material " + newStatus + " successfully.");
       await loadResources();
 
     }
 
 
-    if (action === "edit") {
+    /* EDIT DETAILS */
 
-      const newTitle = prompt("Document title:", item.title || "");
-      if (newTitle === null) return;
+    if(action==="edit"){
 
-      const newSubject = prompt("Subject:", item.subject || "");
-      if (newSubject === null) return;
+      const newTitle =
+        prompt("Document title:",item.title || "");
 
-      const newClass = prompt("Class:", item.classLevel || "");
-      if (newClass === null) return;
+      if(newTitle===null) return;
 
-      const newTopic = prompt("Topic:", item.topic || "");
-      if (newTopic === null) return;
+      const newSubject =
+        prompt("Subject:",item.subject || "");
 
-      const newDescription = prompt(
-        "Description:",
-        item.description || ""
-      );
+      if(newSubject===null) return;
 
-      if (newDescription === null) return;
+      const newClass =
+        prompt("Class:",item.classLevel || "");
 
-      if (!newTitle.trim() || !newSubject.trim() || !newClass.trim()) {
-        showMessage("Title, subject and class cannot be empty.", true);
+      if(newClass===null) return;
+
+      const newTopic =
+        prompt("Topic:",item.topic || "");
+
+      if(newTopic===null) return;
+
+      const newDescription =
+        prompt("Description:",item.description || "");
+
+      if(newDescription===null) return;
+
+      if(
+        !newTitle.trim() ||
+        !newSubject.trim() ||
+        !newClass.trim()
+      ){
+
+        showMessage(
+          "Title, subject and class cannot be empty.",
+          true
+        );
+
         return;
+
       }
 
-      await updateDoc(doc(db, "libraryResources", id), {
+      await updateDoc(
+        doc(db,"libraryResources",id),
+        {
 
-        title: newTitle.trim(),
-        subject: newSubject.trim(),
-        classLevel: newClass.trim(),
-        topic: newTopic.trim(),
-        description: newDescription.trim(),
-        updatedAt: serverTimestamp()
+          title:newTitle.trim(),
+          subject:newSubject.trim(),
+          classLevel:newClass.trim(),
+          topic:newTopic.trim(),
+          description:newDescription.trim(),
+          updatedAt:serverTimestamp()
 
-      });
+        }
+      );
 
       showMessage("Material details updated.");
+
       await loadResources();
 
     }
 
 
-    if (action === "download") {
+    /* DOWNLOAD */
 
-      const fileURL = await getDownloadURL(
-        ref(storage, item.filePath)
-      );
+    if(action==="download"){
 
-      window.open(fileURL, "_blank", "noopener");
+      await downloadPDF(id);
 
     }
 
 
-    if (action === "delete") {
+    /* DELETE */
 
-      const confirmed = confirm(
+    if(action==="delete"){
+
+      if(!confirm(
         "Permanently delete this material and its PDF file?"
-      );
-
-      if (!confirmed) return;
-
-      if (item.filePath) {
-        await deleteObject(ref(storage, item.filePath));
+      )){
+        return;
       }
 
-      await deleteDoc(doc(db, "libraryResources", id));
+      /* Delete the PDF from Supabase first */
+
+      await deletePDF(id);
+
+      /* Then remove its Firestore record */
+
+      await deleteDoc(
+        doc(db,"libraryResources",id)
+      );
 
       showMessage("Material deleted successfully.");
+
       await loadResources();
 
     }
 
-  } catch (error) {
+  }catch(error){
 
-    showMessage("Operation failed: " + error.message, true);
+    console.error("Library operation error:",error);
+
+    showMessage(
+      "Operation failed: "+error.message,
+      true
+    );
+
+  }finally{
+
+    button.disabled = false;
 
   }
 
