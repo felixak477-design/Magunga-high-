@@ -4,236 +4,606 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#0866ff">
+<meta name="theme-color" content="#111827">
 <title>Magunga High | Chats</title>
 
 <style>
 *{box-sizing:border-box;font-family:Arial,sans-serif}
-body{margin:0;background:#eef2f7;color:#17212b}
-body>header{background:#0866ff;color:white;padding:15px;box-shadow:0 2px 8px #0002}
-body>header a{color:white;text-decoration:none}
-main{max-width:850px;margin:auto;padding:12px}
-button{border:0;border-radius:9px;padding:12px;background:#0866ff;color:white;font-weight:bold;cursor:pointer}
+
+body{
+ margin:0;
+ background:#eef2f7;
+ color:#17212b;
+ padding-top:112px;
+}
+
+/* FIXED TOP NAVIGATION */
+
+.topbar{
+ position:fixed;
+ top:0;
+ left:0;
+ right:0;
+ z-index:1000;
+ background:#111827;
+ color:white;
+ box-shadow:0 2px 10px #0003;
+}
+
+.top-brand{
+ height:48px;
+ display:flex;
+ align-items:center;
+ justify-content:space-between;
+ padding:0 15px;
+}
+
+.top-brand strong{
+ color:#ffd36a;
+ font-size:16px;
+}
+
+.top-brand small{
+ color:#aeb9ca;
+ font-size:11px;
+}
+
+.navigation{
+ display:flex;
+ height:62px;
+ justify-content:space-around;
+ border-top:1px solid #283448;
+}
+
+.nav-item{
+ flex:1;
+ display:flex;
+ flex-direction:column;
+ align-items:center;
+ justify-content:center;
+ gap:4px;
+ color:#aeb9ca;
+ text-decoration:none;
+ font-size:10px;
+ position:relative;
+}
+
+.nav-icon{
+ font-size:22px;
+ line-height:1;
+}
+
+.nav-item.active{
+ color:#ffd36a;
+}
+
+.nav-item.active::after{
+ content:"";
+ position:absolute;
+ bottom:0;
+ left:18%;
+ right:18%;
+ height:3px;
+ background:#ffd36a;
+ border-radius:5px 5px 0 0;
+}
+
+main{
+ max-width:850px;
+ margin:auto;
+ padding:12px;
+}
+
+button{
+ border:0;
+ border-radius:9px;
+ padding:12px;
+ background:#0866ff;
+ color:white;
+ font-weight:bold;
+ cursor:pointer;
+}
+
 button:disabled{opacity:.5}
-.tabs{display:flex;gap:8px;margin:15px 0;flex-wrap:wrap}
-.tabs button{flex:1;background:#dce5f2;color:#26364b}
-.tabs button.active{background:#0866ff;color:white}
-.panel{padding:12px;border-radius:14px;background:white;box-shadow:0 2px 12px #17212b12}
+
+.tabs{
+ display:flex;
+ gap:8px;
+ margin:15px 0;
+ flex-wrap:wrap;
+}
+
+.tabs button{
+ flex:1;
+ background:#dce5f2;
+ color:#26364b;
+}
+
+.tabs button.active{
+ background:#0866ff;
+ color:white;
+}
+
+.panel{
+ padding:12px;
+ border-radius:14px;
+ background:white;
+ box-shadow:0 2px 12px #17212b12;
+}
+
 .hidden{display:none!important}
 
 #streamPanel,#groupPanel{
-  min-height:calc(100dvh - 175px);
-  display:flex;flex-direction:column;overflow:hidden
-}
-#streamPanel h3,#groupPanel h3{flex-shrink:0;margin:5px 0 8px}
-#streamPanel .messages,#groupPanel .messages{
-  flex:1;height:auto;min-height:450px;overflow-y:auto;
-  padding:14px;margin:10px 0
-}
-#streamPanel form,#groupPanel form{
-  flex-shrink:0;padding-bottom:max(5px,env(safe-area-inset-bottom))
-}
-.messages{
-  height:350px;overflow-y:auto;padding:14px;background:#f1f4f8;
-  border-radius:12px;margin:12px 0
+ min-height:calc(100dvh - 290px);
+ display:flex;
+ flex-direction:column;
+ overflow:hidden;
 }
 
-.messageRow{display:flex;align-items:flex-end;gap:8px;margin:10px 0}
+#streamPanel h3,#groupPanel h3{
+ flex-shrink:0;
+ margin:5px 0 8px;
+}
+
+#streamPanel .messages,#groupPanel .messages{
+ flex:1;
+ height:auto;
+ min-height:350px;
+ overflow-y:auto;
+ padding:14px;
+ margin:10px 0;
+}
+
+#streamPanel form,#groupPanel form{
+ flex-shrink:0;
+ padding-bottom:max(5px,env(safe-area-inset-bottom));
+}
+
+.messages{
+ height:350px;
+ overflow-y:auto;
+ padding:14px;
+ background:#f1f4f8;
+ border-radius:12px;
+ margin:12px 0;
+}
+
+.messageRow{
+ display:flex;
+ align-items:flex-end;
+ gap:8px;
+ margin:10px 0;
+}
+
 .messageRow.mine{justify-content:flex-end}
+
 .messageAvatar{
-  width:32px;height:32px;min-width:32px;border-radius:50%;
-  background:#0866ff;color:white;display:flex;align-items:center;
-  justify-content:center;font-weight:bold;font-size:13px;
-  overflow:hidden;flex-shrink:0
+ width:32px;
+ height:32px;
+ min-width:32px;
+ border-radius:50%;
+ background:#0866ff;
+ color:white;
+ display:flex;
+ align-items:center;
+ justify-content:center;
+ font-weight:bold;
+ font-size:13px;
+ overflow:hidden;
+ flex-shrink:0;
 }
-.messageAvatarImage{width:100%;height:100%;object-fit:cover;display:block}
+
+.messageAvatarImage{
+ width:100%;
+ height:100%;
+ object-fit:cover;
+ display:block;
+}
+
 .message{
-  background:white;color:#17212b;padding:9px 12px;
-  border-radius:14px 14px 14px 4px;margin:0;max-width:85%;
-  overflow-wrap:anywhere;box-shadow:0 1px 3px #00000012
+ background:white;
+ color:#17212b;
+ padding:9px 12px;
+ border-radius:14px 14px 14px 4px;
+ margin:0;
+ max-width:85%;
+ overflow-wrap:anywhere;
+ box-shadow:0 1px 3px #00000012;
 }
-.message.mine{background:#d9fdd3;color:#17212b;border-radius:14px 14px 4px 14px}
-.message strong{font-size:12px;color:#0866ff}
-.message p{margin:6px 0;font-size:13px;line-height:1.4;white-space:pre-wrap}
+
+.message.mine{
+ background:#d9fdd3;
+ color:#17212b;
+ border-radius:14px 14px 4px 14px;
+}
+
+.message strong{
+ font-size:12px;
+ color:#0866ff;
+}
+
+.message p{
+ margin:6px 0;
+ font-size:13px;
+ line-height:1.4;
+ white-space:pre-wrap;
+}
+
 .message small{
-  display:block;color:#718096;font-size:10px;text-align:right
+ display:block;
+ color:#718096;
+ font-size:10px;
+ text-align:right;
 }
-.readTicks{font-size:13px;font-weight:bold;letter-spacing:-3px;margin-left:5px}
+
+.readTicks{
+ font-size:13px;
+ font-weight:bold;
+ letter-spacing:-3px;
+ margin-left:5px;
+}
+
 .sentTick{color:#b8c7d0}
 .readTick{color:#ff4b5c}
 
-form{display:flex;gap:8px}
+form{
+ display:flex;
+ gap:8px;
+}
+
 input{
-  min-width:0;flex:1;padding:13px;border-radius:22px;
-  border:1px solid #d5dce5;background:white;color:#17212b;
-  font-size:15px;outline:none
+ min-width:0;
+ flex:1;
+ padding:13px;
+ border-radius:22px;
+ border:1px solid #d5dce5;
+ background:white;
+ color:#17212b;
+ font-size:15px;
+ outline:none;
 }
+
 input:focus{border-color:#0866ff}
-#status{color:#d97706;min-height:22px}
 
-#groupPanel{background:#fff;border:1px solid #e1e7ef}
+#status{
+ color:#d97706;
+ min-height:22px;
+}
+
+#groupPanel{
+ background:#fff;
+ border:1px solid #e1e7ef;
+}
+
 #groupPanel h3{color:#0866ff}
-#groupPanel .messages{background:#f0f2f5}
-#groupPanel .message{
-  background:white;border:1px solid #e4e6eb;
-  border-radius:16px 16px 16px 5px
-}
-#groupPanel .message.mine{
-  background:#dbeafe;border-color:#c6dcff;
-  border-radius:16px 16px 5px 16px
-}
-#groupPanel .message strong{color:#0866ff}
-#groupPanel form button{background:#0866ff;border-radius:22px;min-width:65px}
 
-#streamPanel{background:white;border:1px solid #d9e7f1}
-#streamPanel h3{color:#168acd}
-#streamPanel .messages{
-  background-color:#dcecf5;
-  background-image:radial-gradient(#ffffff80 1px,transparent 1px);
-  background-size:22px 22px
+#groupPanel .messages{background:#f0f2f5}
+
+#groupPanel .message{
+ background:white;
+ border:1px solid #e4e6eb;
+ border-radius:16px 16px 16px 5px;
 }
-#streamPanel .message{background:white;border-radius:12px 12px 12px 3px;border:1px solid #e5edf2}
-#streamPanel .message.mine{background:#c9f3d8;border-radius:12px 12px 3px 12px}
+
+#groupPanel .message.mine{
+ background:#dbeafe;
+ border-color:#c6dcff;
+ border-radius:16px 16px 5px 16px;
+}
+
+#groupPanel .message strong{color:#0866ff}
+
+#groupPanel form button{
+ background:#0866ff;
+ border-radius:22px;
+ min-width:65px;
+}
+
+#streamPanel{
+ background:white;
+ border:1px solid #d9e7f1;
+}
+
+#streamPanel h3{color:#168acd}
+
+#streamPanel .messages{
+ background-color:#dcecf5;
+ background-image:radial-gradient(#ffffff80 1px,transparent 1px);
+ background-size:22px 22px;
+}
+
+#streamPanel .message{
+ background:white;
+ border-radius:12px 12px 12px 3px;
+ border:1px solid #e5edf2;
+}
+
+#streamPanel .message.mine{
+ background:#c9f3d8;
+ border-radius:12px 12px 3px 12px;
+}
+
 #streamPanel .message strong{color:#168acd}
-#streamPanel form button{background:#168acd;border-radius:22px}
+
+#streamPanel form button{
+ background:#168acd;
+ border-radius:22px;
+}
 
 .chatChoice{
-  width:100%;display:flex;align-items:center;gap:12px;margin:7px 0;
-  background:white;color:#17212b;text-align:left;border:1px solid #e5eaf0
+ width:100%;
+ display:flex;
+ align-items:center;
+ gap:12px;
+ margin:7px 0;
+ background:white;
+ color:#17212b;
+ text-align:left;
+ border:1px solid #e5eaf0;
 }
+
 .chatChoice:hover{background:#f1f6ff}
+
 .avatar{
-  width:45px;height:45px;border-radius:50%;object-fit:cover;
-  background:#d5e5f8;color:#0866ff;display:flex;
-  align-items:center;justify-content:center;flex-shrink:0
+ width:45px;
+ height:45px;
+ border-radius:50%;
+ object-fit:cover;
+ background:#d5e5f8;
+ color:#0866ff;
+ display:flex;
+ align-items:center;
+ justify-content:center;
+ flex-shrink:0;
 }
-.note{color:#718096;font-size:13px}
+
+.note{
+ color:#718096;
+ font-size:13px;
+}
+
+/* PRIVATE CHAT: NAVIGATION REMAINS VISIBLE */
 
 #privateScreen{
-  display:none;position:fixed;inset:0;z-index:1000;
-  background:#101522;flex-direction:column
+ display:none;
+ position:fixed;
+ inset:112px 0 0;
+ z-index:900;
+ background:#101522;
+ flex-direction:column;
 }
+
 #privateScreen.active{display:flex}
+
 .chatHeader{
-  background:#075e54;color:white;display:flex;align-items:center;
-  gap:12px;padding:12px;min-height:68px
+ background:#075e54;
+ color:white;
+ display:flex;
+ align-items:center;
+ gap:12px;
+ padding:12px;
+ min-height:68px;
 }
-.backButton{background:transparent;color:white;font-size:24px;padding:5px 10px}
-#recipientAvatar{width:42px;height:42px}
-.recipientInfo{flex:1;min-width:0}
-.recipientInfo strong{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+.backButton{
+ background:transparent;
+ color:white;
+ font-size:24px;
+ padding:5px 10px;
+}
+
+#recipientAvatar{
+ width:42px;
+ height:42px;
+}
+
+.recipientInfo{
+ flex:1;
+ min-width:0;
+}
+
+.recipientInfo strong{
+ display:block;
+ overflow:hidden;
+ text-overflow:ellipsis;
+ white-space:nowrap;
+}
+
 .recipientInfo small{color:#d1e8e4}
+
 #privateMessages{
-  flex:1;overflow-y:auto;padding:14px;
-  background:radial-gradient(circle at center,#182337 0%,#101522 75%)
+ flex:1;
+ overflow-y:auto;
+ padding:14px;
+ background:radial-gradient(circle at center,#182337 0%,#101522 75%);
 }
-#privateMessages .message{background:#263249;color:white}
-#privateMessages .message.mine{background:#075e54;color:white}
+
+#privateMessages .message{
+ background:#263249;
+ color:white;
+}
+
+#privateMessages .message.mine{
+ background:#075e54;
+ color:white;
+}
+
 #privateMessages .message strong{color:#b9e7df}
 #privateMessages .message small{color:#c2d0d8}
+
 #privateStatus{
-  padding:4px 12px;color:#ffbd75;font-size:12px;
-  min-height:20px;background:#101522
+ padding:4px 12px;
+ color:#ffbd75;
+ font-size:12px;
+ min-height:20px;
+ background:#101522;
 }
+
 .privateComposer{
-  display:flex;gap:8px;padding:10px;background:#1b2435;
-  padding-bottom:max(10px,env(safe-area-inset-bottom))
+ display:flex;
+ gap:8px;
+ padding:10px;
+ background:#1b2435;
+ padding-bottom:max(10px,env(safe-area-inset-bottom));
 }
+
 .privateComposer input{
-  border-radius:25px;background:#111a2a;color:white;border-color:#39465e
+ border-radius:25px;
+ background:#111a2a;
+ color:white;
+ border-color:#39465e;
 }
+
 .privateComposer button{
-  background:#128c7e;border-radius:50%;width:48px;height:48px;flex-shrink:0
+ background:#128c7e;
+ border-radius:50%;
+ width:48px;
+ height:48px;
+ flex-shrink:0;
 }
 
 @media(max-width:520px){
-  main{padding:8px}
-  #streamPanel,#groupPanel{min-height:calc(100dvh - 155px);padding:10px}
-  #streamPanel .messages,#groupPanel .messages{min-height:400px}
-  .tabs button{font-size:12px;padding:11px 5px}
+ main{padding:8px}
+
+ #streamPanel,#groupPanel{
+  min-height:calc(100dvh - 290px);
+  padding:10px;
+ }
+
+ #streamPanel .messages,
+ #groupPanel .messages{
+  min-height:350px;
+ }
+
+ .tabs button{
+  font-size:12px;
+  padding:11px 5px;
+ }
+
+ .top-brand strong{font-size:14px}
+ .nav-item{font-size:9px}
+ .nav-icon{font-size:21px}
 }
 </style>
 </head>
 
 <body>
 
-<header>
-  <strong>MAGUNGA HIGH</strong>
-  <div><a href="dashboard.html">← Back to Dashboard</a></div>
+<header class="topbar">
+
+ <div class="top-brand">
+  <strong>THE MAGUNGA HIGH</strong>
+  <small>Student Community</small>
+ </div>
+
+ <nav class="navigation">
+
+  <a href="dashboard.html" class="nav-item">
+   <span class="nav-icon">⌂</span>
+   <span>Home</span>
+  </a>
+
+  <a href="community.html" class="nav-item">
+   <span class="nav-icon">♧</span>
+   <span>Friends</span>
+  </a>
+
+  <a href="chat.html" class="nav-item active">
+   <span class="nav-icon">☏</span>
+   <span>Messages</span>
+  </a>
+
+  <a href="notifications.html" class="nav-item">
+   <span class="nav-icon">♧</span>
+   <span>Alerts</span>
+  </a>
+
+  <a href="profile.html" class="nav-item">
+   <span class="nav-icon">●</span>
+   <span>Account</span>
+  </a>
+
+ </nav>
 </header>
 
 <main>
-  <h2>Student Chats</h2>
-  <p id="welcome" class="note">Connecting...</p>
 
-  <div class="tabs">
-    <button class="active" data-tab="streamPanel">Stream Chat</button>
-    <button data-tab="groupPanel">School Group</button>
-    <button data-tab="privatePanel">Private Chat</button>
+ <h2>Student Chats</h2>
+ <p id="welcome" class="note">Connecting...</p>
+
+ <div class="tabs">
+  <button class="active" data-tab="streamPanel">Stream Chat</button>
+  <button data-tab="groupPanel">School Group</button>
+  <button data-tab="privatePanel">Private Chat</button>
+ </div>
+
+ <section id="streamPanel" class="panel">
+  <h3 id="streamTitle">Stream Chat</h3>
+  <div id="streamMessages" class="messages">
+   <p class="note">Loading messages...</p>
   </div>
+  <form id="streamForm">
+   <input id="streamInput" maxlength="2000" placeholder="Message your stream..." autocomplete="off" required>
+   <button type="submit">Send</button>
+  </form>
+ </section>
 
-  <section id="streamPanel" class="panel">
-    <h3 id="streamTitle">Stream Chat</h3>
-    <div id="streamMessages" class="messages">
-      <p class="note">Loading messages...</p>
-    </div>
-    <form id="streamForm">
-      <input id="streamInput" maxlength="2000" placeholder="Message your stream..." autocomplete="off" required>
-      <button type="submit">Send</button>
-    </form>
-  </section>
+ <section id="groupPanel" class="panel hidden">
+  <h3>Magunga High School Group</h3>
+  <p class="note">Chat with approved school members.</p>
+  <div id="groupMessages" class="messages">
+   <p class="note">Loading messages...</p>
+  </div>
+  <form id="groupForm">
+   <input id="groupInput" maxlength="2000" placeholder="Write a message..." autocomplete="off" required>
+   <button type="submit">Send</button>
+  </form>
+ </section>
 
-  <section id="groupPanel" class="panel hidden">
-    <h3>Magunga High School Group</h3>
-    <p class="note">Chat with approved school members.</p>
-    <div id="groupMessages" class="messages">
-      <p class="note">Loading messages...</p>
-    </div>
-    <form id="groupForm">
-      <input id="groupInput" maxlength="2000" placeholder="Write a message..." autocomplete="off" required>
-      <button type="submit">Send</button>
-    </form>
-  </section>
+ <section id="privatePanel" class="panel hidden">
+  <h3>Private Messages</h3>
+  <input id="memberSearch" placeholder="Search students..." autocomplete="off">
+  <div id="chatList"><p class="note">Loading students...</p></div>
+ </section>
 
-  <section id="privatePanel" class="panel hidden">
-    <h3>Private Messages</h3>
-    <input id="memberSearch" placeholder="Search students..." autocomplete="off">
-    <div id="chatList"><p class="note">Loading students...</p></div>
-  </section>
+ <p id="status"></p>
 
-  <p id="status"></p>
 </main>
 
 <div id="privateScreen">
-  <div class="chatHeader">
-    <button id="backButton" class="backButton" type="button">‹</button>
-    <div id="recipientAvatar" class="avatar">?</div>
-    <div class="recipientInfo">
-      <strong id="recipientName">Student</strong>
-      <small id="recipientStream">Private conversation</small>
-    </div>
+
+ <div class="chatHeader">
+  <button id="backButton" class="backButton" type="button">‹</button>
+  <div id="recipientAvatar" class="avatar">?</div>
+  <div class="recipientInfo">
+   <strong id="recipientName">Student</strong>
+   <small id="recipientStream">Private conversation</small>
   </div>
+ </div>
 
-  <div id="privateMessages">
-    <p class="note">Loading conversation...</p>
-  </div>
+ <div id="privateMessages">
+  <p class="note">Loading conversation...</p>
+ </div>
 
-  <div id="privateStatus"></div>
+ <div id="privateStatus"></div>
 
-  <form id="privateForm" class="privateComposer">
-    <input id="privateInput" maxlength="2000" placeholder="Message..." autocomplete="off" required>
-    <button id="privateSend" type="submit">➤</button>
-  </form>
+ <form id="privateForm" class="privateComposer">
+  <input id="privateInput" maxlength="2000" placeholder="Message..." autocomplete="off" required>
+  <button id="privateSend" type="submit">➤</button>
+ </form>
+
 </div>
 
 <script type="module">
 import {auth,db} from "./assets/js/firebase.js";
 
-import {onAuthStateChanged} from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
+import {
+ onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
 
 import {
-  collection,doc,getDoc,getDocs,setDoc,addDoc,
-  query,where,onSnapshot,serverTimestamp
+ collection,doc,getDoc,getDocs,setDoc,addDoc,
+ query,where,onSnapshot,serverTimestamp
 } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
 
 const $ = id => document.getElementById(id);
@@ -256,615 +626,610 @@ let recipientReadAt = 0;
 let activeChatId = null;
 
 function status(message){
-  $("status").textContent = message || "";
+ $("status").textContent = message || "";
 }
 
 function privateStatus(message){
-  $("privateStatus").textContent = message || "";
+ $("privateStatus").textContent = message || "";
 }
 
 function stopPrivate(){
-  if(privateUnsub) privateUnsub();
-  if(readUnsub) readUnsub();
+ if(privateUnsub) privateUnsub();
+ if(readUnsub) readUnsub();
 
-  privateUnsub = null;
-  readUnsub = null;
-  currentPrivateSnapshot = null;
-  recipientReadAt = 0;
-  activeChatId = null;
+ privateUnsub = null;
+ readUnsub = null;
+ currentPrivateSnapshot = null;
+ recipientReadAt = 0;
+ activeChatId = null;
 }
 
 function stopStream(){
-  if(streamUnsub) streamUnsub();
-  streamUnsub = null;
+ if(streamUnsub) streamUnsub();
+ streamUnsub = null;
 }
 
 function stopGroup(){
-  if(groupUnsub) groupUnsub();
-  groupUnsub = null;
+ if(groupUnsub) groupUnsub();
+ groupUnsub = null;
 }
 
 /* AVATARS */
 
 function makeAvatar(name,photoURL=""){
-  const avatar = document.createElement("div");
-  avatar.className = "messageAvatar";
+ const avatar = document.createElement("div");
+ avatar.className = "messageAvatar";
 
-  const initial = (name || "S").trim().charAt(0).toUpperCase();
+ const initial = (name || "S").trim().charAt(0).toUpperCase();
 
-  if(photoURL){
-    const image = document.createElement("img");
-    image.className = "messageAvatarImage";
-    image.src = photoURL;
-    image.alt = "";
+ if(photoURL){
+  const image = document.createElement("img");
+  image.className = "messageAvatarImage";
+  image.src = photoURL;
+  image.alt = "";
 
-    image.onerror = ()=>{
-      avatar.replaceChildren();
-      avatar.textContent = initial;
-    };
+  image.onerror = ()=>{
+   avatar.replaceChildren();
+   avatar.textContent = initial;
+  };
 
-    avatar.appendChild(image);
-  }else{
-    avatar.textContent = initial;
-  }
+  avatar.appendChild(image);
+ }else{
+  avatar.textContent = initial;
+ }
 
-  return avatar;
+ return avatar;
 }
 
 /* LOAD APPROVED PROFILE PHOTOS */
 
 async function loadPublicProfiles(){
-  try{
-    const q = query(
-      collection(db,"publicProfiles"),
-      where("status","==","approved")
-    );
+ try{
+  const q = query(
+   collection(db,"publicProfiles"),
+   where("status","==","approved")
+  );
 
-    const snapshot = await getDocs(q);
+  const snapshot = await getDocs(q);
 
-    snapshot.docs.forEach(item=>{
-      const data = item.data();
+  snapshot.docs.forEach(item=>{
+   const data = item.data();
 
-      const photo =
-        data.photoURL ||
-        data.photoUrl ||
-        data.profilePic ||
-        "";
+   const photo =
+    data.photoURL ||
+    data.photoUrl ||
+    data.profilePic ||
+    "";
 
-      if(photo) profilePhotos.set(item.id,photo);
-    });
-  }catch(error){
-    console.warn("Profile photos could not be loaded:",error);
-  }
+   if(photo) profilePhotos.set(item.id,photo);
+  });
+ }catch(error){
+  console.warn("Profile photos could not be loaded:",error);
+ }
 }
 
 /* RENDER MESSAGES */
 
 function renderMessages(container,snapshot,options={}){
-  const {showReceipts=false,readAt=0} = options;
+ const {showReceipts=false,readAt=0} = options;
 
-  container.replaceChildren();
+ container.replaceChildren();
 
-  if(snapshot.empty){
-    const empty = document.createElement("p");
-    empty.className = "note";
-    empty.textContent = "No messages yet. Send the first message!";
-    container.appendChild(empty);
-    return;
+ if(snapshot.empty){
+  const empty = document.createElement("p");
+  empty.className = "note";
+  empty.textContent = "No messages yet. Send the first message!";
+  container.appendChild(empty);
+  return;
+ }
+
+ const docs = [...snapshot.docs].sort((a,b)=>{
+  const first = a.data().createdAt?.toMillis?.() || 0;
+  const second = b.data().createdAt?.toMillis?.() || 0;
+  return first-second;
+ });
+
+ let previousDate = "";
+
+ docs.forEach(item=>{
+  const data = item.data();
+  const mine = data.senderId === user.uid;
+
+  const date = data.createdAt?.toDate
+   ? data.createdAt.toDate()
+   : new Date();
+
+  const dateLabel = date.toLocaleDateString();
+
+  if(dateLabel !== previousDate){
+   const separator = document.createElement("div");
+   separator.className = "note";
+   separator.style.textAlign = "center";
+   separator.style.margin = "14px 0";
+   separator.textContent = dateLabel;
+   container.appendChild(separator);
+   previousDate = dateLabel;
   }
 
-  const docs = [...snapshot.docs].sort((a,b)=>{
-    const first = a.data().createdAt?.toMillis?.() || 0;
-    const second = b.data().createdAt?.toMillis?.() || 0;
-    return first-second;
+  const row = document.createElement("div");
+  row.className = "messageRow";
+  if(mine) row.classList.add("mine");
+
+  const name = data.senderName || "Student";
+  const photoURL = profilePhotos.get(data.senderId) || "";
+  const avatar = makeAvatar(name,photoURL);
+
+  const bubble = document.createElement("div");
+  bubble.className = "message";
+  if(mine) bubble.classList.add("mine");
+
+  const sender = document.createElement("strong");
+  sender.textContent = mine ? "You" : name;
+
+  const messageText = document.createElement("p");
+  messageText.textContent = data.text || "";
+
+  const time = document.createElement("small");
+  time.textContent = date.toLocaleTimeString([],{
+   hour:"2-digit",
+   minute:"2-digit"
   });
 
-  let previousDate = "";
+  if(showReceipts && mine){
+   const tick = document.createElement("span");
+   tick.className = "readTicks";
 
-  docs.forEach(item=>{
-    const data = item.data();
-    const mine = data.senderId === user.uid;
+   const messageTime = data.createdAt?.toMillis?.() || 0;
+   const hasBeenRead = messageTime > 0 && readAt >= messageTime;
 
-    const date = data.createdAt?.toDate
-      ? data.createdAt.toDate()
-      : new Date();
+   tick.classList.add(hasBeenRead ? "readTick" : "sentTick");
+   tick.textContent = "✓✓";
+   tick.title = hasBeenRead ? "Read" : "Sent";
 
-    const dateLabel = date.toLocaleDateString();
+   time.appendChild(tick);
+  }
 
-    if(dateLabel !== previousDate){
-      const separator = document.createElement("div");
-      separator.className = "note";
-      separator.style.textAlign = "center";
-      separator.style.margin = "14px 0";
-      separator.textContent = dateLabel;
-      container.appendChild(separator);
-      previousDate = dateLabel;
-    }
+  bubble.append(sender,messageText,time);
 
-    const row = document.createElement("div");
-    row.className = "messageRow";
-    if(mine) row.classList.add("mine");
+  if(mine){
+   row.append(bubble,avatar);
+  }else{
+   row.append(avatar,bubble);
+  }
 
-    const name = data.senderName || "Student";
-    const photoURL = profilePhotos.get(data.senderId) || "";
-    const avatar = makeAvatar(name,photoURL);
+  container.appendChild(row);
+ });
 
-    const bubble = document.createElement("div");
-    bubble.className = "message";
-    if(mine) bubble.classList.add("mine");
-
-    const sender = document.createElement("strong");
-    sender.textContent = mine ? "You" : name;
-
-    const messageText = document.createElement("p");
-    messageText.textContent = data.text || "";
-
-    const time = document.createElement("small");
-    time.textContent = date.toLocaleTimeString([],{
-      hour:"2-digit",
-      minute:"2-digit"
-    });
-
-    /* PRIVATE CHAT READ RECEIPTS */
-    if(showReceipts && mine){
-      const tick = document.createElement("span");
-      tick.className = "readTicks";
-
-      const messageTime = data.createdAt?.toMillis?.() || 0;
-      const hasBeenRead = messageTime > 0 && readAt >= messageTime;
-
-      tick.classList.add(hasBeenRead ? "readTick" : "sentTick");
-      tick.textContent = "✓✓";
-      tick.title = hasBeenRead ? "Read" : "Sent";
-
-      time.appendChild(tick);
-    }
-
-    bubble.append(sender,messageText,time);
-
-    if(mine){
-      row.append(bubble,avatar);
-    }else{
-      row.append(avatar,bubble);
-    }
-
-    container.appendChild(row);
-  });
-
-  container.scrollTop = container.scrollHeight;
+ container.scrollTop = container.scrollHeight;
 }
 
 /* STREAM CHAT */
 
 function loadStream(){
-  stopStream();
+ stopStream();
 
-  if(!profile?.stream) return;
+ if(!profile?.stream) return;
 
-  $("streamTitle").textContent = profile.stream + " Stream Chat";
+ $("streamTitle").textContent = profile.stream + " Stream Chat";
 
-  const q = query(
-    collection(db,"messages"),
-    where("stream","==",profile.stream)
-  );
+ const q = query(
+  collection(db,"messages"),
+  where("stream","==",profile.stream)
+ );
 
-  streamUnsub = onSnapshot(q,snapshot=>{
-    renderMessages($("streamMessages"),snapshot);
-  },error=>{
-    $("streamMessages").textContent = "Unable to load stream messages.";
-    status(error.message);
-  });
+ streamUnsub = onSnapshot(q,snapshot=>{
+  renderMessages($("streamMessages"),snapshot);
+ },error=>{
+  $("streamMessages").textContent = "Unable to load stream messages.";
+  status(error.message);
+ });
 }
 
 /* SCHOOL GROUP CHAT */
 
 function loadGroup(){
-  stopGroup();
+ stopGroup();
 
-  groupUnsub = onSnapshot(
-    collection(db,"groupMessages"),
-    snapshot=>{
-      renderMessages($("groupMessages"),snapshot);
-    },
-    error=>{
-      $("groupMessages").textContent = "Unable to load group messages.";
-      status(error.message);
-    }
-  );
+ groupUnsub = onSnapshot(
+  collection(db,"groupMessages"),
+  snapshot=>{
+   renderMessages($("groupMessages"),snapshot);
+  },
+  error=>{
+   $("groupMessages").textContent = "Unable to load group messages.";
+   status(error.message);
+  }
+ );
 }
 
 /* LOAD PRIVATE CHAT MEMBERS */
 
 async function loadMembers(){
-  if(membersLoaded){
-    displayMembers();
-    return;
-  }
+ if(membersLoaded){
+  displayMembers();
+  return;
+ }
 
-  $("chatList").textContent = "Loading students...";
+ $("chatList").textContent = "Loading students...";
 
-  try{
-    const q = query(
-      collection(db,"publicProfiles"),
-      where("status","==","approved")
-    );
+ try{
+  const q = query(
+   collection(db,"publicProfiles"),
+   where("status","==","approved")
+  );
 
-    const snapshot = await getDocs(q);
+  const snapshot = await getDocs(q);
 
-    approvedMembers = snapshot.docs.map(item=>{
-      const data = item.data();
+  approvedMembers = snapshot.docs.map(item=>{
+   const data = item.data();
 
-      const photo =
-        data.photoURL ||
-        data.photoUrl ||
-        data.profilePic ||
-        "";
+   const photo =
+    data.photoURL ||
+    data.photoUrl ||
+    data.profilePic ||
+    "";
 
-      if(photo) profilePhotos.set(item.id,photo);
+   if(photo) profilePhotos.set(item.id,photo);
 
-      return {id:item.id,...data};
-    }).filter(member=>member.id !== user.uid);
+   return {id:item.id,...data};
+  }).filter(member=>member.id !== user.uid);
 
-    membersLoaded = true;
-    displayMembers();
+  membersLoaded = true;
+  displayMembers();
 
-  }catch(error){
-    $("chatList").textContent =
-      "Could not load students. Check publicProfiles permissions.";
-    status(error.message);
-  }
+ }catch(error){
+  $("chatList").textContent =
+   "Could not load students. Check publicProfiles permissions.";
+  status(error.message);
+ }
 }
 
 /* DISPLAY MEMBERS */
 
 function displayMembers(search=""){
-  const list = $("chatList");
-  list.replaceChildren();
+ const list = $("chatList");
+ list.replaceChildren();
 
-  const filtered = approvedMembers.filter(member=>{
-    const name = member.name || member.fullName || "Student";
-    return name.toLowerCase().includes(search.toLowerCase());
-  });
+ const filtered = approvedMembers.filter(member=>{
+  const name = member.name || member.fullName || "Student";
+  return name.toLowerCase().includes(search.toLowerCase());
+ });
 
-  if(!filtered.length){
-    list.textContent = "No students found.";
-    return;
+ if(!filtered.length){
+  list.textContent = "No students found.";
+  return;
+ }
+
+ filtered.forEach(member=>{
+  const button = document.createElement("button");
+  button.type = "button";
+  button.className = "chatChoice";
+
+  const photo =
+   member.photoURL ||
+   member.photoUrl ||
+   member.profilePic ||
+   "";
+
+  let avatar;
+
+  if(photo){
+   avatar = document.createElement("img");
+   avatar.src = photo;
+   avatar.alt = "";
+   avatar.className = "avatar";
+
+   avatar.onerror = ()=>{
+    const fallback = document.createElement("div");
+    fallback.className = "avatar";
+    fallback.textContent =
+     (member.name || "S").trim().charAt(0).toUpperCase();
+    avatar.replaceWith(fallback);
+   };
+  }else{
+   avatar = document.createElement("div");
+   avatar.className = "avatar";
+   avatar.textContent =
+    (member.name || "S").trim().charAt(0).toUpperCase();
   }
 
-  filtered.forEach(member=>{
-    const button = document.createElement("button");
-    button.type = "button";
-    button.className = "chatChoice";
+  const details = document.createElement("div");
+  const name = document.createElement("strong");
+  name.textContent = member.name || member.fullName || "Student";
 
-    const photo =
-      member.photoURL ||
-      member.photoUrl ||
-      member.profilePic ||
-      "";
+  const stream = document.createElement("div");
+  stream.className = "note";
+  stream.textContent = member.stream || "Magunga High";
 
-    let avatar;
+  details.append(name,stream);
+  button.append(avatar,details);
 
-    if(photo){
-      avatar = document.createElement("img");
-      avatar.src = photo;
-      avatar.alt = "";
-      avatar.className = "avatar";
+  button.addEventListener("click",()=>openPrivateChat(member));
 
-      avatar.onerror = ()=>{
-        const fallback = document.createElement("div");
-        fallback.className = "avatar";
-        fallback.textContent =
-          (member.name || "S").trim().charAt(0).toUpperCase();
-        avatar.replaceWith(fallback);
-      };
-    }else{
-      avatar = document.createElement("div");
-      avatar.className = "avatar";
-      avatar.textContent =
-        (member.name || "S").trim().charAt(0).toUpperCase();
-    }
-
-    const details = document.createElement("div");
-    const name = document.createElement("strong");
-    name.textContent = member.name || member.fullName || "Student";
-
-    const stream = document.createElement("div");
-    stream.className = "note";
-    stream.textContent = member.stream || "Magunga High";
-
-    details.append(name,stream);
-    button.append(avatar,details);
-
-    button.addEventListener("click",()=>openPrivateChat(member));
-
-    list.appendChild(button);
-  });
+  list.appendChild(button);
+ });
 }
 
 /* MARK CONVERSATION AS READ */
 
 async function markPrivateChatRead(chatId){
-  if(!user || !chatId || !$("privateScreen").classList.contains("active")) return;
+ if(!user || !chatId || !$("privateScreen").classList.contains("active")) return;
 
-  try{
-    await setDoc(
-      doc(db,"privateChats",chatId,"readReceipts",user.uid),
-      {
-        readerId:user.uid,
-        lastReadAt:serverTimestamp()
-      },
-      {merge:true}
-    );
-  }catch(error){
-    console.warn("Read receipt could not be saved:",error);
-  }
+ try{
+  await setDoc(
+   doc(db,"privateChats",chatId,"readReceipts",user.uid),
+   {
+    readerId:user.uid,
+    lastReadAt:serverTimestamp()
+   },
+   {merge:true}
+  );
+ }catch(error){
+  console.warn("Read receipt could not be saved:",error);
+ }
 }
 
 /* OPEN PRIVATE CHAT */
 
 async function openPrivateChat(member){
-  stopPrivate();
+ stopPrivate();
 
-  activeRecipient = member;
-  $("privateScreen").classList.add("active");
+ activeRecipient = member;
+ $("privateScreen").classList.add("active");
 
-  $("recipientName").textContent =
-    member.name || member.fullName || "Student";
+ $("recipientName").textContent =
+  member.name || member.fullName || "Student";
 
-  $("recipientStream").textContent =
-    member.stream || "Magunga High";
+ $("recipientStream").textContent =
+  member.stream || "Magunga High";
 
-  const avatar = $("recipientAvatar");
-  avatar.replaceChildren();
+ const avatar = $("recipientAvatar");
+ avatar.replaceChildren();
 
-  const photo =
-    member.photoURL ||
-    member.photoUrl ||
-    member.profilePic ||
-    "";
+ const photo =
+  member.photoURL ||
+  member.photoUrl ||
+  member.profilePic ||
+  "";
 
-  if(photo){
-    const image = document.createElement("img");
-    image.src = photo;
-    image.className = "avatar";
-    image.alt = "";
+ if(photo){
+  const image = document.createElement("img");
+  image.src = photo;
+  image.className = "avatar";
+  image.alt = "";
 
-    image.onerror = ()=>{
-      avatar.textContent =
-        (member.name || "S").trim().charAt(0).toUpperCase();
-    };
+  image.onerror = ()=>{
+   avatar.textContent =
+    (member.name || "S").trim().charAt(0).toUpperCase();
+  };
 
-    avatar.appendChild(image);
-  }else{
-    avatar.textContent =
-      (member.name || "S").trim().charAt(0).toUpperCase();
+  avatar.appendChild(image);
+ }else{
+  avatar.textContent =
+   (member.name || "S").trim().charAt(0).toUpperCase();
+ }
+
+ privateStatus("Opening conversation...");
+ $("privateMessages").innerHTML =
+  '<p class="note">Loading conversation...</p>';
+
+ try{
+  const participants = [user.uid,member.id].sort();
+  const chatId = participants.join("_");
+  activeChatId = chatId;
+
+  const chatRef = doc(db,"privateChats",chatId);
+  const chatSnap = await getDoc(chatRef);
+
+  if(!chatSnap.exists()){
+   await setDoc(chatRef,{
+    participants,
+    createdAt:serverTimestamp()
+   });
   }
 
-  privateStatus("Opening conversation...");
-  $("privateMessages").innerHTML =
-    '<p class="note">Loading conversation...</p>';
+  readUnsub = onSnapshot(
+   doc(db,"privateChats",chatId,"readReceipts",member.id),
+   receiptSnap=>{
+    recipientReadAt =
+     receiptSnap.data()?.lastReadAt?.toMillis?.() || 0;
 
-  try{
-    const participants = [user.uid,member.id].sort();
-    const chatId = participants.join("_");
-    activeChatId = chatId;
-
-    const chatRef = doc(db,"privateChats",chatId);
-    const chatSnap = await getDoc(chatRef);
-
-    if(!chatSnap.exists()){
-      await setDoc(chatRef,{
-        participants,
-        createdAt:serverTimestamp()
-      });
+    if(currentPrivateSnapshot){
+     renderMessages(
+      $("privateMessages"),
+      currentPrivateSnapshot,
+      {showReceipts:true,readAt:recipientReadAt}
+     );
     }
+   },
+   error=>{
+    console.warn("Read receipt listener:",error);
+   }
+  );
 
-    /* LISTEN FOR THE OTHER PERSON'S READ RECEIPT */
-    readUnsub = onSnapshot(
-      doc(db,"privateChats",chatId,"readReceipts",member.id),
-      receiptSnap=>{
-        recipientReadAt =
-          receiptSnap.data()?.lastReadAt?.toMillis?.() || 0;
+  const messagesRef = collection(
+   db,"privateChats",chatId,"messages"
+  );
 
-        if(currentPrivateSnapshot){
-          renderMessages(
-            $("privateMessages"),
-            currentPrivateSnapshot,
-            {showReceipts:true,readAt:recipientReadAt}
-          );
-        }
-      },
-      error=>{
-        console.warn("Read receipt listener:",error);
-      }
+  privateUnsub = onSnapshot(
+   messagesRef,
+   snapshot=>{
+    if(activeChatId !== chatId) return;
+
+    currentPrivateSnapshot = snapshot;
+
+    renderMessages(
+     $("privateMessages"),
+     snapshot,
+     {showReceipts:true,readAt:recipientReadAt}
     );
 
-    /* LISTEN FOR PRIVATE MESSAGES */
-    const messagesRef = collection(
-      db,"privateChats",chatId,"messages"
-    );
+    privateStatus("");
+    markPrivateChatRead(chatId);
+   },
+   error=>{
+    privateStatus("Unable to load messages: " + error.message);
+   }
+  );
 
-    privateUnsub = onSnapshot(
-      messagesRef,
-      snapshot=>{
-        if(activeChatId !== chatId) return;
-
-        currentPrivateSnapshot = snapshot;
-
-        renderMessages(
-          $("privateMessages"),
-          snapshot,
-          {showReceipts:true,readAt:recipientReadAt}
-        );
-
-        privateStatus("");
-
-        /* Update this user's read receipt */
-        markPrivateChatRead(chatId);
-      },
-      error=>{
-        privateStatus("Unable to load messages: " + error.message);
-      }
-    );
-
-  }catch(error){
-    privateStatus("Could not open chat: " + error.message);
-  }
+ }catch(error){
+  privateStatus("Could not open chat: " + error.message);
+ }
 }
 
 /* CLOSE PRIVATE CHAT */
 
 $("backButton").addEventListener("click",()=>{
-  stopPrivate();
-  $("privateScreen").classList.remove("active");
-  activeRecipient = null;
+ stopPrivate();
+ $("privateScreen").classList.remove("active");
+ activeRecipient = null;
 });
 
 /* SEND STREAM AND GROUP MESSAGES */
 
 async function sendMessage(collectionName,inputId,extra={}){
-  const input = $(inputId);
-  const text = input.value.trim();
+ const input = $(inputId);
+ const text = input.value.trim();
 
-  if(!text || !user || !profile) return;
+ if(!text || !user || !profile) return;
 
-  try{
-    await addDoc(collection(db,collectionName),{
-      senderId:user.uid,
-      senderName:profile.name || user.displayName || "Student",
-      text,
-      createdAt:serverTimestamp(),
-      ...extra
-    });
+ try{
+  await addDoc(collection(db,collectionName),{
+   senderId:user.uid,
+   senderName:profile.name || user.displayName || "Student",
+   text,
+   createdAt:serverTimestamp(),
+   ...extra
+  });
 
-    input.value = "";
-    status("");
+  input.value = "";
+  status("");
 
-  }catch(error){
-    status("Message failed: " + error.message);
-  }
+ }catch(error){
+  status("Message failed: " + error.message);
+ }
 }
 
 /* STREAM FORM */
 
 $("streamForm").addEventListener("submit",event=>{
-  event.preventDefault();
+ event.preventDefault();
 
-  sendMessage("messages","streamInput",{
-    stream:profile.stream
-  });
+ sendMessage("messages","streamInput",{
+  stream:profile.stream
+ });
 });
 
 /* GROUP FORM */
 
 $("groupForm").addEventListener("submit",event=>{
-  event.preventDefault();
-  sendMessage("groupMessages","groupInput");
+ event.preventDefault();
+ sendMessage("groupMessages","groupInput");
 });
 
 /* PRIVATE MESSAGE FORM */
 
 $("privateForm").addEventListener("submit",async event=>{
-  event.preventDefault();
+ event.preventDefault();
 
-  if(!activeRecipient || !activeChatId) return;
+ if(!activeRecipient || !activeChatId) return;
 
-  const input = $("privateInput");
-  const text = input.value.trim();
+ const input = $("privateInput");
+ const text = input.value.trim();
 
-  if(!text) return;
+ if(!text) return;
 
-  try{
-    await addDoc(
-      collection(db,"privateChats",activeChatId,"messages"),
-      {
-        senderId:user.uid,
-        senderName:profile.name || user.displayName || "Student",
-        text,
-        createdAt:serverTimestamp()
-      }
-    );
+ try{
+  await addDoc(
+   collection(db,"privateChats",activeChatId,"messages"),
+   {
+    senderId:user.uid,
+    senderName:profile.name || user.displayName || "Student",
+    text,
+    createdAt:serverTimestamp()
+   }
+  );
 
-    input.value = "";
-    privateStatus("");
+  input.value = "";
+  privateStatus("");
 
-  }catch(error){
-    privateStatus("Message failed: " + error.message);
-  }
+ }catch(error){
+  privateStatus("Message failed: " + error.message);
+ }
 });
 
 /* CHAT TABS */
 
 document.querySelectorAll("[data-tab]").forEach(button=>{
-  button.addEventListener("click",()=>{
-    const target = button.dataset.tab;
+ button.addEventListener("click",()=>{
+  const target = button.dataset.tab;
 
-    document.querySelectorAll("[data-tab]").forEach(tab=>{
-      tab.classList.toggle("active",tab===button);
-    });
-
-    ["streamPanel","groupPanel","privatePanel"].forEach(id=>{
-      $(id).classList.toggle("hidden",id!==target);
-    });
-
-    if(target==="streamPanel") loadStream();
-    if(target==="groupPanel") loadGroup();
-    if(target==="privatePanel") loadMembers();
+  document.querySelectorAll("[data-tab]").forEach(tab=>{
+   tab.classList.toggle("active",tab===button);
   });
+
+  ["streamPanel","groupPanel","privatePanel"].forEach(id=>{
+   $(id).classList.toggle("hidden",id!==target);
+  });
+
+  if(target==="streamPanel") loadStream();
+  if(target==="groupPanel") loadGroup();
+  if(target==="privatePanel") loadMembers();
+ });
 });
 
 /* SEARCH MEMBERS */
 
 $("memberSearch").addEventListener("input",event=>{
-  displayMembers(event.target.value);
+ displayMembers(event.target.value);
 });
 
 /* AUTHENTICATION */
 
 onAuthStateChanged(auth,async currentUser=>{
-  stopStream();
-  stopGroup();
-  stopPrivate();
+ stopStream();
+ stopGroup();
+ stopPrivate();
 
-  if(!currentUser){
-    location.href = "index.html";
-    return;
+ if(!currentUser){
+  location.href = "index.html";
+  return;
+ }
+
+ user = currentUser;
+
+ try{
+  const profileSnap = await getDoc(doc(db,"users",user.uid));
+
+  if(!profileSnap.exists()){
+   status("Your account profile was not found.");
+   return;
   }
 
-  user = currentUser;
+  profile = profileSnap.data();
 
-  try{
-    const profileSnap = await getDoc(doc(db,"users",user.uid));
-
-    if(!profileSnap.exists()){
-      status("Your account profile was not found.");
-      return;
-    }
-
-    profile = profileSnap.data();
-
-    if(profile.status !== "approved"){
-      status("Your account is awaiting approval.");
-      return;
-    }
-
-    $("welcome").textContent =
-      "Welcome, " + (profile.name || "Student");
-
-    await loadPublicProfiles();
-    loadStream();
-
-  }catch(error){
-    status("Could not load your account: " + error.message);
+  if(profile.status !== "approved"){
+   status("Your account is awaiting approval.");
+   return;
   }
+
+  $("welcome").textContent =
+   "Welcome, " + (profile.name || "Student");
+
+  await loadPublicProfiles();
+  loadStream();
+
+ }catch(error){
+  status("Could not load your account: " + error.message);
+ }
 });
 
 /* CLEAN UP */
 
 window.addEventListener("beforeunload",()=>{
-  stopStream();
-  stopGroup();
-  stopPrivate();
+ stopStream();
+ stopGroup();
+ stopPrivate();
 });
 </script>
 
