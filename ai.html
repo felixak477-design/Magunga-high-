@@ -4,262 +4,308 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#101827">
 <title>Magunga AI | The Magunga High</title>
 
 <style>
-* {
-  box-sizing: border-box;
-  font-family: Arial, sans-serif;
+*{box-sizing:border-box;font-family:Arial,sans-serif}
+
+body{
+  margin:0;
+  background:#090d16;
+  color:white;
+  min-height:100vh;
+  padding-top:112px;
 }
 
-body {
-  margin: 0;
-  background: #090d16;
-  color: white;
-  min-height: 100vh;
+/* TOP NAVIGATION */
+.topbar{
+  position:fixed;
+  top:0;
+  left:0;
+  right:0;
+  z-index:1000;
+  background:#111827;
+  border-bottom:1px solid #293951;
+  box-shadow:0 3px 15px rgba(0,0,0,.3);
 }
 
-header {
-  padding: 13px 15px;
-  background: #111827;
-  border-bottom: 1px solid rgba(255,204,92,.4);
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  box-shadow: 0 2px 15px rgba(255,190,60,.08);
+.brand{
+  padding:11px 16px 7px;
+  color:#ffd36a;
+  font-size:15px;
+  font-weight:bold;
+  letter-spacing:1px;
 }
 
-.back {
-  background: #25202a;
-  color: #ffd36a;
-  border: 1px solid #a87920;
-  padding: 8px 12px;
-  border-radius: 6px;
-  cursor: pointer;
+.nav{
+  display:flex;
+  align-items:center;
+  gap:0;
+  overflow-x:auto;
+  scrollbar-width:none;
+  padding:0 8px;
 }
 
-header h2 {
-  margin: 0;
-  color: #ffd36a;
-  font-size: 18px;
-  text-shadow: 0 0 9px rgba(255,190,60,.4);
+.nav::-webkit-scrollbar{display:none}
+
+.nav a{
+  flex:0 0 auto;
+  color:#b8c5d9;
+  text-decoration:none;
+  padding:12px 13px;
+  font-size:12px;
+  white-space:nowrap;
+  border-bottom:3px solid transparent;
 }
 
-header small {
-  display: block;
-  color: #aeb9ca;
-  font-size: 10px;
-  margin-top: 4px;
+.nav a.active{
+  color:#ffd36a;
+  border-bottom-color:#ffd36a;
+  font-weight:bold;
 }
 
-main {
-  max-width: 850px;
-  margin: auto;
-  padding: 14px;
+.page-heading{
+  padding:13px 15px;
+  background:#111827;
+  border-bottom:1px solid rgba(255,204,92,.3);
+  display:flex;
+  align-items:center;
+  gap:12px;
 }
 
-.intro {
-  text-align: center;
-  padding: 18px 10px;
+.back{
+  background:#25202a;
+  color:#ffd36a;
+  border:1px solid #a87920;
+  padding:8px 12px;
+  border-radius:6px;
+  cursor:pointer;
 }
 
-.intro h1 {
-  color: #ffda80;
-  font-size: 25px;
-  margin: 0 0 8px;
-  text-shadow: 0 0 12px rgba(255,190,60,.3);
+.page-heading h2{
+  margin:0;
+  color:#ffd36a;
+  font-size:18px;
 }
 
-.intro p {
-  color: #aeb9ca;
-  font-size: 12px;
-  line-height: 1.5;
+.page-heading small{
+  display:block;
+  color:#aeb9ca;
+  font-size:10px;
+  margin-top:4px;
 }
 
-.suggestions {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 7px;
-  margin: 15px 0 20px;
+main{
+  max-width:850px;
+  margin:auto;
+  padding:14px;
 }
 
-.suggestions button {
-  background: #151b27;
-  color: #f4d58c;
-  border: 1px solid rgba(255,204,92,.4);
-  border-radius: 20px;
-  padding: 8px 11px;
-  font-size: 11px;
-  cursor: pointer;
+.intro{
+  text-align:center;
+  padding:18px 10px;
 }
 
-#chatBox {
-  min-height: 300px;
-  max-height: 58vh;
-  overflow-y: auto;
-  padding: 12px;
-  background: #101622;
-  border: 1px solid rgba(255,204,92,.25);
-  border-radius: 10px;
+.intro h1{
+  color:#ffda80;
+  font-size:25px;
+  margin:0 0 8px;
+  text-shadow:0 0 12px rgba(255,190,60,.3);
 }
 
-.message {
-  display: flex;
-  margin: 10px 0;
+.intro p{
+  color:#aeb9ca;
+  font-size:12px;
+  line-height:1.5;
 }
 
-.message.user {
-  justify-content: flex-end;
+.suggestions{
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:center;
+  gap:7px;
+  margin:15px 0 20px;
 }
 
-.bubble {
-  max-width: 88%;
-  padding: 11px 13px;
-  border-radius: 10px;
-  font-size: 13px;
-  line-height: 1.6;
-  white-space: pre-wrap;
-  overflow-wrap: anywhere;
+.suggestions button{
+  background:#151b27;
+  color:#f4d58c;
+  border:1px solid rgba(255,204,92,.4);
+  border-radius:20px;
+  padding:8px 11px;
+  font-size:11px;
+  cursor:pointer;
 }
 
-.user .bubble {
-  background: #3b2d13;
-  border: 1px solid #b98b32;
-  color: #fff0c8;
-  border-bottom-right-radius: 3px;
+#chatBox{
+  min-height:300px;
+  max-height:58vh;
+  overflow-y:auto;
+  padding:12px;
+  background:#101622;
+  border:1px solid rgba(255,204,92,.25);
+  border-radius:10px;
 }
 
-.ai .bubble {
-  background: #1b2635;
-  border: 1px solid #35445a;
-  color: #e2e8f0;
-  border-bottom-left-radius: 3px;
+.message{
+  display:flex;
+  margin:10px 0;
 }
 
-.sender {
-  display: block;
-  font-size: 10px;
-  color: #ffd36a;
-  margin-bottom: 5px;
-  font-weight: bold;
+.message.user{justify-content:flex-end}
+
+.bubble{
+  max-width:88%;
+  padding:11px 13px;
+  border-radius:10px;
+  font-size:13px;
+  line-height:1.6;
+  white-space:pre-wrap;
+  overflow-wrap:anywhere;
 }
 
-.composer {
-  margin-top: 12px;
-  display: flex;
-  gap: 8px;
-  align-items: flex-end;
+.user .bubble{
+  background:#3b2d13;
+  border:1px solid #b98b32;
+  color:#fff0c8;
+  border-bottom-right-radius:3px;
 }
 
-textarea {
-  flex: 1;
-  resize: vertical;
-  min-height: 46px;
-  max-height: 130px;
-  padding: 12px;
-  border-radius: 8px;
-  border: 1px solid #65502b;
-  background: #151b27;
-  color: white;
-  outline: none;
-  font-size: 13px;
+.ai .bubble{
+  background:#1b2635;
+  border:1px solid #35445a;
+  color:#e2e8f0;
+  border-bottom-left-radius:3px;
 }
 
-textarea:focus {
-  border-color: #ffd36a;
-  box-shadow: 0 0 8px rgba(255,190,60,.15);
+.sender{
+  display:block;
+  font-size:10px;
+  color:#ffd36a;
+  margin-bottom:5px;
+  font-weight:bold;
 }
 
-#sendButton {
-  background: linear-gradient(135deg,#d6a83e,#a87920);
-  color: #17120a;
-  border: 0;
-  padding: 13px 17px;
-  border-radius: 8px;
-  font-weight: bold;
-  cursor: pointer;
+.composer{
+  margin-top:12px;
+  display:flex;
+  gap:8px;
+  align-items:flex-end;
 }
 
-button:disabled {
-  opacity: .5;
-  cursor: not-allowed;
+textarea{
+  flex:1;
+  resize:vertical;
+  min-height:46px;
+  max-height:130px;
+  padding:12px;
+  border-radius:8px;
+  border:1px solid #65502b;
+  background:#151b27;
+  color:white;
+  outline:none;
+  font-size:13px;
 }
 
-#status {
-  min-height: 18px;
-  color: #ffbd75;
-  font-size: 11px;
-  margin: 8px 3px;
+textarea:focus{
+  border-color:#ffd36a;
+  box-shadow:0 0 8px rgba(255,190,60,.15);
 }
 
-.chatgpt-fallback {
-  display: none;
-  margin: 10px 3px;
-  padding: 13px;
-  border: 1px solid #10a37f;
-  border-radius: 8px;
-  background: rgba(16,163,127,.10);
-  color: #8ee8ce;
-  text-decoration: none;
-  font-size: 13px;
-  font-weight: bold;
-  text-align: center;
+#sendButton{
+  background:linear-gradient(135deg,#d6a83e,#a87920);
+  color:#17120a;
+  border:0;
+  padding:13px 17px;
+  border-radius:8px;
+  font-weight:bold;
+  cursor:pointer;
 }
 
-.chatgpt-fallback:hover {
-  background: rgba(16,163,127,.2);
+button:disabled{
+  opacity:.5;
+  cursor:not-allowed;
 }
 
-.tools {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-top: 10px;
-  gap: 10px;
+#status{
+  min-height:18px;
+  color:#ffbd75;
+  font-size:11px;
+  margin:8px 3px;
 }
 
-.tools button {
-  background: transparent;
-  border: 1px solid #465064;
-  color: #aeb9ca;
-  padding: 7px 10px;
-  border-radius: 6px;
-  font-size: 10px;
-  cursor: pointer;
+.chatgpt-fallback{
+  display:none;
+  margin:10px 3px;
+  padding:13px;
+  border:1px solid #10a37f;
+  border-radius:8px;
+  background:rgba(16,163,127,.10);
+  color:#8ee8ce;
+  text-decoration:none;
+  font-size:13px;
+  font-weight:bold;
+  text-align:center;
 }
 
-.notice {
-  text-align: center;
-  color: #78869a;
-  font-size: 10px;
-  line-height: 1.5;
-  margin: 15px 5px;
+.chatgpt-fallback:hover{
+  background:rgba(16,163,127,.2);
 }
 
-@media(max-width:480px) {
-  main {
-    padding: 10px;
-  }
+.tools{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-top:10px;
+  gap:10px;
+}
 
-  #chatBox {
-    max-height: 55vh;
-  }
+.tools button{
+  background:transparent;
+  border:1px solid #465064;
+  color:#aeb9ca;
+  padding:7px 10px;
+  border-radius:6px;
+  font-size:10px;
+  cursor:pointer;
+}
 
-  .bubble {
-    max-width: 94%;
-  }
+.notice{
+  text-align:center;
+  color:#78869a;
+  font-size:10px;
+  line-height:1.5;
+  margin:15px 5px;
+}
 
-  #sendButton {
-    padding: 13px 12px;
-  }
+@media(max-width:480px){
+  body{padding-top:108px}
+  main{padding:10px}
+  #chatBox{max-height:55vh}
+  .bubble{max-width:94%}
+  #sendButton{padding:13px 12px}
 }
 </style>
 </head>
 
 <body>
 
-<header>
+<!-- FIXED TOP NAVIGATION -->
+<div class="topbar">
+  <div class="brand">THE MAGUNGA HIGH</div>
+
+  <nav class="nav">
+    <a href="dashboard.html">Home</a>
+    <a href="community.html">Friends</a>
+    <a href="chat.html">Messages</a>
+    <a href="notifications.html">Alerts</a>
+    <a href="profile.html">Account</a>
+    <a href="library.html">Library</a>
+  </nav>
+</div>
+
+<header class="page-heading">
   <button class="back" onclick="location.href='dashboard.html'">
     ← Back
   </button>
