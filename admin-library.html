@@ -165,6 +165,13 @@ button:disabled {
   font-size: 15px;
 }
 
+.approve-button {
+  margin-top: 12px;
+  background: #176b45;
+  color: white;
+  width: 100%;
+}
+
 .secondary {
   background: #34202b;
   color: white;
@@ -217,6 +224,11 @@ button:disabled {
   font-size: 12px;
 }
 
+.status.approved {
+  background: #153c2d;
+  color: #61dfa0;
+}
+
 .hidden {
   display: none !important;
 }
@@ -266,7 +278,9 @@ button:disabled {
 
   <section class="heading">
     <h1>Library Management</h1>
-    <p class="muted" id="adminName">Verifying administrator account...</p>
+    <p class="muted" id="adminName">
+      Verifying administrator account...
+    </p>
   </section>
 
   <section class="panel hidden" id="uploadPanel">
@@ -360,13 +374,17 @@ button:disabled {
   </section>
 
   <section class="panel hidden" id="resourcesPanel">
+
     <h2>My Uploaded Materials</h2>
+
     <p class="muted">
-      Materials uploaded using your account.
+      Review and manage materials uploaded using your account.
     </p>
+
     <div id="myResources">
       Loading materials...
     </div>
+
   </section>
 
   <p id="accessMessage" class="error"></p>
@@ -388,7 +406,8 @@ import {
   getDocs,
   query,
   where,
-  orderBy,
+  doc,
+  updateDoc,
   serverTimestamp
 } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
 
@@ -411,6 +430,8 @@ function showMessage(message, type = "info") {
   $("message").textContent = message;
   $("message").className = type;
 }
+
+// VERIFY ADMINISTRATOR
 
 onAuthStateChanged(auth, async user => {
 
@@ -454,7 +475,10 @@ $("uploadForm").addEventListener("submit", async event => {
   event.preventDefault();
 
   if (!currentUser || !admin) {
-    showMessage("Your administrator account has not been verified.", "error");
+    showMessage(
+      "Your administrator account has not been verified.",
+      "error"
+    );
     return;
   }
 
@@ -474,7 +498,10 @@ $("uploadForm").addEventListener("submit", async event => {
   }
 
   if (file.size <= 0 || file.size > 20 * 1024 * 1024) {
-    showMessage("The PDF must be smaller than 20 MB.", "error");
+    showMessage(
+      "The PDF must be smaller than 20 MB.",
+      "error"
+    );
     return;
   }
 
@@ -494,11 +521,12 @@ $("uploadForm").addEventListener("submit", async event => {
   button.disabled = true;
   button.textContent = "Preparing upload...";
 
-  showMessage("Requesting secure upload permission...", "info");
+  showMessage(
+    "Requesting secure upload permission...",
+    "info"
+  );
 
   try {
-
-    // Request a temporary upload token from our server.
 
     const idToken = await currentUser.getIdToken();
 
@@ -522,18 +550,25 @@ $("uploadForm").addEventListener("submit", async event => {
 
     if (!permissionResponse.ok) {
       throw new Error(
-        permission.error || "Could not obtain upload permission."
+        permission.error ||
+        "Could not obtain upload permission."
       );
     }
 
     if (!permission.path || !permission.token) {
-      throw new Error("The server returned an incomplete upload permission.");
+      throw new Error(
+        "The server returned an incomplete upload permission."
+      );
     }
 
-    // Upload PDF directly to the private Supabase bucket.
+    // UPLOAD TO SUPABASE
 
     button.textContent = "Uploading PDF...";
-    showMessage("Uploading your PDF. Please wait...", "info");
+
+    showMessage(
+      "Uploading your PDF. Please wait...",
+      "info"
+    );
 
     const encodedPath = permission.path
       .split("/")
@@ -559,17 +594,25 @@ $("uploadForm").addEventListener("submit", async event => {
 
     if (!uploadResponse.ok) {
       const uploadError = await uploadResponse.text();
-      console.error("Supabase upload error:", uploadError);
+
+      console.error(
+        "Supabase upload error:",
+        uploadError
+      );
 
       throw new Error(
         "PDF upload failed. Check the Supabase upload settings."
       );
     }
 
-    // Save material information in Firestore.
+    // SAVE DETAILS IN FIRESTORE
 
     button.textContent = "Saving material details...";
-    showMessage("PDF uploaded. Saving its library information...", "info");
+
+    showMessage(
+      "PDF uploaded. Saving its library information...",
+      "info"
+    );
 
     const resourceData = {
       title,
@@ -602,7 +645,7 @@ $("uploadForm").addEventListener("submit", async event => {
     );
 
     showMessage(
-      "Upload successful! Your material is awaiting approval before students can see it.",
+      "Upload successful! Your material is awaiting approval.",
       "success"
     );
 
@@ -612,10 +655,14 @@ $("uploadForm").addEventListener("submit", async event => {
 
   } catch (error) {
 
-    console.error("Library upload error:", error);
+    console.error(
+      "Library upload error:",
+      error
+    );
 
     showMessage(
-      error.message || "Something went wrong during upload.",
+      error.message ||
+      "Something went wrong during upload.",
       "error"
     );
 
@@ -628,7 +675,7 @@ $("uploadForm").addEventListener("submit", async event => {
 
 });
 
-// SHOW MATERIALS UPLOADED BY THIS ADMIN
+// LOAD MATERIALS UPLOADED BY THIS ADMIN
 
 async function loadMyResources() {
 
@@ -648,7 +695,10 @@ async function loadMyResources() {
     container.replaceChildren();
 
     if (snapshot.empty) {
-      container.textContent = "You have not uploaded any materials yet.";
+
+      container.textContent =
+        "You have not uploaded any materials yet.";
+
       return;
     }
 
@@ -668,7 +718,9 @@ async function loadMyResources() {
       item.className = "resource";
 
       const title = document.createElement("h3");
-      title.textContent = resource.title || "Untitled material";
+
+      title.textContent =
+        resource.title || "Untitled material";
 
       const details = document.createElement("p");
 
@@ -680,21 +732,117 @@ async function loadMyResources() {
       ].filter(Boolean).join(" · ");
 
       const status = document.createElement("span");
-      status.className = "status";
+
+      status.className =
+        resource.status === "approved"
+          ? "status approved"
+          : "status";
+
       status.textContent =
         "Status: " + (resource.status || "Unknown");
 
       item.append(title, details, status);
+
+      // APPROVE BUTTON FOR PENDING MATERIALS
+
+      if (resource.status === "pending") {
+
+        const approveButton =
+          document.createElement("button");
+
+        approveButton.textContent =
+          "Approve Material";
+
+        approveButton.className =
+          "approve-button";
+
+        approveButton.addEventListener("click", async () => {
+
+          await approveMaterial(
+            resource.id,
+            approveButton
+          );
+
+        });
+
+        item.append(approveButton);
+
+      }
+
       container.append(item);
 
     });
 
   } catch (error) {
 
-    console.error(error);
+    console.error(
+      "Loading resources failed:",
+      error
+    );
 
     container.textContent =
-      "Could not load your uploaded materials: " + error.message;
+      "Could not load your uploaded materials: " +
+      error.message;
+
+  }
+
+}
+
+// APPROVE MATERIAL
+
+async function approveMaterial(resourceId, button) {
+
+  if (!currentUser || !admin) {
+
+    alert(
+      "Administrator verification required."
+    );
+
+    return;
+  }
+
+  const confirmed = confirm(
+    "Are you sure you want to approve this learning material?"
+  );
+
+  if (!confirmed) return;
+
+  button.disabled = true;
+  button.textContent = "Approving...";
+
+  try {
+
+    await updateDoc(
+      doc(db, "libraryResources", resourceId),
+      {
+        status: "approved",
+        reviewedBy: currentUser.uid,
+        reviewedAt: serverTimestamp(),
+        reviewerName: admin.name || currentUser.email,
+        updatedAt: serverTimestamp()
+      }
+    );
+
+    alert(
+      "Material approved successfully!"
+    );
+
+    await loadMyResources();
+
+  } catch (error) {
+
+    console.error(
+      "Approval failed:",
+      error
+    );
+
+    alert(
+      "Could not approve material: " +
+      error.message
+    );
+
+    button.disabled = false;
+    button.textContent = "Approve Material";
 
   }
 
@@ -705,6 +853,7 @@ async function loadMyResources() {
 $("logoutButton").addEventListener("click", async () => {
 
   await signOut(auth);
+
   location.href = "login.html";
 
 });
