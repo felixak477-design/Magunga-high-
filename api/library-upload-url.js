@@ -1,9 +1,68 @@
 
+import { createSign, randomUUID } from "node:crypto";
+
+function base64url(value) {
+  return Buffer.from(value).toString("base64url");
+}
+
+async function getFirebaseAccessToken(serviceAccount) {
+  const now = Math.floor(Date.now() / 1000);
+
+  const header = base64url(JSON.stringify({
+    alg: "RS256",
+    typ: "JWT"
+  }));
+
+  const claims = base64url(JSON.stringify({
+    iss: serviceAccount.client_email,
+    scope: "https://www.googleapis.com/auth/datastore",
+    aud: "https://oauth2.googleapis.com/token",
+    iat: now,
+    exp: now + 3600
+  }));
+
+  const unsignedToken = `${header}.${claims}`;
+
+  const signer = createSign("RSA-SHA256");
+  signer.update(unsignedToken);
+  signer.end();
+
+  const signature = signer.sign(
+    serviceAccount.private_key
+  ).toString("base64url");
+
+  const assertion = `${unsignedToken}.${signature}`;
+
+  const response = await fetch(
+    "https://oauth2.googleapis.com/token",
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded"
+      },
+      body: new URLSearchParams({
+        grant_type:
+          "urn:ietf:params:oauth:grant-type:jwt-bearer",
+        assertion
+      })
+    }
+  );
+
+  const data = await response.json();
+
+  if (!response.ok || !data.access_token) {
+    console.error("Firebase token error:", data);
+    throw new Error("Firebase server authentication failed.");
+  }
+
+  return data.access_token;
+}
+
 export default async function handler(req, res) {
 
   if (req.method !== "POST") {
     return res.status(405).json({
-      error: "Method not allowed"
+      error: "Method not allowed."
     });
   }
 
@@ -13,19 +72,52 @@ export default async function handler(req, res) {
     const supabaseSecretKey = process.env.SUPABASE_SECRET_KEY;
     const firebaseApiKey = process.env.FIREBASE_WEB_API_KEY;
     const projectId = process.env.FIREBASE_PROJECT_ID;
+    const serviceAccountText =
+      process.env.FIREBASE_SERVICE_ACCOUNT;
 
     if (
       !supabaseUrl ||
       !supabaseSecretKey ||
       !firebaseApiKey ||
-      !projectId
+      !projectId ||
+      !serviceAccountText
     ) {
       return res.status(500).json({
         error: "Server configuration is incomplete."
       });
     }
 
-    // VERIFY LOGIN
+    // LOAD FIREBASE SERVICE ACCOUNT
+
+    let serviceAccount;
+
+    try {
+      serviceAccount = JSON.parse(serviceAccountText);
+    } catch {
+      return res.status(500).json({
+        error: "Firebase service account configuration is invalid."
+      });
+    }
+
+    if (
+      !serviceAccount.client_email ||
+      !serviceAccount.private_key
+    ) {
+      return res.status(500).json({
+        error: "Firebase service account is missing required credentials."
+      });
+    }
+
+    if (
+      serviceAccount.project_id &&
+      serviceAccount.project_id !== projectId
+    ) {
+      return res.status(500).json({
+        error: "Firebase project ID does not match the service account."
+      });
+    }
+
+    // VERIFY USER LOGIN
 
     const authorization = req.headers.authorization || "";
 
@@ -46,9 +138,7 @@ export default async function handler(req, res) {
         headers: {
           "Content-Type": "application/json"
         },
-        body: JSON.stringify({
-          idToken
-        })
+        body: JSON.stringify({ idToken })
       }
     );
 
@@ -56,33 +146,47 @@ export default async function handler(req, res) {
 
     if (
       !verifyResponse.ok ||
-      !verifyData.users ||
-      !verifyData.users.length
+      !verifyData.users?.length
     ) {
       return res.status(401).json({
-        error: "Your login session is invalid. Please sign in again."
+        error: "Your login session is invalid. Sign in again."
       });
     }
 
-    const user = verifyData.users[0];
-    const uid = user.localId;
+    const uid = verifyData.users[0].localId;
 
-    // VERIFY APPROVED ACCOUNT
+    // AUTHENTICATE WITH FIREBASE ADMIN CREDENTIALS
+
+    const accessToken =
+      await getFirebaseAccessToken(serviceAccount);
+
+    // READ USER PROFILE WITHOUT STUDENT FIRESTORE PERMISSIONS
 
     const profileResponse = await fetch(
-      `https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents/users/${uid}`,
+      `https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents/users/${encodeURIComponent(uid)}`,
       {
         headers: {
-          "Authorization": `Bearer ${idToken}`
+          Authorization: `Bearer ${accessToken}`
         }
       }
     );
 
     const profileData = await profileResponse.json();
 
-    if (!profileResponse.ok || !profileData.fields) {
+    if (
+      profileResponse.status === 404 ||
+      !profileData.fields
+    ) {
       return res.status(403).json({
-        error: "Your user profile could not be verified."
+        error: "Your user profile was not found."
+      });
+    }
+
+    if (!profileResponse.ok) {
+      console.error("Firestore profile error:", profileData);
+
+      return res.status(500).json({
+        error: "Could not verify your account profile."
       });
     }
 
@@ -95,7 +199,7 @@ export default async function handler(req, res) {
       });
     }
 
-    // VALIDATE FILE DETAILS
+    // VALIDATE FILE
 
     const {
       fileName,
@@ -148,30 +252,30 @@ export default async function handler(req, res) {
       });
     }
 
-    // CREATE A SAFE UNIQUE FILE PATH
+    // CREATE UNIQUE STORAGE PATH
 
     const safeName = fileName
       .trim()
       .replace(/[^a-zA-Z0-9._-]/g, "_")
       .slice(0, 150);
 
-    const uniqueName =
-      `${crypto.randomUUID()}_${safeName}`;
-
+    const uniqueName = `${randomUUID()}_${safeName}`;
     const filePath = `library/${uid}/${uniqueName}`;
 
-    // REQUEST SECURE SUPABASE UPLOAD TOKEN
+    // CREATE SUPABASE SIGNED UPLOAD TOKEN
+
+    const encodedPath = filePath
+      .split("/")
+      .map(encodeURIComponent)
+      .join("/");
 
     const signResponse = await fetch(
-      `${supabaseUrl}/storage/v1/object/upload/sign/magunga-library/${filePath
-        .split("/")
-        .map(encodeURIComponent)
-        .join("/")}`,
+      `${supabaseUrl}/storage/v1/object/upload/sign/magunga-library/${encodedPath}`,
       {
         method: "POST",
         headers: {
-          "Authorization": `Bearer ${supabaseSecretKey}`,
-          "apikey": supabaseSecretKey,
+          Authorization: `Bearer ${supabaseSecretKey}`,
+          apikey: supabaseSecretKey,
           "Content-Type": "application/json"
         },
         body: JSON.stringify({
@@ -183,18 +287,12 @@ export default async function handler(req, res) {
     const signData = await signResponse.json();
 
     if (!signResponse.ok || !signData.token) {
-
-      console.error(
-        "Supabase signing error:",
-        signData
-      );
+      console.error("Supabase signing error:", signData);
 
       return res.status(500).json({
         error: "Could not prepare the secure file upload."
       });
     }
-
-    // RETURN UPLOAD DETAILS
 
     return res.status(200).json({
       path: filePath,
@@ -203,15 +301,12 @@ export default async function handler(req, res) {
 
   } catch (error) {
 
-    console.error(
-      "Library upload API error:",
-      error
-    );
+    console.error("Library upload API error:", error);
 
     return res.status(500).json({
-      error: "An unexpected upload error occurred."
+      error: error.message ||
+        "An unexpected upload error occurred."
     });
 
   }
-
 }
