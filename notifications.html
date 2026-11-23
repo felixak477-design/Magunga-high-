@@ -8,101 +8,252 @@
 <title>Notifications | Magunga High</title>
 
 <style>
-*{box-sizing:border-box;font-family:Arial,sans-serif}
-body{margin:0;background:#090d16;color:#f5f7fb}
-header{
- background:#111827;padding:15px;
- display:flex;justify-content:space-between;
- align-items:center;border-bottom:1px solid #80642f
+* {
+ box-sizing: border-box;
+ font-family: Arial, sans-serif;
 }
-header strong{color:#ffd36a}
-header a{color:#ffd36a;text-decoration:none;font-size:12px}
-main{max-width:760px;margin:auto;padding:16px}
-.hero{
- padding:22px;border-radius:12px;
- background:linear-gradient(130deg,#30220d,#171d2c);
- border:1px solid #80642f;margin-bottom:18px
+
+body {
+ margin: 0;
+ background: #090d16;
+ color: #f5f7fb;
+ padding-top: 68px;
 }
-.hero h1{color:#ffe2a0;margin:0 0 8px}
-.hero p{color:#c2c9d5;font-size:13px;line-height:1.6}
-.toolbar{
- display:flex;justify-content:space-between;
- align-items:center;gap:10px;margin:16px 0
+
+/* FIXED TOP NAVIGATION */
+
+.topbar {
+ position: fixed;
+ top: 0;
+ left: 0;
+ right: 0;
+ height: 65px;
+ background: #111827;
+ border-bottom: 1px solid #80642f;
+ display: flex;
+ align-items: center;
+ justify-content: space-around;
+ gap: 5px;
+ padding: 0 8px;
+ z-index: 1000;
 }
-button{
- padding:10px 13px;border-radius:7px;
- border:1px solid #9a7634;background:#302511;
- color:#ffe1a0;font-weight:bold;cursor:pointer
+
+.topbar a {
+ color: #aab6c8;
+ text-decoration: none;
+ font-size: 13px;
+ font-weight: bold;
+ padding: 12px 10px;
+ border-radius: 8px;
+ white-space: nowrap;
 }
-button:disabled{opacity:.5}
-#count{font-size:12px;color:#c2c9d5}
-.notice{
- display:flex;gap:12px;padding:15px;
- background:#172337;border:1px solid #34445c;
- border-radius:10px;margin-bottom:11px
+
+.topbar a.active {
+ color: #ffd36a;
+ background: #302511;
 }
-.notice.unread{border-color:#d9ad50}
-.symbol{
- width:38px;height:38px;flex-shrink:0;
- display:grid;place-items:center;
- background:#302511;border-radius:9px;font-size:18px
+
+.topbar a:hover {
+ color: #ffd36a;
 }
-.details{flex:1;min-width:0}
-.details h3{margin:0 0 7px;color:#ffe0a0;font-size:14px}
-.details p{font-size:12px;color:#d0d7e2;line-height:1.6;white-space:pre-wrap;overflow-wrap:anywhere}
-.tag{
- display:inline-block;padding:4px 7px;
- background:#382b15;color:#ffe1a0;
- font-size:9px;border-radius:20px;margin-bottom:7px
+
+main {
+ max-width: 760px;
+ margin: auto;
+ padding: 16px;
 }
-.meta{font-size:10px;color:#8999b0;margin-top:8px}
-.empty{
- padding:30px 15px;text-align:center;
- background:#121c2d;border:1px dashed #526078;
- border-radius:10px;color:#aeb9ca;font-size:13px
+
+.hero {
+ padding: 22px 5px;
+ border-bottom: 1px solid #344158;
+ margin-bottom: 18px;
 }
-#status{font-size:12px;color:#ffbd75;line-height:1.5}
-footer{text-align:center;color:#78869a;padding:22px;font-size:10px}
-@media(max-width:420px){
- main{padding:11px}
- .toolbar{align-items:flex-start;flex-direction:column}
+
+.hero h1 {
+ color: #ffe2a0;
+ margin: 0 0 8px;
+}
+
+.hero p {
+ color: #c2c9d5;
+ font-size: 13px;
+ line-height: 1.6;
+}
+
+.toolbar {
+ display: flex;
+ justify-content: space-between;
+ align-items: center;
+ gap: 10px;
+ margin: 16px 0;
+}
+
+button {
+ padding: 10px 13px;
+ border-radius: 7px;
+ border: 1px solid #9a7634;
+ background: #302511;
+ color: #ffe1a0;
+ font-weight: bold;
+ cursor: pointer;
+}
+
+button:disabled {
+ opacity: .5;
+}
+
+#count {
+ font-size: 12px;
+ color: #c2c9d5;
+}
+
+/* NOTIFICATIONS AS FEED POSTS */
+
+.notice {
+ display: flex;
+ gap: 12px;
+ padding: 16px 5px;
+ border-bottom: 1px solid #344158;
+ cursor: pointer;
+}
+
+.notice.unread {
+ background: #172337;
+ border-left: 3px solid #d9ad50;
+ padding-left: 10px;
+}
+
+.symbol {
+ width: 38px;
+ height: 38px;
+ flex-shrink: 0;
+ display: grid;
+ place-items: center;
+ background: #302511;
+ border-radius: 50%;
+ font-size: 18px;
+}
+
+.details {
+ flex: 1;
+ min-width: 0;
+}
+
+.details h3 {
+ margin: 0 0 7px;
+ color: #ffe0a0;
+ font-size: 14px;
+}
+
+.details p {
+ font-size: 12px;
+ color: #d0d7e2;
+ line-height: 1.6;
+ white-space: pre-wrap;
+ overflow-wrap: anywhere;
+}
+
+.tag {
+ display: inline-block;
+ padding: 4px 7px;
+ background: #382b15;
+ color: #ffe1a0;
+ font-size: 9px;
+ border-radius: 20px;
+ margin-bottom: 7px;
+}
+
+.meta {
+ font-size: 10px;
+ color: #8999b0;
+ margin-top: 8px;
+}
+
+.empty {
+ padding: 30px 15px;
+ text-align: center;
+ background: #121c2d;
+ border: 1px dashed #526078;
+ border-radius: 10px;
+ color: #aeb9ca;
+ font-size: 13px;
+}
+
+#status {
+ font-size: 12px;
+ color: #ffbd75;
+ line-height: 1.5;
+}
+
+footer {
+ text-align: center;
+ color: #78869a;
+ padding: 22px;
+ font-size: 10px;
+}
+
+@media(max-width:480px) {
+ .topbar {
+  justify-content: flex-start;
+  overflow-x: auto;
+ }
+
+ .topbar a {
+  font-size: 12px;
+  padding: 12px 9px;
+ }
+
+ main {
+  padding: 11px;
+ }
+
+ .toolbar {
+  align-items: flex-start;
+  flex-direction: column;
+ }
 }
 </style>
 </head>
 
 <body>
 
-<header>
-<strong>THE MAGUNGA HIGH</strong>
-<a href="dashboard.html">← Dashboard</a>
-</header>
+<!-- FIXED NAVIGATION -->
+
+<nav class="topbar">
+ <a href="dashboard.html">Home</a>
+ <a href="community.html">Friends</a>
+ <a href="chat.html">Messages</a>
+ <a href="notifications.html" class="active">Alerts</a>
+ <a href="profile.html">Account</a>
+ <a href="library.html">Library</a>
+</nav>
 
 <main>
 
 <section class="hero">
-<h1>🔔 Notifications</h1>
-<p>
-Stay updated with school announcements,
-stream messages, group conversations
-and private messages.
-</p>
+ <h1>🔔 Notifications</h1>
+ <p>
+ Stay updated with school announcements,
+ stream messages, group conversations
+ and private messages.
+ </p>
 </section>
 
 <div class="toolbar">
-<span id="count">Loading notifications...</span>
-<button id="markRead" disabled>Mark all as read</button>
+ <span id="count">Loading notifications...</span>
+ <button id="markRead" disabled>Mark all as read</button>
 </div>
 
 <p id="status" role="status"></p>
 
 <section id="feed">
-<div class="empty">Loading updates...</div>
+ <div class="empty">Loading updates...</div>
 </section>
 
 </main>
 
 <footer>
-THE MAGUNGA HIGH · STUDENT COMMUNITY
+ THE MAGUNGA HIGH · STUDENT COMMUNITY
 </footer>
 
 <script type="module">
@@ -110,332 +261,378 @@ THE MAGUNGA HIGH · STUDENT COMMUNITY
 import {auth,db} from "./assets/js/firebase.js";
 
 import {
-onAuthStateChanged
+ onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
 
 import {
-collection,doc,getDoc,getDocs,query,where
+ collection,doc,getDoc,getDocs,query,where
 } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
 
 const $ = id => document.getElementById(id);
 
-let currentUser=null;
-let notifications=[];
-let seenAt=0;
-let refreshTimer=null;
+let currentUser = null;
+let notifications = [];
+let seenAt = 0;
+let refreshTimer = null;
 
-function timestamp(value){
-return value?.toMillis?.() || 0;
+function timestamp(value) {
+ return value?.toMillis?.() || 0;
 }
 
-function addItems(items,type,titleFor,bodyFor,icon,link){
+function addItems(items,type,titleFor,bodyFor,icon,link) {
 
-items.forEach(item=>{
-notifications.push({
-id:item.id,
-type,
-title:titleFor(item.data),
-body:bodyFor(item.data),
-icon,
-link,
-time:timestamp(item.data.createdAt)
-});
-});
+ items.forEach(item => {
 
-}
+  notifications.push({
+   id: item.id,
+   type,
+   title: titleFor(item.data),
+   body: bodyFor(item.data),
+   icon,
+   link,
+   time: timestamp(item.data.createdAt)
+  });
 
-function render(){
-
-const feed=$("feed");
-feed.replaceChildren();
-
-notifications.sort((a,b)=>b.time-a.time);
-
-const visible=notifications.slice(0,100);
-
-const unread=visible.filter(item=>item.time>seenAt).length;
-
-$("count").textContent=
-unread+" unread · "+visible.length+" recent updates";
-
-$("markRead").disabled=unread===0;
-
-if(!visible.length){
-
-const empty=document.createElement("div");
-empty.className="empty";
-empty.textContent="You're all caught up. New updates will appear here.";
-
-feed.appendChild(empty);
-return;
+ });
 
 }
 
-visible.forEach(item=>{
+function render() {
 
-const card=document.createElement("article");
-card.className="notice"+(item.time>seenAt?" unread":"");
+ const feed = $("feed");
 
-const symbol=document.createElement("div");
-symbol.className="symbol";
-symbol.textContent=item.icon;
+ feed.replaceChildren();
 
-const details=document.createElement("div");
-details.className="details";
+ notifications.sort((a,b) => b.time-a.time);
 
-const tag=document.createElement("span");
-tag.className="tag";
-tag.textContent=item.type;
+ const visible = notifications.slice(0,100);
 
-const heading=document.createElement("h3");
-heading.textContent=item.title;
+ const unread = visible.filter(item => item.time > seenAt).length;
 
-const body=document.createElement("p");
-body.textContent=item.body;
+ $("count").textContent =
+  unread + " unread · " + visible.length + " recent updates";
 
-const meta=document.createElement("div");
-meta.className="meta";
-meta.textContent=item.time
-?new Date(item.time).toLocaleString()
-:"Recently";
+ $("markRead").disabled = unread === 0;
 
-details.append(tag,heading,body,meta);
-card.append(symbol,details);
+ if(!visible.length) {
 
-card.addEventListener("click",()=>{
+  const empty = document.createElement("div");
 
-if(item.time>seenAt){
+  empty.className = "empty";
 
-seenAt=item.time;
+  empty.textContent =
+   "You're all caught up. New updates will appear here.";
 
-localStorage.setItem(
-"magunga_notifications_seen_"+currentUser.uid,
-String(seenAt)
-);
+  feed.appendChild(empty);
 
-render();
+  return;
+
+ }
+
+ visible.forEach(item => {
+
+  const card = document.createElement("article");
+
+  card.className =
+   "notice" + (item.time > seenAt ? " unread" : "");
+
+  const symbol = document.createElement("div");
+
+  symbol.className = "symbol";
+
+  symbol.textContent = item.icon;
+
+  const details = document.createElement("div");
+
+  details.className = "details";
+
+  const tag = document.createElement("span");
+
+  tag.className = "tag";
+
+  tag.textContent = item.type;
+
+  const heading = document.createElement("h3");
+
+  heading.textContent = item.title;
+
+  const body = document.createElement("p");
+
+  body.textContent = item.body;
+
+  const meta = document.createElement("div");
+
+  meta.className = "meta";
+
+  meta.textContent = item.time
+   ? new Date(item.time).toLocaleString()
+   : "Recently";
+
+  details.append(tag,heading,body,meta);
+
+  card.append(symbol,details);
+
+  card.addEventListener("click",() => {
+
+   if(item.time > seenAt) {
+
+    seenAt = item.time;
+
+    localStorage.setItem(
+     "magunga_notifications_seen_" + currentUser.uid,
+     String(seenAt)
+    );
+
+    render();
+
+   }
+
+   if(item.link) {
+    location.href = item.link;
+   }
+
+  });
+
+  feed.appendChild(card);
+
+ });
 
 }
 
-if(item.link){
-location.href=item.link;
-}
+async function loadNotifications() {
 
-});
+ if(!currentUser) return;
 
-feed.appendChild(card);
+ $("status").textContent = "Checking updates...";
 
-});
+ notifications = [];
 
-}
+ const profileSnap = await getDoc(
+  doc(db,"users",currentUser.uid)
+ );
 
-async function loadNotifications(){
+ if(!profileSnap.exists()) {
+  throw new Error("Student profile not found.");
+ }
 
-if(!currentUser)return;
+ const profile = profileSnap.data();
 
-$("status").textContent="Checking updates...";
+ if(profile.status !== "approved") {
+  throw new Error("Your account is not approved.");
+ }
 
-notifications=[];
+ const stream = profile.stream;
 
-const profileSnap=await getDoc(
-doc(db,"users",currentUser.uid)
-);
+ if(!stream) {
+  throw new Error("Your stream is missing from your profile.");
+ }
 
-if(!profileSnap.exists()){
-throw new Error("Student profile not found.");
-}
+ const [
+  announcementSnap,
+  streamSnap,
+  groupSnap,
+  privateSnap
+ ] = await Promise.all([
 
-const profile=profileSnap.data();
+  getDocs(query(
+   collection(db,"announcements"),
+   where("stream","in",[stream,"All"])
+  )),
 
-if(profile.status!=="approved"){
-throw new Error("Your account is not approved.");
-}
+  getDocs(query(
+   collection(db,"messages"),
+   where("stream","==",stream)
+  )),
 
-const stream=profile.stream;
+  getDocs(collection(db,"groupMessages")),
 
-if(!stream)throw new Error("Your stream is missing from your profile.");
+  getDocs(query(
+   collection(db,"privateChats"),
+   where("participants","array-contains",currentUser.uid)
+  ))
 
-const [
-announcementSnap,
-streamSnap,
-groupSnap,
-privateSnap
-]=await Promise.all([
+ ]);
 
-getDocs(query(
-collection(db,"announcements"),
-where("stream","in",[stream,"All"])
-)),
+ // SCHOOL ANNOUNCEMENTS
 
-getDocs(query(
-collection(db,"messages"),
-where("stream","==",stream)
-)),
+ addItems(
+  announcementSnap.docs.map(d => ({
+   id: d.id,
+   data: d.data()
+  })),
+  "ANNOUNCEMENT",
+  d => d.title || "School announcement",
+  d => d.message || "",
+  "📢",
+  "announcements.html"
+ );
 
-getDocs(collection(db,"groupMessages")),
+ // STREAM MESSAGES
 
-getDocs(query(
-collection(db,"privateChats"),
-where("participants","array-contains",currentUser.uid)
-))
+ addItems(
+  streamSnap.docs
+   .filter(d => d.data().senderId !== currentUser.uid)
+   .map(d => ({
+    id: d.id,
+    data: d.data()
+   })),
+  "STREAM CHAT",
+  d => (d.senderName || "Student") + " sent a stream message",
+  d => d.text || "",
+  "💬",
+  "chat.html"
+ );
 
-]);
+ // SCHOOL GROUP MESSAGES
 
-// SCHOOL ANNOUNCEMENTS
+ addItems(
+  groupSnap.docs
+   .filter(d => d.data().senderId !== currentUser.uid)
+   .map(d => ({
+    id: d.id,
+    data: d.data()
+   })),
+  "SCHOOL GROUP",
+  d => (d.senderName || "Student") + " sent a group message",
+  d => d.text || "",
+  "👥",
+  "chat.html"
+ );
 
-addItems(
-announcementSnap.docs.map(d=>({id:d.id,data:d.data()})),
-"ANNOUNCEMENT",
-d=>d.title||"School announcement",
-d=>d.message||"",
-"📢",
-"announcements.html"
-);
+ // PRIVATE MESSAGES
 
-// STREAM MESSAGES
+ const privateResults = await Promise.all(
 
-addItems(
-streamSnap.docs
-.filter(d=>d.data().senderId!==currentUser.uid)
-.map(d=>({id:d.id,data:d.data()})),
-"STREAM CHAT",
-d=>(d.senderName||"Student")+" sent a stream message",
-d=>d.text||"",
-"💬",
-"chat.html"
-);
+  privateSnap.docs.map(async chatDoc => {
 
-// SCHOOL GROUP MESSAGES
+   const messages = await getDocs(
+    collection(db,"privateChats",chatDoc.id,"messages")
+   );
 
-addItems(
-groupSnap.docs
-.filter(d=>d.data().senderId!==currentUser.uid)
-.map(d=>({id:d.id,data:d.data()})),
-"SCHOOL GROUP",
-d=>(d.senderName||"Student")+" sent a group message",
-d=>d.text||"",
-"👥",
-"chat.html"
-);
+   return messages.docs
+    .filter(message =>
+     message.data().senderId !== currentUser.uid
+    )
+    .map(message => ({
+     id: chatDoc.id + "_" + message.id,
+     data: message.data()
+    }));
 
-// PRIVATE MESSAGES
+  })
 
-const privateResults=await Promise.all(
+ );
 
-privateSnap.docs.map(async chatDoc=>{
+ privateResults.flat().forEach(item => {
 
-const messages=await getDocs(
-collection(db,"privateChats",chatDoc.id,"messages")
-);
+  const data = item.data;
 
-return messages.docs
-.filter(message=>
-message.data().senderId!==currentUser.uid
-)
-.map(message=>({
-id:chatDoc.id+"_"+message.id,
-data:message.data()
-}));
+  notifications.push({
 
-})
+   id: item.id,
 
-);
+   type: "PRIVATE MESSAGE",
 
-privateResults.flat().forEach(item=>{
+   title: (data.senderName || "Student") + " sent you a message",
 
-const data=item.data;
+   body: data.text || "",
 
-notifications.push({
+   icon: "✉️",
 
-id:item.id,
-type:"PRIVATE MESSAGE",
+   link: "chat.html",
 
-title:(data.senderName||"Student")+" sent you a message",
+   time: timestamp(data.createdAt)
 
-body:data.text||"",
-icon:"✉️",
-link:"chat.html",
-time:timestamp(data.createdAt)
+  });
 
-});
+ });
 
-});
+ $("status").textContent = "";
 
-$("status").textContent="";
-
-render();
+ render();
 
 }
 
 // MARK ALL AS READ
 
-$("markRead").addEventListener("click",()=>{
+$("markRead").addEventListener("click",() => {
 
-seenAt=Date.now();
+ seenAt = Date.now();
 
-localStorage.setItem(
-"magunga_notifications_seen_"+currentUser.uid,
-String(seenAt)
-);
+ localStorage.setItem(
+  "magunga_notifications_seen_" + currentUser.uid,
+  String(seenAt)
+ );
 
-render();
+ render();
 
 });
 
 // AUTHENTICATION
 
-onAuthStateChanged(auth,async user=>{
+onAuthStateChanged(auth,async user => {
 
-if(!user){
-location.href="login.html";
-return;
-}
+ if(!user) {
 
-currentUser=user;
+  location.href = "login.html";
 
-seenAt=Number(
-localStorage.getItem(
-"magunga_notifications_seen_"+user.uid
-)||0
-);
+  return;
 
-try{
+ }
 
-await loadNotifications();
+ currentUser = user;
 
-if(refreshTimer)clearInterval(refreshTimer);
+ seenAt = Number(
+  localStorage.getItem(
+   "magunga_notifications_seen_" + user.uid
+  ) || 0
+ );
 
-refreshTimer=setInterval(async()=>{
+ try {
 
-try{
-await loadNotifications();
-}catch(error){
-console.error(error);
-}
+  await loadNotifications();
 
-},30000);
+  if(refreshTimer) {
+   clearInterval(refreshTimer);
+  }
 
-}catch(error){
+  refreshTimer = setInterval(async () => {
 
-console.error(error);
+   try {
+    await loadNotifications();
+   } catch(error) {
+    console.error(error);
+   }
 
-$("status").textContent=
-"Unable to load notifications: "+error.message;
+  },30000);
 
-$("feed").replaceChildren();
+ } catch(error) {
 
-const empty=document.createElement("div");
-empty.className="empty";
-empty.textContent="Check your internet connection and Firestore permissions.";
+  console.error(error);
 
-$("feed").appendChild(empty);
+  $("status").textContent =
+   "Unable to load notifications: " + error.message;
 
-}
+  $("feed").replaceChildren();
+
+  const empty = document.createElement("div");
+
+  empty.className = "empty";
+
+  empty.textContent =
+   "Check your internet connection and Firestore permissions.";
+
+  $("feed").appendChild(empty);
+
+ }
 
 });
 
-window.addEventListener("beforeunload",()=>{
-if(refreshTimer)clearInterval(refreshTimer);
+window.addEventListener("beforeunload",() => {
+
+ if(refreshTimer) {
+  clearInterval(refreshTimer);
+ }
+
 });
 
 </script>
