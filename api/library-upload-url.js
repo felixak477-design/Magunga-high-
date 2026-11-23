@@ -12,7 +12,9 @@ module.exports = async function handler(req, res) {
     const supabaseKey = process.env.SUPABASE_SECRET_KEY;
 
     if (!firebaseKey || !supabaseUrl || !supabaseKey) {
-      return res.status(500).json({ error: "Server configuration missing" });
+      return res.status(500).json({
+        error: "Server configuration missing"
+      });
     }
 
     const authHeader = req.headers.authorization || "";
@@ -24,7 +26,6 @@ module.exports = async function handler(req, res) {
       return res.status(401).json({ error: "Please log in" });
     }
 
-    // Verify Firebase login
     const verifyResponse = await fetch(
       `https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=${firebaseKey}`,
       {
@@ -45,7 +46,6 @@ module.exports = async function handler(req, res) {
       return res.status(401).json({ error: "User not found" });
     }
 
-    // Read the user's Firestore profile
     const profileResponse = await fetch(
       `https://firestore.googleapis.com/v1/projects/magunga-high/databases/(default)/documents/users/${encodeURIComponent(uid)}`,
       {
@@ -54,23 +54,20 @@ module.exports = async function handler(req, res) {
     );
 
     if (!profileResponse.ok) {
-      return res.status(403).json({ error: "Unable to verify your profile" });
+      return res.status(403).json({
+        error: "Unable to verify your profile"
+      });
     }
 
     const profile = await profileResponse.json();
     const fields = profile.fields || {};
 
-    const status = fields.status?.stringValue;
-    const role = fields.role?.stringValue;
-
-    if (
-      status !== "approved" ||
-      !["superadmin", "streamAdmin"].includes(role)
-    ) {
-      return res.status(403).json({ error: "Administrator approval required" });
+    if (fields.status?.stringValue !== "approved") {
+      return res.status(403).json({
+        error: "Your account must be approved before uploading."
+      });
     }
 
-    // Validate the PDF details
     const { fileName, fileSize, contentType } = req.body || {};
 
     if (
@@ -81,16 +78,18 @@ module.exports = async function handler(req, res) {
       fileSize > 20 * 1024 * 1024 ||
       contentType !== "application/pdf"
     ) {
-      return res.status(400).json({ error: "Invalid PDF or file size" });
+      return res.status(400).json({
+        error: "Invalid PDF or file size. Maximum size is 20 MB."
+      });
     }
 
     const safeName = fileName
       .replace(/[^\w.-]+/g, "_")
       .slice(0, 120);
 
-    const path = `library/${uid}/${crypto.randomUUID()}_${safeName}`;
+    const path =
+      `library/${uid}/${crypto.randomUUID()}_${safeName}`;
 
-    // Request a temporary signed upload permission from Supabase
     const signResponse = await fetch(
       `${supabaseUrl}/storage/v1/object/upload/sign/magunga-library/${path
         .split("/")
@@ -110,7 +109,11 @@ module.exports = async function handler(req, res) {
     const signData = await signResponse.json();
 
     if (!signResponse.ok || !signData.token) {
-      return res.status(502).json({ error: "Could not create upload permission" });
+      console.error("Supabase signing error:", signData);
+
+      return res.status(502).json({
+        error: "Could not create upload permission"
+      });
     }
 
     return res.status(200).json({
@@ -120,6 +123,9 @@ module.exports = async function handler(req, res) {
 
   } catch (error) {
     console.error("Library upload permission error:", error);
-    return res.status(500).json({ error: "Server error" });
+
+    return res.status(500).json({
+      error: "Server error"
+    });
   }
 };
