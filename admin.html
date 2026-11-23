@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -13,53 +14,78 @@
 
 body{
   margin:0;
+  padding-top:115px;
   background:#080b12;
   color:#fff;
 }
 
-/* HEADER */
-header{
+/* FIXED TOP NAVIGATION */
+.topbar{
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  z-index:1000;
   background:#100d15;
-  padding:17px 5%;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:12px;
   border-bottom:1px solid #7d142b;
   box-shadow:0 3px 20px #a9003033;
 }
 
-header h2{
+.topbar-header{
+  min-height:55px;
+  padding:10px 4%;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:10px;
+}
+
+.topbar h2{
   margin:0;
-  font-size:19px;
+  font-size:17px;
   color:#ff4568;
-  text-shadow:0 0 12px #ff1744;
   letter-spacing:1px;
-}
-
-button{
-  border:0;
-  padding:11px 15px;
-  border-radius:8px;
-  cursor:pointer;
-  font-weight:bold;
-  transition:.25s;
-}
-
-button:hover{
-  transform:translateY(-2px);
-  filter:brightness(1.2);
-}
-
-button:disabled{
-  opacity:.5;
-  cursor:not-allowed;
+  text-shadow:0 0 12px #ff1744;
 }
 
 .logout{
   background:#c5163d;
   color:white;
-  box-shadow:0 0 12px #e91e6344;
+  padding:9px 13px;
+  border-radius:7px;
+  border:0;
+  cursor:pointer;
+  font-weight:bold;
+}
+
+.main-nav{
+  display:flex;
+  align-items:center;
+  gap:5px;
+  padding:7px 3%;
+  overflow-x:auto;
+  white-space:nowrap;
+  scrollbar-width:none;
+  border-top:1px solid #321522;
+}
+
+.main-nav::-webkit-scrollbar{
+  display:none;
+}
+
+.main-nav a{
+  color:#cbbcc5;
+  text-decoration:none;
+  padding:10px 12px;
+  border-radius:7px;
+  font-size:13px;
+  flex-shrink:0;
+}
+
+.main-nav a:hover,
+.main-nav a.active{
+  background:#54152d;
+  color:#ff6684;
 }
 
 main{
@@ -94,31 +120,6 @@ main{
   color:#b9aeb8;
 }
 
-/* NAVIGATION */
-nav{
-  display:flex;
-  gap:10px;
-  flex-wrap:wrap;
-  margin-bottom:22px;
-}
-
-nav a{
-  background:#1c111b;
-  color:#ff6684;
-  text-decoration:none;
-  padding:11px 15px;
-  border-radius:8px;
-  border:1px solid #7d1837;
-  font-size:14px;
-  transition:.25s;
-}
-
-nav a:hover{
-  background:#9e1237;
-  color:white;
-  box-shadow:0 0 15px #ff1744;
-}
-
 /* STATISTICS */
 .stats{
   display:grid;
@@ -133,13 +134,6 @@ nav a:hover{
   border-radius:12px;
   border:1px solid #642039;
   box-shadow:0 0 12px #d5003f18;
-  transition:.25s;
-}
-
-.stat:hover{
-  border-color:#ff315d;
-  box-shadow:0 0 17px #ff174455;
-  transform:translateY(-3px);
 }
 
 .stat p{
@@ -202,7 +196,6 @@ nav a:hover{
   border-radius:10px;
   margin-top:12px;
   border:1px solid #632039;
-  box-shadow:0 0 10px #d5003f15;
 }
 
 .student h3{
@@ -219,18 +212,26 @@ nav a:hover{
 
 .student button{
   margin:5px 7px 0 0;
+  border:0;
+  padding:11px 15px;
+  border-radius:7px;
+  cursor:pointer;
+  font-weight:bold;
+}
+
+button:disabled{
+  opacity:.5;
+  cursor:not-allowed;
 }
 
 .approve{
   background:#128b58;
   color:white;
-  box-shadow:0 0 10px #00d08433;
 }
 
 .reject{
   background:#c5163d;
   color:white;
-  box-shadow:0 0 10px #ff174433;
 }
 
 /* MESSAGES */
@@ -252,12 +253,21 @@ nav a:hover{
 }
 
 @media(max-width:500px){
-  header{
-    padding:15px 4%;
+  body{
+    padding-top:108px;
   }
 
-  header h2{
-    font-size:15px;
+  .topbar-header{
+    min-height:50px;
+  }
+
+  .topbar h2{
+    font-size:14px;
+  }
+
+  .main-nav a{
+    padding:9px 10px;
+    font-size:12px;
   }
 
   .welcome{
@@ -279,21 +289,31 @@ nav a:hover{
   .stat h2{
     font-size:25px;
   }
-
-  nav a{
-    padding:10px 12px;
-    font-size:13px;
-  }
 }
 </style>
 </head>
 
 <body>
 
-<header>
-  <h2>MAGUNGA HIGH | ADMIN</h2>
-  <button class="logout" id="logoutButton">Logout</button>
-</header>
+<div class="topbar">
+
+  <div class="topbar-header">
+    <h2>MAGUNGA HIGH</h2>
+    <button class="logout" id="logoutButton">Logout</button>
+  </div>
+
+  <nav class="main-nav">
+    <a href="dashboard.html">Home</a>
+    <a href="community.html">Friends</a>
+    <a href="chat.html">Messages</a>
+    <a href="notifications.html">Alerts</a>
+    <a href="profile.html">Account</a>
+    <a href="library.html">Library</a>
+    <a href="announcements.html">Announcements</a>
+    <a href="admin.html" class="active">Admin</a>
+  </nav>
+
+</div>
 
 <main>
 
@@ -302,12 +322,6 @@ nav a:hover{
   <p id="adminName" class="muted">Checking administrator...</p>
   <p>Managing: <strong id="streamName">Loading...</strong></p>
 </section>
-
-<nav>
-  <a href="admin.html">Dashboard</a>
-  <a href="announcements.html">Announcements</a>
-  <a href="index.html">Website Home</a>
-</nav>
 
 <section class="stats">
 
