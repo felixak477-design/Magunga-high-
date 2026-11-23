@@ -1,4 +1,4 @@
- 
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -83,9 +83,7 @@ input{
  min-width:190px;
 }
 
-select{
- min-width:150px;
-}
+select{min-width:150px}
 
 .grid{
  display:grid;
@@ -203,7 +201,7 @@ button:disabled{
 
 <script type="module">
 
-import {auth,db,app}
+import {auth,db}
 from "./assets/js/firebase.js";
 
 import {
@@ -219,21 +217,11 @@ import {
  getDoc
 } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
 
-import {
- getStorage,
- ref,
- getDownloadURL
-} from "https://www.gstatic.com/firebasejs/11.6.0/firebase-storage.js";
-
-
-const storage=getStorage(app);
-
 const status=document.getElementById("status");
-
 const container=document.getElementById("resources");
 
 let items=[];
-
+let currentUser=null;
 
 function render(){
 
@@ -242,7 +230,6 @@ function render(){
   .value.trim().toLowerCase();
 
  const subject=document.getElementById("subject").value;
-
  const level=document.getElementById("level").value;
 
  const filtered=items.filter(x=>
@@ -261,30 +248,22 @@ function render(){
  if(!filtered.length){
 
   const empty=document.createElement("div");
-
   empty.className="empty";
-
   empty.textContent="No matching approved materials yet.";
-
   container.append(empty);
-
   return;
  }
 
  filtered.forEach(x=>{
 
   const card=document.createElement("article");
-
   card.className="item";
 
   const title=document.createElement("h3");
-
-  title.textContent=x.title;
+  title.textContent=x.title||"Untitled material";
 
   const meta=document.createElement("div");
-
   meta.className="meta";
-
   meta.textContent=[
    x.subject,
    x.classLevel,
@@ -292,39 +271,64 @@ function render(){
   ].filter(Boolean).join(" · ");
 
   const desc=document.createElement("p");
-
   desc.className="desc";
-
   desc.textContent=x.description||"Revision material";
 
   const button=document.createElement("button");
-
   button.textContent="Download PDF";
 
   button.onclick=async()=>{
 
    button.disabled=true;
-
    button.textContent="Preparing download...";
+
+   let newTab=null;
 
    try{
 
-    const url=await getDownloadURL(
-     ref(storage,x.filePath)
-    );
+    // Open the tab immediately to avoid popup blocking.
+    newTab=window.open("about:blank","_blank");
 
-    window.open(url,"_blank","noopener");
+    const idToken=await currentUser.getIdToken();
+
+    const response=await fetch("/api/library-download-url",{
+     method:"POST",
+     headers:{
+      "Content-Type":"application/json",
+      "Authorization":"Bearer "+idToken
+     },
+     body:JSON.stringify({
+      resourceId:x.id
+     })
+    });
+
+    const result=await response.json();
+
+    if(!response.ok){
+     throw new Error(result.error||"Could not prepare download.");
+    }
+
+    if(!result.downloadUrl){
+     throw new Error("The server did not return a download link.");
+    }
+
+    if(newTab){
+     newTab.location.href=result.downloadUrl;
+    }else{
+     window.location.href=result.downloadUrl;
+    }
 
    }catch(error){
 
     console.error(error);
 
-    alert("Could not open this file. Please contact an administrator.");
+    if(newTab) newTab.close();
+
+    alert(error.message||"Could not download this file.");
 
    }finally{
 
     button.disabled=false;
-
     button.textContent="Download PDF";
 
    }
@@ -332,23 +336,20 @@ function render(){
   };
 
   card.append(title,meta,desc,button);
-
   container.append(card);
 
  });
 
 }
 
-
 onAuthStateChanged(auth,async user=>{
 
  if(!user){
-
   location.href="login.html";
-
   return;
-
  }
+
+ currentUser=user;
 
  try{
 
@@ -363,7 +364,6 @@ onAuthStateChanged(auth,async user=>{
     "Your account must be approved to access the library.";
 
    return;
-
   }
 
   const snap=await getDocs(
@@ -390,9 +390,7 @@ onAuthStateChanged(auth,async user=>{
   subjects.forEach(s=>{
 
    const option=document.createElement("option");
-
    option.value=s;
-
    option.textContent=s;
 
    document.getElementById("subject").append(option);
@@ -414,7 +412,6 @@ onAuthStateChanged(auth,async user=>{
  }
 
 });
-
 
 ["search","subject","level"].forEach(id=>{
 
