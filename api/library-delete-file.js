@@ -1,155 +1,172 @@
 
-module.exports = async function handler(req, res) {
-  res.setHeader("Cache-Control", "no-store");
-
+export default async function handler(req, res) {
   if (req.method !== "POST") {
-    return res.status(405).json({ error: "Method not allowed" });
+    return res.status(405).json({
+      error: "Method not allowed"
+    });
   }
 
   try {
-    const firebaseKey = process.env.FIREBASE_WEB_API_KEY;
     const supabaseUrl = process.env.SUPABASE_URL;
-    const supabaseKey = process.env.SUPABASE_SECRET_KEY;
+    const supabaseSecretKey = process.env.SUPABASE_SECRET_KEY;
+    const firebaseApiKey = process.env.FIREBASE_WEB_API_KEY;
+    const projectId = process.env.FIREBASE_PROJECT_ID;
 
-    if (!firebaseKey || !supabaseUrl || !supabaseKey) {
+    if (
+      !supabaseUrl ||
+      !supabaseSecretKey ||
+      !firebaseApiKey ||
+      !projectId
+    ) {
       return res.status(500).json({
-        error: "Server configuration missing"
+        error: "Server configuration is incomplete."
       });
     }
 
-    const authHeader = req.headers.authorization || "";
-    const idToken = authHeader.startsWith("Bearer ")
-      ? authHeader.slice(7)
+    const authorization = req.headers.authorization || "";
+    const idToken = authorization.startsWith("Bearer ")
+      ? authorization.slice(7)
       : "";
 
     if (!idToken) {
-      return res.status(401).json({ error: "Please log in" });
+      return res.status(401).json({
+        error: "Please sign in first."
+      });
     }
 
+    // Verify Firebase account.
     const verifyResponse = await fetch(
-      `https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=${firebaseKey}`,
+      `https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=${firebaseApiKey}`,
       {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json"
+        },
         body: JSON.stringify({ idToken })
       }
     );
 
-    if (!verifyResponse.ok) {
-      return res.status(401).json({ error: "Invalid login" });
+    const verifyData = await verifyResponse.json();
+
+    if (!verifyResponse.ok || !verifyData.users?.length) {
+      return res.status(401).json({
+        error: "Your login session is invalid."
+      });
     }
 
-    const verified = await verifyResponse.json();
-    const uid = verified.users?.[0]?.localId;
+    const uid = verifyData.users[0].localId;
 
-    if (!uid) {
-      return res.status(401).json({ error: "User not found" });
-    }
-
+    // Retrieve the user's Firestore profile.
     const profileResponse = await fetch(
-      `https://firestore.googleapis.com/v1/projects/magunga-high/databases/(default)/documents/users/${encodeURIComponent(uid)}`,
+      `https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents/users/${uid}`,
       {
-        headers: { Authorization: `Bearer ${idToken}` }
+        headers: {
+          "Authorization": `Bearer ${idToken}`
+        }
       }
     );
 
-    if (!profileResponse.ok) {
+    const profileData = await profileResponse.json();
+
+    if (!profileResponse.ok || !profileData.fields) {
       return res.status(403).json({
-        error: "Unable to verify profile"
+        error: "Your account profile could not be verified."
       });
     }
 
-    const profile = await profileResponse.json();
-    const fields = profile.fields || {};
+    const status = profileData.fields.status?.stringValue;
+    const role = profileData.fields.role?.stringValue;
 
-    if (
-      fields.status?.stringValue !== "approved" ||
-      fields.role?.stringValue !== "superadmin"
-    ) {
+    if (status !== "approved" || role !== "superadmin") {
       return res.status(403).json({
-        error: "Only the approved superadmin can delete materials."
+        error: "Only the approved superadmin can delete library materials."
       });
     }
 
-    const { resourceId } = req.body || {};
+    // Validate resource ID.
+    const resourceId = req.body?.resourceId;
 
     if (
       typeof resourceId !== "string" ||
-      !/^[A-Za-z0-9_-]{1,150}$/.test(resourceId)
+      !/^[a-zA-Z0-9_-]{1,150}$/.test(resourceId)
     ) {
       return res.status(400).json({
-        error: "Invalid resource ID"
+        error: "Invalid library resource ID."
       });
     }
 
+    // Retrieve the resource metadata.
     const resourceResponse = await fetch(
-      `https://firestore.googleapis.com/v1/projects/magunga-high/databases/(default)/documents/libraryResources/${encodeURIComponent(resourceId)}`,
+      `https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents/libraryResources/${resourceId}`,
       {
-        headers: { Authorization: `Bearer ${idToken}` }
+        headers: {
+          "Authorization": `Bearer ${idToken}`
+        }
       }
     );
 
-    if (!resourceResponse.ok) {
+    const resourceData = await resourceResponse.json();
+
+    if (resourceResponse.status === 404) {
       return res.status(404).json({
-        error: "Resource not found"
+        error: "Library material was not found."
       });
     }
 
-    const resource = await resourceResponse.json();
-    const filePath = resource.fields?.filePath?.stringValue;
+    if (!resourceResponse.ok) {
+      return res.status(500).json({
+        error: "Could not retrieve library material."
+      });
+    }
+
+    const filePath =
+      resourceData.fields?.filePath?.stringValue;
 
     if (
       typeof filePath !== "string" ||
-      !filePath.startsWith(`library/${uid}/`) &&
-      !filePath.startsWith("library/")
+      !filePath.startsWith("library/") ||
+      filePath.includes("..")
     ) {
       return res.status(400).json({
-        error: "Invalid file location"
+        error: "Invalid storage file path."
       });
     }
 
-    if (filePath.includes("..")) {
-      return res.status(400).json({
-        error: "Invalid file location"
-      });
-    }
-
+    // Delete the PDF from the private Supabase bucket.
     const deleteResponse = await fetch(
-      `${supabaseUrl}/storage/v1/object/magunga-library`,
+      `${supabaseUrl}/storage/v1/object/magunga-library/${filePath
+        .split("/")
+        .map(encodeURIComponent)
+        .join("/")}`,
       {
         method: "DELETE",
         headers: {
-          apikey: supabaseKey,
-          Authorization: `Bearer ${supabaseKey}`,
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          prefixes: [filePath]
-        })
+          "Authorization": `Bearer ${supabaseSecretKey}`,
+          "apikey": supabaseSecretKey
+        }
       }
     );
 
     if (!deleteResponse.ok) {
-      console.error(
-        "Supabase delete failed:",
-        await deleteResponse.text()
-      );
+      const errorData = await deleteResponse.json().catch(() => ({}));
 
-      return res.status(502).json({
-        error: "Could not delete PDF from storage"
+      console.error("Supabase deletion error:", errorData);
+
+      return res.status(500).json({
+        error: "Could not delete the PDF from storage."
       });
     }
 
     return res.status(200).json({
       success: true,
-      message: "PDF deleted from storage"
+      message: "Library PDF deleted successfully."
     });
 
   } catch (error) {
-    console.error("Library delete error:", error);
+    console.error("Library deletion API error:", error);
 
     return res.status(500).json({
-      error: "Server error"
+      error: "An unexpected deletion error occurred."
     });
   }
-};
+}
