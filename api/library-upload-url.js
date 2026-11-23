@@ -1,5 +1,6 @@
 
 export default async function handler(req, res) {
+
   if (req.method !== "POST") {
     return res.status(405).json({
       error: "Method not allowed"
@@ -7,17 +8,27 @@ export default async function handler(req, res) {
   }
 
   try {
+
     const supabaseUrl = process.env.SUPABASE_URL;
     const supabaseSecretKey = process.env.SUPABASE_SECRET_KEY;
     const firebaseApiKey = process.env.FIREBASE_WEB_API_KEY;
+    const projectId = process.env.FIREBASE_PROJECT_ID;
 
-    if (!supabaseUrl || !supabaseSecretKey || !firebaseApiKey) {
+    if (
+      !supabaseUrl ||
+      !supabaseSecretKey ||
+      !firebaseApiKey ||
+      !projectId
+    ) {
       return res.status(500).json({
         error: "Server configuration is incomplete."
       });
     }
 
+    // VERIFY LOGIN
+
     const authorization = req.headers.authorization || "";
+
     const idToken = authorization.startsWith("Bearer ")
       ? authorization.slice(7)
       : "";
@@ -28,7 +39,6 @@ export default async function handler(req, res) {
       });
     }
 
-    // Verify the Firebase ID token.
     const verifyResponse = await fetch(
       `https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=${firebaseApiKey}`,
       {
@@ -44,7 +54,11 @@ export default async function handler(req, res) {
 
     const verifyData = await verifyResponse.json();
 
-    if (!verifyResponse.ok || !verifyData.users?.length) {
+    if (
+      !verifyResponse.ok ||
+      !verifyData.users ||
+      !verifyData.users.length
+    ) {
       return res.status(401).json({
         error: "Your login session is invalid. Please sign in again."
       });
@@ -53,14 +67,7 @@ export default async function handler(req, res) {
     const user = verifyData.users[0];
     const uid = user.localId;
 
-    // Read the user's Firestore profile.
-    const projectId = process.env.FIREBASE_PROJECT_ID;
-
-    if (!projectId) {
-      return res.status(500).json({
-        error: "Firebase project configuration is missing."
-      });
-    }
+    // VERIFY APPROVED ACCOUNT
 
     const profileResponse = await fetch(
       `https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents/users/${uid}`,
@@ -79,15 +86,17 @@ export default async function handler(req, res) {
       });
     }
 
-    const status = profileData.fields.status?.stringValue;
+    const accountStatus =
+      profileData.fields.status?.stringValue;
 
-    if (status !== "approved") {
+    if (accountStatus !== "approved") {
       return res.status(403).json({
-        error: "Only approved accounts can upload library materials."
+        error: "Only approved accounts can upload materials."
       });
     }
 
-    // Validate the submitted PDF.
+    // VALIDATE FILE DETAILS
+
     const {
       fileName,
       contentType,
@@ -104,12 +113,27 @@ export default async function handler(req, res) {
       });
     }
 
+    const allowedFiles = {
+      "application/pdf": [".pdf"],
+      "image/jpeg": [".jpg", ".jpeg"],
+      "image/png": [".png"],
+      "image/webp": [".webp"]
+    };
+
+    const extension = fileName
+      .trim()
+      .toLowerCase()
+      .match(/\.[a-z0-9]+$/)?.[0];
+
+    const validExtensions = allowedFiles[contentType];
+
     if (
-      contentType !== "application/pdf" ||
-      !fileName.toLowerCase().endsWith(".pdf")
+      !validExtensions ||
+      !extension ||
+      !validExtensions.includes(extension)
     ) {
       return res.status(400).json({
-        error: "Only PDF documents are allowed."
+        error: "Only PDF, JPG, JPEG, PNG and WEBP files are allowed."
       });
     }
 
@@ -120,9 +144,11 @@ export default async function handler(req, res) {
       fileSize > 20 * 1024 * 1024
     ) {
       return res.status(400).json({
-        error: "PDF size must be between 1 byte and 20 MB."
+        error: "File size must be between 1 byte and 20 MB."
       });
     }
+
+    // CREATE A SAFE UNIQUE FILE PATH
 
     const safeName = fileName
       .trim()
@@ -134,7 +160,8 @@ export default async function handler(req, res) {
 
     const filePath = `library/${uid}/${uniqueName}`;
 
-    // Request a signed upload token from Supabase.
+    // REQUEST SECURE SUPABASE UPLOAD TOKEN
+
     const signResponse = await fetch(
       `${supabaseUrl}/storage/v1/object/upload/sign/magunga-library/${filePath
         .split("/")
@@ -156,12 +183,18 @@ export default async function handler(req, res) {
     const signData = await signResponse.json();
 
     if (!signResponse.ok || !signData.token) {
-      console.error("Supabase signing error:", signData);
+
+      console.error(
+        "Supabase signing error:",
+        signData
+      );
 
       return res.status(500).json({
-        error: "Could not prepare the secure PDF upload."
+        error: "Could not prepare the secure file upload."
       });
     }
+
+    // RETURN UPLOAD DETAILS
 
     return res.status(200).json({
       path: filePath,
@@ -169,10 +202,16 @@ export default async function handler(req, res) {
     });
 
   } catch (error) {
-    console.error("Library upload API error:", error);
+
+    console.error(
+      "Library upload API error:",
+      error
+    );
 
     return res.status(500).json({
       error: "An unexpected upload error occurred."
     });
+
   }
+
 }
