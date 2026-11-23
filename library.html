@@ -5,518 +5,809 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#090d16">
-<title>Digital Library | The Magunga High</title>
+<title>Digital Library | Magunga High</title>
 
 <style>
 * {
- box-sizing: border-box;
- font-family: Arial, sans-serif;
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
 }
 
 body {
- margin: 0;
- background: #090d16;
- color: #f4f6fb;
- padding-top: 70px;
+  margin: 0;
+  padding-top: 65px;
+  background: #090d16;
+  color: #f4f6fb;
 }
 
-/* FIXED TOP NAVIGATION */
-
 .topbar {
- position: fixed;
- top: 0;
- left: 0;
- right: 0;
- height: 65px;
- background: #111827;
- border-bottom: 1px solid #34445f;
- display: flex;
- align-items: center;
- justify-content: space-around;
- gap: 5px;
- padding: 0 8px;
- z-index: 1000;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 65px;
+  background: #111827;
+  border-bottom: 1px solid #34445f;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  gap: 5px;
+  padding: 0 8px;
+  z-index: 1000;
 }
 
 .topbar a {
- color: #aebbd0;
- text-decoration: none;
- font-size: 13px;
- font-weight: bold;
- padding: 12px 10px;
- border-radius: 8px;
- white-space: nowrap;
+  color: #aebbd0;
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: bold;
+  padding: 12px 10px;
+  border-radius: 8px;
+  white-space: nowrap;
 }
 
 .topbar a.active {
- color: #f4d58a;
- background: #302511;
-}
-
-.topbar a:hover {
- color: #f4d58a;
+  color: #f4d58a;
+  background: #302511;
 }
 
 main {
- max-width: 1050px;
- margin: auto;
- padding: 24px 16px;
-}
-
-.hero {
- padding: 23px 5px;
- border-bottom: 1px solid #34445f;
- margin-bottom: 20px;
-}
-
-.hero h1 {
- margin: 0 0 8px;
- color: #f4d58a;
-}
-
-.muted {
- color: #aebbd0;
- line-height: 1.5;
-}
-
-.tools {
- display: flex;
- gap: 10px;
- flex-wrap: wrap;
- margin: 18px 0;
-}
-
-input, select {
- min-height: 44px;
- padding: 10px 12px;
- border-radius: 8px;
- border: 1px solid #40516c;
- background: #121c2d;
- color: white;
- font-size: 15px;
-}
-
-input {
- flex: 1;
- min-width: 190px;
-}
-
-select {
- min-width: 150px;
-}
-
-.grid {
- display: grid;
- grid-template-columns: repeat(auto-fit,minmax(240px,1fr));
- gap: 14px;
-}
-
-.item {
- background: #141e30;
- border: 1px solid #34445f;
- border-radius: 12px;
- padding: 17px;
-}
-
-.item h3 {
- margin: 0 0 9px;
- color: #f4d58a;
- overflow-wrap: anywhere;
-}
-
-.meta {
- font-size: 12px;
- color: #aebbd0;
- line-height: 1.7;
-}
-
-.desc {
- font-size: 14px;
- line-height: 1.5;
- color: #d4dbea;
- overflow-wrap: anywhere;
-}
-
-button {
- display: inline-block;
- border: 0;
- border-radius: 8px;
- padding: 11px 14px;
- background: #d5a52b;
- color: #17120a;
- font-weight: bold;
- cursor: pointer;
-}
-
-button:disabled {
- opacity: .6;
- cursor: wait;
+  max-width: 850px;
+  margin: auto;
+  padding: 12px 15px 100px;
 }
 
 #status {
- color: #f4d58a;
- line-height: 1.5;
+  color: #aebbd0;
+  font-size: 13px;
+  padding: 10px 2px;
+}
+
+.post {
+  padding: 18px 4px;
+  border-bottom: 1px solid #263449;
+}
+
+.uploader {
+  color: #f4d58a;
+  font-weight: bold;
+  font-size: 14px;
+  margin-bottom: 5px;
+}
+
+.date {
+  color: #8795aa;
+  font-size: 12px;
+  margin-bottom: 13px;
+}
+
+.file-name {
+  font-size: 15px;
+  color: #e8edf6;
+  overflow-wrap: anywhere;
+  margin-bottom: 12px;
+}
+
+.preview {
+  display: block;
+  max-width: 100%;
+  max-height: 480px;
+  object-fit: contain;
+  border-radius: 8px;
+  margin: 10px 0;
+  background: #111827;
+}
+
+.open-file {
+  display: inline-block;
+  color: #f4d58a;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: bold;
+  padding: 10px 0;
 }
 
 .empty {
- padding: 22px;
- text-align: center;
- color: #aebbd0;
- background: #121c2d;
- border-radius: 10px;
+  text-align: center;
+  color: #aebbd0;
+  padding: 45px 15px;
+  line-height: 1.6;
+}
+
+#addButton {
+  position: fixed;
+  right: 22px;
+  bottom: 25px;
+  width: 58px;
+  height: 58px;
+  border: none;
+  border-radius: 50%;
+  background: #d5a52b;
+  color: #17120a;
+  font-size: 34px;
+  cursor: pointer;
+  box-shadow: 0 5px 20px #0008;
+  z-index: 1100;
+}
+
+#modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: #000b;
+  z-index: 2000;
+  align-items: center;
+  justify-content: center;
+  padding: 15px;
+}
+
+.modal-content {
+  width: 100%;
+  max-width: 440px;
+  max-height: 90vh;
+  overflow-y: auto;
+  background: #141e30;
+  border: 1px solid #34445f;
+  border-radius: 15px;
+  padding: 20px;
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 18px;
+}
+
+.modal-header h2 {
+  margin: 0;
+  color: #f4d58a;
+  font-size: 20px;
+}
+
+#closeModal {
+  background: transparent;
+  border: none;
+  color: white;
+  font-size: 26px;
+  cursor: pointer;
+}
+
+#fileInput {
+  display: none;
+}
+
+.file-picker {
+  display: block;
+  padding: 30px 15px;
+  border: 2px dashed #52647e;
+  border-radius: 12px;
+  text-align: center;
+  color: #d4dbea;
+  cursor: pointer;
+  line-height: 1.7;
+}
+
+.file-picker strong {
+  display: block;
+  color: #f4d58a;
+  font-size: 16px;
+}
+
+#selectedFile {
+  margin-top: 12px;
+  color: #aebbd0;
+  font-size: 13px;
+  overflow-wrap: anywhere;
+}
+
+#imagePreview {
+  display: none;
+  max-width: 100%;
+  max-height: 220px;
+  object-fit: contain;
+  margin: 15px auto;
+  border-radius: 8px;
+}
+
+#uploadButton {
+  width: 100%;
+  padding: 14px;
+  margin-top: 18px;
+  border: none;
+  border-radius: 9px;
+  background: #d5a52b;
+  color: #17120a;
+  font-weight: bold;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+#uploadButton:disabled {
+  opacity: .6;
+  cursor: wait;
+}
+
+#uploadMessage {
+  color: #f4d58a;
+  font-size: 13px;
+  line-height: 1.5;
+  margin-top: 12px;
 }
 
 @media(max-width:500px) {
- .topbar {
-  justify-content: flex-start;
-  overflow-x: auto;
- }
+  .topbar {
+    justify-content: flex-start;
+    overflow-x: auto;
+  }
 
- .topbar a {
-  font-size: 12px;
-  padding: 12px 9px;
- }
+  .topbar a {
+    font-size: 12px;
+    padding: 12px 9px;
+  }
 
- main {
-  padding: 16px 12px;
- }
+  main {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
 }
 </style>
 </head>
 
 <body>
 
-<!-- FIXED NAVIGATION -->
-
 <nav class="topbar">
- <a href="dashboard.html">Home</a>
- <a href="community.html">Friends</a>
- <a href="chat.html">Messages</a>
- <a href="notifications.html">Alerts</a>
- <a href="profile.html">Account</a>
- <a href="library.html" class="active">Library</a>
+  <a href="dashboard.html">Home</a>
+  <a href="community.html">Friends</a>
+  <a href="chat.html">Messages</a>
+  <a href="notifications.html">Alerts</a>
+  <a href="profile.html">Account</a>
+  <a href="library.html" class="active">Library</a>
 </nav>
 
 <main>
-
-<section class="hero">
- <h1>📚 Digital Learning Library</h1>
-
- <p class="muted">
- Find approved revision notes, study materials
- and past papers shared by your school community.
- </p>
-</section>
-
-<div class="tools">
-
- <input
-  id="search"
-  type="search"
-  placeholder="Search title, topic or subject"
- >
-
- <select id="subject">
-  <option value="">All subjects</option>
- </select>
-
- <select id="level">
-  <option value="">All classes</option>
-  <option>Form 1</option>
-  <option>Form 2</option>
-  <option>Form 3</option>
-  <option>Form 4</option>
-  <option>All Forms</option>
- </select>
-
-</div>
-
-<p id="status">Checking your account...</p>
-
-<section class="grid" id="resources"></section>
-
+  <p id="status">Loading library...</p>
+  <section id="resources"></section>
 </main>
+
+<button id="addButton" title="Upload material" aria-label="Upload material">+</button>
+
+<div id="modal">
+  <div class="modal-content">
+
+    <div class="modal-header">
+      <h2>Upload material</h2>
+      <button id="closeModal" aria-label="Close">&times;</button>
+    </div>
+
+    <label class="file-picker" for="fileInput">
+      <strong>Choose a file</strong>
+      Select a PDF or picture from your device
+    </label>
+
+    <input
+      type="file"
+      id="fileInput"
+      accept=".pdf,.jpg,.jpeg,.png,.webp,application/pdf,image/jpeg,image/png,image/webp"
+    >
+
+    <div id="selectedFile">No file selected</div>
+
+    <img id="imagePreview" alt="Selected image preview">
+
+    <button id="uploadButton">Upload material</button>
+
+    <p id="uploadMessage"></p>
+
+  </div>
+</div>
 
 <script type="module">
 
-import {auth,db}
+import { auth, db }
 from "./assets/js/firebase.js";
 
 import {
- onAuthStateChanged
+  onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
 
 import {
- collection,
- getDocs,
- query,
- where,
- doc,
- getDoc
+  collection,
+  getDocs,
+  query,
+  where,
+  doc,
+  getDoc,
+  addDoc,
+  serverTimestamp
 } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
 
-const status = document.getElementById("status");
 
+const statusText = document.getElementById("status");
 const container = document.getElementById("resources");
 
-let items = [];
+const modal = document.getElementById("modal");
+const addButton = document.getElementById("addButton");
+const closeModal = document.getElementById("closeModal");
+
+const fileInput = document.getElementById("fileInput");
+const selectedFile = document.getElementById("selectedFile");
+const imagePreview = document.getElementById("imagePreview");
+
+const uploadButton = document.getElementById("uploadButton");
+const uploadMessage = document.getElementById("uploadMessage");
 
 let currentUser = null;
+let currentProfile = {};
+let materials = [];
+let previewUrl = null;
 
-// DISPLAY MATERIALS
 
-function render() {
+// OPEN AND CLOSE UPLOAD WINDOW
 
- const term = document
-  .getElementById("search")
-  .value.trim().toLowerCase();
+addButton.addEventListener("click", () => {
+  modal.style.display = "flex";
+});
 
- const subject = document.getElementById("subject").value;
+closeModal.addEventListener("click", closeUploadWindow);
 
- const level = document.getElementById("level").value;
+modal.addEventListener("click", event => {
+  if (event.target === modal) {
+    closeUploadWindow();
+  }
+});
 
- const filtered = items.filter(x =>
-
-  (!subject || x.subject === subject) &&
-
-  (!level || x.classLevel === level) &&
-
-  [
-   x.title,
-   x.subject,
-   x.topic,
-   x.description
-  ].join(" ").toLowerCase().includes(term)
-
- );
-
- container.replaceChildren();
-
- if(!filtered.length) {
-
-  const empty = document.createElement("div");
-
-  empty.className = "empty";
-
-  empty.textContent =
-   "No matching approved materials yet.";
-
-  container.append(empty);
-
-  return;
-
- }
-
- filtered.forEach(x => {
-
-  const card = document.createElement("article");
-
-  card.className = "item";
-
-  const title = document.createElement("h3");
-
-  title.textContent = x.title || "Untitled material";
-
-  const meta = document.createElement("div");
-
-  meta.className = "meta";
-
-  meta.textContent = [
-   x.subject,
-   x.classLevel,
-   x.topic
-  ].filter(Boolean).join(" · ");
-
-  const desc = document.createElement("p");
-
-  desc.className = "desc";
-
-  desc.textContent = x.description || "Revision material";
-
-  const button = document.createElement("button");
-
-  button.textContent = "Download PDF";
-
-  // SUPABASE SIGNED DOWNLOAD
-
-  button.onclick = async () => {
-
-   button.disabled = true;
-
-   button.textContent = "Preparing download...";
-
-   let newTab = null;
-
-   try {
-
-    // Open tab immediately to avoid popup blocking.
-
-    newTab = window.open("about:blank","_blank");
-
-    const idToken = await currentUser.getIdToken();
-
-    const response = await fetch("/api/library-download-url", {
-
-     method: "POST",
-
-     headers: {
-      "Content-Type": "application/json",
-      "Authorization": "Bearer " + idToken
-     },
-
-     body: JSON.stringify({
-      resourceId: x.id
-     })
-
-    });
-
-    const result = await response.json();
-
-    if(!response.ok) {
-
-     throw new Error(
-      result.error || "Could not prepare download."
-     );
-
-    }
-
-    if(!result.downloadUrl) {
-
-     throw new Error(
-      "The server did not return a download link."
-     );
-
-    }
-
-    if(newTab) {
-
-     newTab.location.href = result.downloadUrl;
-
-    } else {
-
-     window.location.href = result.downloadUrl;
-
-    }
-
-   } catch(error) {
-
-    console.error(error);
-
-    if(newTab) {
-     newTab.close();
-    }
-
-    alert(
-     error.message || "Could not download this file."
-    );
-
-   } finally {
-
-    button.disabled = false;
-
-    button.textContent = "Download PDF";
-
-   }
-
-  };
-
-  card.append(title,meta,desc,button);
-
-  container.append(card);
-
- });
-
+function closeUploadWindow() {
+  modal.style.display = "none";
+  resetUploadForm();
 }
 
-// AUTHENTICATION AND APPROVED RESOURCES
+function resetUploadForm() {
+  fileInput.value = "";
+  selectedFile.textContent = "No file selected";
+  uploadMessage.textContent = "";
 
-onAuthStateChanged(auth,async user => {
-
- if(!user) {
-
-  location.href = "login.html";
-
-  return;
-
- }
-
- currentUser = user;
-
- try {
-
-  const profile = await getDoc(
-   doc(db,"users",user.uid)
-  );
-
-  if(
-   !profile.exists() ||
-   profile.data().status !== "approved"
-  ) {
-
-   status.textContent =
-    "Your account must be approved to access the library.";
-
-   return;
-
+  if (previewUrl) {
+    URL.revokeObjectURL(previewUrl);
+    previewUrl = null;
   }
 
-  const snap = await getDocs(
-   query(
-    collection(db,"libraryResources"),
-    where("status","==","approved")
-   )
-  );
+  imagePreview.src = "";
+  imagePreview.style.display = "none";
 
-  items = snap.docs.map(d => ({
-   id: d.id,
-   ...d.data()
-  })).sort((a,b) =>
-   (b.createdAt?.seconds || 0) -
-   (a.createdAt?.seconds || 0)
-  );
+  uploadButton.disabled = false;
+  uploadButton.textContent = "Upload material";
+}
 
-  const subjects = [
-   ...new Set(
-    items.map(x => x.subject).filter(Boolean)
-   )
-  ].sort();
 
-  subjects.forEach(s => {
+// FILE SELECTION
 
-   const option = document.createElement("option");
+fileInput.addEventListener("change", () => {
 
-   option.value = s;
+  const file = fileInput.files[0];
 
-   option.textContent = s;
+  if (!file) return;
 
-   document.getElementById("subject").append(option);
+  selectedFile.textContent =
+    file.name + " · " + (file.size / 1024 / 1024).toFixed(2) + " MB";
 
-  });
+  if (previewUrl) {
+    URL.revokeObjectURL(previewUrl);
+    previewUrl = null;
+  }
 
-  status.textContent =
-   items.length + " approved resource(s) available.";
+  imagePreview.style.display = "none";
 
-  render();
-
- } catch(error) {
-
-  console.error(error);
-
-  status.textContent =
-   "Could not load the library. " + error.message;
-
- }
+  if (file.type.startsWith("image/")) {
+    previewUrl = URL.createObjectURL(file);
+    imagePreview.src = previewUrl;
+    imagePreview.style.display = "block";
+  }
 
 });
 
-// SEARCH AND FILTERS
 
-["search","subject","level"].forEach(id => {
+// LOAD LIBRARY MATERIALS
 
- document.getElementById(id).addEventListener(
-  id === "search" ? "input" : "change",
-  render
- );
+async function loadMaterials() {
+
+  statusText.textContent = "Loading materials...";
+
+  const snapshot = await getDocs(
+    query(
+      collection(db, "libraryResources"),
+      where("status", "==", "approved")
+    )
+  );
+
+  materials = snapshot.docs.map(item => ({
+    id: item.id,
+    ...item.data()
+  }));
+
+  materials.sort((a, b) => {
+    const first = a.createdAt?.seconds || 0;
+    const second = b.createdAt?.seconds || 0;
+    return second - first;
+  });
+
+  renderMaterials();
+
+}
+
+
+function formatDate(timestamp) {
+
+  if (!timestamp?.toDate) return "";
+
+  return timestamp.toDate().toLocaleString();
+
+}
+
+
+// DISPLAY UPLOADED MATERIALS
+
+function renderMaterials() {
+
+  container.replaceChildren();
+
+  if (!materials.length) {
+
+    const empty = document.createElement("div");
+    empty.className = "empty";
+    empty.textContent = "No materials have been uploaded yet.";
+
+    container.append(empty);
+
+    statusText.textContent = "";
+
+    return;
+  }
+
+  statusText.textContent = "";
+
+  materials.forEach(material => {
+
+    const post = document.createElement("article");
+    post.className = "post";
+
+    const uploader = document.createElement("div");
+    uploader.className = "uploader";
+    uploader.textContent =
+      material.uploaderName || "Magunga High student";
+
+    const date = document.createElement("div");
+    date.className = "date";
+    date.textContent = formatDate(material.createdAt);
+
+    const filename = document.createElement("div");
+    filename.className = "file-name";
+    filename.textContent =
+      material.fileName || material.title || "Uploaded material";
+
+    post.append(uploader, date, filename);
+
+    const openLink = document.createElement("a");
+    openLink.className = "open-file";
+    openLink.href = "#";
+    openLink.textContent =
+      material.contentType?.startsWith("image/")
+        ? "View picture"
+        : "Open PDF";
+
+    openLink.addEventListener("click", async event => {
+
+      event.preventDefault();
+
+      openLink.textContent = "Preparing file...";
+
+      let newTab = window.open("about:blank", "_blank");
+
+      try {
+
+        const token = await currentUser.getIdToken();
+
+        const response = await fetch(
+          "/api/library-download-url",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "Authorization": "Bearer " + token
+            },
+            body: JSON.stringify({
+              resourceId: material.id
+            })
+          }
+        );
+
+        const result = await response.json();
+
+        if (!response.ok || !result.downloadUrl) {
+          throw new Error(result.error || "Could not open this file.");
+        }
+
+        if (newTab) {
+          newTab.location.href = result.downloadUrl;
+        } else {
+          window.location.href = result.downloadUrl;
+        }
+
+      } catch (error) {
+
+        if (newTab) newTab.close();
+
+        alert(error.message);
+
+      } finally {
+
+        openLink.textContent =
+          material.contentType?.startsWith("image/")
+            ? "View picture"
+            : "Open PDF";
+
+      }
+
+    });
+
+    post.append(openLink);
+
+    // Superadmin-only delete control
+
+    if (currentProfile.role === "superadmin") {
+
+      const deleteButton = document.createElement("button");
+
+      deleteButton.textContent = "Delete";
+      deleteButton.style.marginLeft = "15px";
+      deleteButton.style.background = "#7f2934";
+      deleteButton.style.color = "white";
+
+      deleteButton.addEventListener("click", async () => {
+
+        if (!confirm("Delete this uploaded material?")) return;
+
+        deleteButton.disabled = true;
+
+        try {
+
+          const token = await currentUser.getIdToken();
+
+          const response = await fetch(
+            "/api/library-delete-file",
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + token
+              },
+              body: JSON.stringify({
+                resourceId: material.id
+              })
+            }
+          );
+
+          const result = await response.json();
+
+          if (!response.ok) {
+            throw new Error(result.error || "Could not delete material.");
+          }
+
+          materials = materials.filter(x => x.id !== material.id);
+          renderMaterials();
+
+        } catch (error) {
+
+          alert(error.message);
+          deleteButton.disabled = false;
+
+        }
+
+      });
+
+      post.append(deleteButton);
+
+    }
+
+    container.append(post);
+
+  });
+
+}
+
+
+// UPLOAD MATERIAL
+
+uploadButton.addEventListener("click", async () => {
+
+  const file = fileInput.files[0];
+
+  if (!file) {
+    uploadMessage.textContent = "Choose a file first.";
+    return;
+  }
+
+  const allowedTypes = [
+    "application/pdf",
+    "image/jpeg",
+    "image/png",
+    "image/webp"
+  ];
+
+  if (!allowedTypes.includes(file.type)) {
+    uploadMessage.textContent = "Only PDF and supported image files are allowed.";
+    return;
+  }
+
+  if (file.size > 20 * 1024 * 1024) {
+    uploadMessage.textContent = "Maximum file size is 20 MB.";
+    return;
+  }
+
+  uploadButton.disabled = true;
+  uploadButton.textContent = "Uploading...";
+  uploadMessage.textContent = "Preparing your upload...";
+
+  try {
+
+    const token = await currentUser.getIdToken();
+
+    // REQUEST A SECURE SUPABASE UPLOAD URL
+
+    const response = await fetch(
+      "/api/library-upload-url",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer " + token
+        },
+        body: JSON.stringify({
+          fileName: file.name,
+          contentType: file.type,
+          fileSize: file.size
+        })
+      }
+    );
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      throw new Error(result.error || "Could not prepare upload.");
+    }
+
+    if (!result.path || !result.token) {
+      throw new Error("The upload server returned incomplete information.");
+    }
+
+    uploadMessage.textContent = "Uploading file...";
+
+    // UPLOAD FILE TO PRIVATE SUPABASE STORAGE
+
+    const storageResponse = await fetch(
+      "https://kfopwukxanxigsupnfee.supabase.co/storage/v1/object/upload/sign/magunga-library/" +
+      result.path.split("/").map(encodeURIComponent).join("/") +
+      "?token=" + encodeURIComponent(result.token),
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": file.type,
+          "x-upsert": "false"
+        },
+        body: file
+      }
+    );
+
+    if (!storageResponse.ok) {
+      const errorText = await storageResponse.text();
+      throw new Error("Storage upload failed: " + errorText);
+    }
+
+    uploadMessage.textContent = "Publishing material...";
+
+    // SAVE MATERIAL DETAILS IN FIRESTORE
+    // It is published immediately, not marked pending.
+
+    const profileName =
+      currentProfile.displayName ||
+      currentProfile.fullName ||
+      currentProfile.name ||
+      currentUser.displayName ||
+      currentUser.email ||
+      "Magunga High student";
+
+    await addDoc(
+      collection(db, "libraryResources"),
+      {
+        title: file.name,
+        subject: "General",
+        classLevel: "",
+        topic: "",
+        description: "",
+        fileName: file.name,
+        filePath: result.path,
+        fileSize: file.size,
+        contentType: file.type,
+        uploadedBy: currentUser.uid,
+        uploaderName: profileName,
+        status: "approved",
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp(),
+        reviewedBy: null,
+        reviewedAt: null
+      }
+    );
+
+    uploadMessage.textContent = "Uploaded successfully.";
+
+    await loadMaterials();
+
+    setTimeout(() => {
+      closeUploadWindow();
+    }, 700);
+
+  } catch (error) {
+
+    console.error(error);
+
+    uploadMessage.textContent =
+      error.message || "Upload failed. Please try again.";
+
+    uploadButton.disabled = false;
+    uploadButton.textContent = "Upload material";
+
+  }
+
+});
+
+
+// CHECK LOGIN AND ACCOUNT APPROVAL
+
+onAuthStateChanged(auth, async user => {
+
+  if (!user) {
+    location.href = "login.html";
+    return;
+  }
+
+  currentUser = user;
+
+  try {
+
+    const profileSnapshot = await getDoc(
+      doc(db, "users", user.uid)
+    );
+
+    if (!profileSnapshot.exists()) {
+
+      statusText.textContent = "Your account profile was not found.";
+      addButton.style.display = "none";
+      return;
+
+    }
+
+    currentProfile = profileSnapshot.data();
+
+    if (currentProfile.status !== "approved") {
+
+      statusText.textContent =
+        "Your account must be approved to access the library.";
+
+      addButton.style.display = "none";
+      return;
+
+    }
+
+    await loadMaterials();
+
+  } catch (error) {
+
+    console.error(error);
+
+    statusText.textContent =
+      "Could not load the library: " + error.message;
+
+  }
 
 });
 
