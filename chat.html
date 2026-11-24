@@ -863,8 +863,13 @@ async function openPrivateChat(member) {
 
     if (hasIncomingMessages) {
      markPrivateChatRead(chatId).catch(error => {
-      console.warn("Could not update private read receipt:",error);
-     });
+     markPrivateChatRead(chatId).catch(error => {
+  console.error("Read receipt error:", error);
+  setStatus(
+    "privateStatus",
+    "Read receipt error: " + error.message
+  );
+});
     }
    },
    error => setStatus("privateStatus","Unable to load messages: " + error.message)
