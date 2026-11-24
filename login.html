@@ -235,8 +235,6 @@ button:disabled{
  color:white;
 }
 
-/* Website benefits and animated greeting */
-
 .switch-panel{
  width:min(100%,430px);
  min-height:112px;
@@ -276,9 +274,7 @@ button:disabled{
  line-height:1.6;
 }
 
-.benefit-list span{
- white-space:nowrap;
-}
+.benefit-list span{white-space:nowrap}
 
 .greeting{
  opacity:0;
@@ -297,8 +293,6 @@ button:disabled{
  color:#ddd;
  font-size:13px;
 }
-
-/* Active animation when an input is focused */
 
 .switch-panel.engaged .benefits{
  opacity:0;
@@ -326,8 +320,6 @@ button:disabled{
  color:#ccc;
  font:italic 13px Georgia,serif;
 }
-
-/* Book opening animation */
 
 .book-screen{
  position:fixed;
@@ -550,8 +542,6 @@ button:disabled{
 
  </section>
 
- <!-- Animated benefits and greeting -->
-
  <section class="switch-panel" id="switchPanel">
 
   <div class="benefits">
@@ -654,24 +644,45 @@ function showMessage(text,success=false){
  message.style.color=success?"#b8efbd":"#ffd36c";
 }
 
+/* SAVE BOTH ANDROID AND WEB NOTIFICATION TOKENS */
+
 async function savePendingNotificationToken(user){
 
  const token=localStorage.getItem("magunga_pending_fcm_token");
 
- if(!token || !("Notification" in window) ||
-    Notification.permission!=="granted"){
+ const platform=
+  localStorage.getItem("magunga_pending_fcm_platform")||"web";
+
+ if(!token){
   return;
  }
 
- const tokenRef=doc(db,"users",user.uid,"fcmTokens",token);
+ // Browser tokens require browser permission.
+ // Android tokens have already received native permission through Capacitor.
+
+ if(
+  platform==="web" &&
+  (!("Notification" in window) ||
+   Notification.permission!=="granted")
+ ){
+  return;
+ }
+
+ const tokenRef=doc(
+  db,
+  "users",
+  user.uid,
+  "fcmTokens",
+  token
+ );
 
  try{
 
   const existing=await getDoc(tokenRef);
 
   const data={
-   token,
-   platform:"web",
+   token:token,
+   platform:platform,
    updatedAt:serverTimestamp()
   };
 
@@ -682,10 +693,16 @@ async function savePendingNotificationToken(user){
   await setDoc(tokenRef,data,{merge:true});
 
   localStorage.removeItem("magunga_pending_fcm_token");
+  localStorage.removeItem("magunga_pending_fcm_platform");
+
+  console.log("Notification token saved:",platform);
 
  }catch(error){
 
-  console.warn("Notification token could not be saved:",error);
+  console.warn(
+   "Notification token could not be saved:",
+   error
+  );
 
  }
 
