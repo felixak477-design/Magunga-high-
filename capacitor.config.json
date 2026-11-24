@@ -1,0 +1,13 @@
+
+{
+  "appId": "com.magungahigh.portal",
+  "appName": "Magunga High",
+  "webDir": "www",
+  "server": {
+    "url": "https://magunga-high.vercel.app/login.html",
+    "cleartext": false,
+    "allowNavigation": [
+      "magunga-high.vercel.app"
+    ]
+  }
+}
