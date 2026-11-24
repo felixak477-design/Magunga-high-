@@ -3,154 +3,173 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#101522">
-<title>Member Profile | Magunga High</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<meta name="theme-color" content="#090d18">
+<title>Student Profile | Magunga High</title>
 
 <style>
-* {
- box-sizing: border-box;
- font-family: Arial, sans-serif;
+*{box-sizing:border-box;font-family:Arial,sans-serif}
+html,body{margin:0;width:100%;max-width:100%;overflow-x:hidden}
+body{background:#090d18;color:#f2f4f8;padding-top:65px}
+button,input{font:inherit}
+.hidden{display:none!important}
+
+.topbar{
+ position:fixed;top:0;left:0;right:0;height:59px;z-index:1000;
+ background:#111827;border-bottom:1px solid #344158;
+ display:flex;align-items:center;justify-content:space-around;
+ padding:0 5px;gap:2px
 }
-
-body {
- margin: 0;
- background: #101522;
- color: white;
- padding-top: 75px;
+.topbar a{
+ color:#aab6c8;text-decoration:none;font-size:11px;
+ font-weight:bold;padding:10px 7px;border-radius:9px;
+ white-space:nowrap
 }
+.topbar a.active{color:#ffda82;background:#293b59}
 
-/* FIXED NAVIGATION */
+main{max-width:560px;margin:17px auto;padding:0 13px 30px}
 
-.topbar {
- position: fixed;
- top: 0;
- left: 0;
- right: 0;
- height: 65px;
- background: #1b2435;
- border-bottom: 1px solid #344158;
- display: flex;
- align-items: center;
- justify-content: space-around;
- gap: 5px;
- padding: 0 8px;
- z-index: 1000;
+.profile-card{
+ position:relative;text-align:center;overflow:hidden;
+ padding:20px 13px 15px;border-radius:17px;
+ background:linear-gradient(145deg,#17243a,#101827 65%,#17162a);
+ border:1px solid #52618a;
+ box-shadow:0 0 13px #548bff22,0 0 25px #a64dff12;
 }
-
-.topbar a {
- color: #aab6c8;
- text-decoration: none;
- font-size: 13px;
- font-weight: bold;
- padding: 12px 10px;
- border-radius: 8px;
- white-space: nowrap;
+.profile-card:before{
+ content:"";position:absolute;inset:-2px;pointer-events:none;
+ background:radial-gradient(ellipse at 50% 0%,#4b8dff22,transparent 60%);
 }
+.profile-content{position:relative;z-index:1}
 
-.topbar a.active {
- color: #e8c45e;
- background: #293b59;
+.avatar-ring{
+ width:112px;height:112px;margin:0 auto 12px;
+ padding:4px;border-radius:50%;
+ background:conic-gradient(#42d9ff,#a75cff,#ffce69,#42d9ff);
+ box-shadow:0 0 10px #42cfff99,0 0 22px #a75cff66;
+ animation:ringGlow 4s ease-in-out infinite alternate;
 }
-
-.topbar a:hover {
- color: #e8c45e;
+@keyframes ringGlow{
+ from{box-shadow:0 0 8px #42cfff77,0 0 15px #a75cff33}
+ to{box-shadow:0 0 14px #42cfffaa,0 0 26px #a75cff77}
 }
-
-main {
- max-width: 560px;
- margin: 30px auto;
- padding: 20px;
+.avatar,.fallback{
+ width:100%;height:100%;border-radius:50%;
+ object-fit:cover;background:#17243a;
+ border:3px solid #101827;
 }
-
-.profile-card {
- background: #1b2435;
- border: 1px solid #59471f;
- border-radius: 18px;
- padding: 25px;
- text-align: center;
- box-shadow: 0 0 18px #d5a52b18;
+.fallback{
+ display:flex;align-items:center;justify-content:center;
+ font-size:35px;font-weight:bold;color:#f6d88b;
 }
-
-.avatar {
- width: 130px;
- height: 130px;
- border-radius: 50%;
- object-fit: cover;
- background: #293b59;
- border: 3px solid #d5a52b;
- margin: 8px auto;
- display: flex;
- align-items: center;
- justify-content: center;
- font-size: 42px;
- color: #e8c45e;
+#displayName{
+ margin:7px 0 5px;font-size:24px;font-weight:900;
+ letter-spacing:.5px;overflow-wrap:anywhere;
+ background:linear-gradient(100deg,#fff0b2,#ffce61,#b9e8ff);
+ -webkit-background-clip:text;background-clip:text;
+ color:transparent;
+ filter:drop-shadow(0 0 7px #d4a73d66);
 }
-
-.muted {
- color: #aab6c8;
+#realName{font-size:12px;color:#aebbd0;margin:4px}
+.profile-stream{
+ display:inline-block;margin:8px auto 0;padding:6px 12px;
+ border:1px solid #52618a;border-radius:20px;
+ color:#a9d9ff;background:#15233b;font-size:10px
 }
-
-label {
- display: block;
- text-align: left;
- margin: 16px 0 7px;
+.profile-stats{
+ display:flex;justify-content:center;gap:24px;
+ margin:14px 0 2px;color:#b9c6d9;font-size:11px
 }
+.profile-stats strong{display:block;color:#f4d486;font-size:16px;margin-bottom:3px}
 
-input {
- width: 100%;
- padding: 12px;
- border: 1px solid #39465e;
- border-radius: 8px;
- background: #111a2a;
- color: white;
+.edit-box{
+ margin-top:16px;padding:13px;text-align:left;
+ border:1px solid #34445f;border-radius:13px;
+ background:#111b2c
 }
-
-button {
- width: 100%;
- padding: 13px;
- margin-top: 15px;
- background: #d5a52b;
- color: #171717;
- border: 0;
- border-radius: 8px;
- font-weight: bold;
- cursor: pointer;
+.edit-heading{font-size:13px;color:#f5d98b;margin:0 0 10px}
+label{display:block;font-size:11px;color:#b9c6d9;margin:11px 0 6px}
+input{
+ width:100%;padding:10px 11px;color:white;
+ background:#0a1321;border:1px solid #34445f;
+ border-radius:8px;font-size:13px
 }
-
-button:disabled {
- opacity: .6;
+.small-note{font-size:10px;color:#8999b0;margin:6px 0}
+.save-button{
+ width:100%;padding:11px;border:0;border-radius:9px;
+ margin-top:12px;background:linear-gradient(110deg,#ffdf91,#c58e2b);
+ color:#17120a;font-weight:bold;font-size:12px
 }
+.save-button:disabled{opacity:.55}
+#message{font-size:11px;color:#ffce80;margin:10px 0 0;overflow-wrap:anywhere}
 
-.hidden {
- display: none;
+.section-title{
+ display:flex;align-items:center;justify-content:space-between;
+ margin:20px 2px 10px
 }
+.section-title h2{font-size:15px;color:#f5d98b;margin:0}
+.section-title span{font-size:10px;color:#91a1b9}
 
-#message {
- color: #ffbd75;
+.post-card{
+ background:#111b2c;border:1px solid #2c3b55;
+ border-radius:12px;padding:11px;margin-bottom:11px;
+ overflow:hidden
 }
+.post-header{display:flex;align-items:center;gap:9px}
+.post-avatar{width:34px;height:34px;flex-shrink:0;border-radius:50%;object-fit:cover}
+.post-initial{
+ display:flex;align-items:center;justify-content:center;
+ background:#263b5a;color:#f5d98b;font-weight:bold
+}
+.post-author{font-size:12px;color:#f4d58c;font-weight:bold}
+.post-time{font-size:10px;color:#8292aa;margin-top:3px}
+.privacy{
+ margin-left:auto;flex-shrink:0;
+ font-size:9px;color:#c9d9f4;
+ background:#253550;padding:5px 7px;border-radius:12px
+}
+.post-text{
+ font-size:13px;line-height:1.55;color:#e4eaf3;
+ white-space:pre-wrap;overflow-wrap:anywhere;margin:11px 0
+}
+.post-images{display:grid;grid-template-columns:1fr;gap:3px}
+.post-images.multi{grid-template-columns:repeat(2,minmax(0,1fr))}
+.post-images img{width:100%;max-height:400px;object-fit:cover;display:block}
+.post-images.multi img{height:155px}
+.post-images.multi img:first-child:last-child{grid-column:1/-1}
+.post-footer{
+ display:flex;align-items:center;justify-content:space-between;
+ gap:8px;border-top:1px solid #29374e;padding-top:9px;margin-top:9px
+}
+.post-footer small{font-size:10px;color:#8494aa}
+.delete-button{
+ border:1px solid #743c49;background:#301c28;
+ color:#ff9fa9;padding:6px 10px;border-radius:7px;font-size:10px
+}
+.empty{
+ text-align:center;padding:19px 10px;
+ color:#8999b0;font-size:12px;
+ background:#111b2c;border:1px solid #28364c;border-radius:12px
+}
+.loading{color:#9aaac0;font-size:11px;padding:12px}
+.viewer{
+ display:none;position:fixed;inset:0;z-index:3000;
+ background:#000e;align-items:center;justify-content:center;padding:35px 10px
+}
+.viewer.active{display:flex}
+.viewer img{max-width:100%;max-height:90%;object-fit:contain}
+.viewer button{position:absolute;right:12px;top:12px;padding:9px;border:0;border-radius:8px}
+footer{text-align:center;color:#64748b;font-size:10px;padding:15px}
 
-@media(max-width:480px) {
- .topbar {
-  justify-content: flex-start;
-  overflow-x: auto;
- }
-
- .topbar a {
-  font-size: 12px;
-  padding: 12px 9px;
- }
-
- main {
-  padding: 12px;
- }
+@media(max-width:380px){
+ #displayName{font-size:21px}
+ .avatar-ring{width:100px;height:100px}
+ .topbar a{font-size:10px;padding:9px 5px}
 }
 </style>
 </head>
 
 <body>
-
-<!-- FIXED NAVIGATION -->
 
 <nav class="topbar">
  <a href="dashboard.html">Home</a>
@@ -164,288 +183,366 @@ button:disabled {
 <main>
 
 <section class="profile-card">
+ <div class="profile-content">
+  <div class="avatar-ring">
+   <img id="photo" class="avatar hidden" alt="Profile picture">
+   <div id="fallback" class="fallback">M</div>
+  </div>
 
-<img id="photo" class="avatar hidden" alt="Profile picture">
+  <h1 id="displayName">Loading profile...</h1>
+  <p id="realName"></p>
+  <div id="stream" class="profile-stream">Loading stream...</div>
 
-<div id="fallback" class="avatar">M</div>
+  <div class="profile-stats">
+   <div><strong id="postCount">0</strong>Posts</div>
+  </div>
 
-<h1 id="displayName">Loading profile...</h1>
+  <div id="editArea" class="edit-box hidden">
+   <h3 class="edit-heading">Edit your profile</h3>
 
-<p id="realName" class="muted"></p>
+   <label for="nickname">Nickname</label>
+   <input id="nickname" maxlength="30" placeholder="Choose a nickname">
 
-<p id="stream" class="muted"></p>
+   <label for="photoFile">Change profile picture</label>
+   <input id="photoFile" type="file" accept="image/png,image/jpeg,image/webp">
+   <p class="small-note">JPG, PNG or WebP. Maximum 3 MB.</p>
 
-<div id="editArea" class="hidden">
+   <button id="saveButton" class="save-button">Save profile</button>
+  </div>
 
-<label>Nickname</label>
+  <p id="message"></p>
+ </div>
+</section>
 
-<input
- id="nickname"
- maxlength="30"
- placeholder="Choose nickname"
->
-
-<label>Change profile picture</label>
-
-<input
- id="photoFile"
- type="file"
- accept="image/png,image/jpeg,image/webp"
->
-
-<p class="muted">Maximum 3 MB.</p>
-
-<button id="saveButton">Save Profile</button>
-
-</div>
-
-<p id="message"></p>
-
+<section>
+ <div class="section-title">
+  <h2>Student posts</h2>
+  <span id="postCountLabel">0 posts</span>
+ </div>
+ <div id="posts"><p class="loading">Loading posts...</p></div>
 </section>
 
 </main>
 
+<div id="imageViewer" class="viewer">
+ <button id="closeViewer">Close ✕</button>
+ <img id="largeImage" alt="Post image preview">
+</div>
+
+<footer>THE MAGUNGA HIGH · STUDENT PROFILE</footer>
+
 <script type="module">
-
 import {auth,db} from "./assets/js/firebase.js";
-
+import {onAuthStateChanged} from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
 import {
- onAuthStateChanged
-} from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
-
-import {
- doc,getDoc,writeBatch,serverTimestamp
+ doc,getDoc,collection,getDocs,query,where,
+ writeBatch,serverTimestamp,deleteDoc
 } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
-
 import {uploadProfileImage} from "./assets/js/cloudinary.js";
 
-const photo = document.getElementById("photo");
-const fallback = document.getElementById("fallback");
-const displayName = document.getElementById("displayName");
-const realName = document.getElementById("realName");
-const stream = document.getElementById("stream");
-const editArea = document.getElementById("editArea");
-const nicknameInput = document.getElementById("nickname");
-const photoFile = document.getElementById("photoFile");
-const saveButton = document.getElementById("saveButton");
-const message = document.getElementById("message");
+const $=id=>document.getElementById(id);
+const targetUid=new URLSearchParams(location.search).get("uid");
 
-const targetUid = new URLSearchParams(location.search).get("uid");
+let currentUser=null,currentData=null,profileOwner=false;
 
-let currentUser = null;
-let currentData = null;
+const safe=v=>typeof v==="string"?v:"";
+const display=p=>safe(p.nickname).trim()||safe(p.name).trim()||"Student";
+const initial=n=>(n||"M").trim().charAt(0).toUpperCase();
 
-function showPhoto(url,name) {
+function timeAgo(ts){
+ if(!ts?.toDate)return "Just now";
+ const s=Math.max(0,Math.floor((Date.now()-ts.toDate().getTime())/1000));
+ if(s<60)return "Just now";
+ if(s<3600)return Math.floor(s/60)+" minutes ago";
+ if(s<86400)return Math.floor(s/3600)+" hours ago";
+ if(s<604800)return Math.floor(s/86400)+" days ago";
+ return ts.toDate().toLocaleDateString();
+}
 
- if(url && /^https:\/\//i.test(url)) {
-
-  photo.src = url;
-  photo.classList.remove("hidden");
-  fallback.classList.add("hidden");
-
-  photo.onerror = () => {
-
-   photo.classList.add("hidden");
+function showPhoto(url,name){
+ const img=$("photo"),fallback=$("fallback");
+ fallback.textContent=initial(name);
+ if(url&&/^https:\/\//i.test(url)){
+  img.src=url;img.classList.remove("hidden");fallback.classList.add("hidden");
+  img.onerror=()=>{
+   img.classList.add("hidden");
    fallback.classList.remove("hidden");
-
-   fallback.textContent =
-    (name || "M").charAt(0).toUpperCase();
-
   };
-
- } else {
-
-  photo.classList.add("hidden");
+ }else{
+  img.classList.add("hidden");
   fallback.classList.remove("hidden");
-
-  fallback.textContent =
-   (name || "M").charAt(0).toUpperCase();
-
  }
-
 }
 
-async function loadProfile(user) {
+function makeAvatar(url,name){
+ if(url&&/^https:\/\//i.test(url)){
+  const img=document.createElement("img");
+  img.className="post-avatar";img.src=url;img.alt="Profile";
+  img.onerror=()=>{
+   const d=document.createElement("div");
+   d.className="post-avatar post-initial";d.textContent=initial(name);
+   img.replaceWith(d);
+  };
+  return img;
+ }
+ const d=document.createElement("div");
+ d.className="post-avatar post-initial";
+ d.textContent=initial(name);
+ return d;
+}
 
- currentUser = user;
+function showImage(url){
+ $("largeImage").src=url;
+ $("imageViewer").classList.add("active");
+}
+$("closeViewer").onclick=()=>{
+ $("imageViewer").classList.remove("active");
+ $("largeImage").src="";
+};
+$("imageViewer").addEventListener("click",e=>{
+ if(e.target===$("imageViewer"))$("closeViewer").click();
+});
 
- const uid = targetUid || user.uid;
+async function loadProfile(user){
+ currentUser=user;
+ const uid=targetUid||user.uid;
+ profileOwner=uid===user.uid;
 
- const own = uid === user.uid;
+ const snap=await getDoc(doc(db,"publicProfiles",uid));
 
- const snap = await getDoc(
-  doc(db,"publicProfiles",uid)
- );
-
- if(!snap.exists() || snap.data().status !== "approved") {
-
-  message.textContent = "This profile is unavailable.";
-
-  displayName.textContent = "Profile not found";
-
+ if(!snap.exists()||snap.data().status!=="approved"){
+  $("displayName").textContent="Profile not found";
+  $("stream").textContent="";
+  $("message").textContent="This profile is unavailable.";
+  $("posts").innerHTML='<div class="empty">This profile is not available.</div>';
   return;
-
  }
 
- currentData = snap.data();
+ currentData=snap.data();
 
- const shown =
-  currentData.nickname || currentData.name || "Member";
+ const name=display(currentData);
+ $("displayName").textContent=name;
+ $("realName").textContent=currentData.nickname?safe(currentData.name):"";
+ $("stream").textContent=currentData.stream||"Student";
+ showPhoto(currentData.photoURL,name);
 
- displayName.textContent = shown;
-
- realName.textContent = currentData.nickname
-  ? currentData.name || ""
-  : "";
-
- stream.textContent = currentData.stream || "";
-
- showPhoto(currentData.photoURL || "",shown);
-
- if(own) {
-
-  editArea.classList.remove("hidden");
-
-  nicknameInput.value = currentData.nickname || "";
-
+ if(profileOwner){
+  $("editArea").classList.remove("hidden");
+  $("nickname").value=safe(currentData.nickname);
  }
 
+ await loadProfilePosts(uid);
 }
 
-// SAVE PROFILE
+/* PROFILE POST HISTORY */
+async function loadProfilePosts(uid){
+ const box=$("posts");
+ box.replaceChildren();
+ box.innerHTML='<p class="loading">Loading posts...</p>';
 
-saveButton.addEventListener("click",async() => {
+ try{
+  const base=collection(db,"communityPosts");
+  let snapshots=[];
 
- saveButton.disabled = true;
+  if(profileOwner){
+   // Owner can see all their own posts, including private ones.
+   snapshots=await Promise.all([
+    getDocs(query(base,where("authorId","==",uid)))
+   ]);
+  }else{
+   // Visitors only query posts that their rules permit them to read.
+   const tasks=[
+    getDocs(query(base,
+     where("authorId","==",uid),
+     where("audience","==","all")
+    ))
+   ];
 
- message.textContent = "Saving profile...";
-
- try {
-
-  const nickname = nicknameInput.value.trim();
-
-  if(nickname.length > 30) {
-
-   throw new Error(
-    "Nickname must be 30 characters or fewer."
-   );
-
-  }
-
-  const file = photoFile.files[0];
-
-  if(file) {
-
-   if(file.size > 3 * 1024 * 1024) {
-
-    throw new Error(
-     "Choose an image smaller than 3 MB."
-    );
-
+   if(currentData.stream){
+    tasks.push(getDocs(query(base,
+     where("authorId","==",uid),
+     where("audience","==","stream"),
+     where("stream","==",currentData.stream)
+    )));
    }
 
-   if(!["image/jpeg","image/png","image/webp"].includes(file.type)) {
+   snapshots=await Promise.all(tasks);
+  }
 
-    throw new Error(
-     "Choose a JPG, PNG or WEBP image."
-    );
+  const unique=new Map();
+  snapshots.forEach(s=>s.docs.forEach(d=>{
+   unique.set(d.id,{id:d.id,...d.data()});
+  }));
 
+  const posts=Array.from(unique.values());
+  posts.sort((a,b)=>(b.createdAt?.toMillis?.()||0)-(a.createdAt?.toMillis?.()||0));
+
+  $("postCount").textContent=posts.length;
+  $("postCountLabel").textContent=posts.length+" posts";
+
+  if(!posts.length){
+   box.innerHTML='<div class="empty">No posts to display yet.</div>';
+   return;
+  }
+
+  box.replaceChildren();
+  posts.forEach(renderPost);
+
+ }catch(error){
+  console.error("Profile posts error:",error);
+  box.innerHTML='<div class="empty">Unable to load posts. Check Firestore permissions and indexes.</div>';
+ }
+}
+
+function renderPost(post){
+ const card=document.createElement("article");
+ card.className="post-card";
+
+ const header=document.createElement("div");
+ header.className="post-header";
+
+ const name=post.authorDisplayName||post.authorNickname||post.authorName||"Student";
+ header.append(makeAvatar(post.authorPhotoURL,name));
+
+ const details=document.createElement("div");
+ const author=document.createElement("div");
+ author.className="post-author";author.textContent=name;
+
+ const time=document.createElement("div");
+ time.className="post-time";time.textContent=timeAgo(post.createdAt);
+
+ details.append(author,time);
+ header.append(details);
+
+ const privacy=document.createElement("span");
+ privacy.className="privacy";
+ privacy.textContent=
+  post.audience==="private"?"ONLY ME":
+  post.audience==="stream"?"MY STREAM":"ALL SCHOOL";
+
+ header.append(privacy);
+ card.append(header);
+
+ if(post.text){
+  const text=document.createElement("div");
+  text.className="post-text";text.textContent=post.text;
+  card.append(text);
+ }
+
+ if(Array.isArray(post.imageUrls)&&post.imageUrls.length){
+  const images=document.createElement("div");
+  images.className="post-images"+(post.imageUrls.length>1?" multi":"");
+
+  post.imageUrls.slice(0,5).forEach(url=>{
+   if(typeof url!=="string"||!/^https:\/\//i.test(url))return;
+   const img=document.createElement("img");
+   img.src=url;img.alt="Post image";img.loading="lazy";
+   img.addEventListener("click",()=>showImage(url));
+   images.append(img);
+  });
+
+  card.append(images);
+ }
+
+ const footer=document.createElement("div");
+ footer.className="post-footer";
+
+ const label=document.createElement("small");
+ label.textContent="Student post";
+
+ footer.append(label);
+
+ if(profileOwner&&post.authorId===currentUser.uid){
+  const del=document.createElement("button");
+  del.className="delete-button";
+  del.textContent="Delete post";
+
+  del.onclick=async()=>{
+   if(!confirm("Are you sure you want to delete this post?"))return;
+   del.disabled=true;
+
+   try{
+    await deleteDoc(doc(db,"communityPosts",post.id));
+    await loadProfilePosts(currentUser.uid);
+   }catch(error){
+    console.error(error);
+    alert("Unable to delete post. Check your permissions.");
+   }finally{
+    del.disabled=false;
    }
-
-  }
-
-  let photoURL = currentData.photoURL || "";
-
-  if(file) {
-
-   photoURL = await uploadProfileImage(file);
-
-  }
-
-  const changes = {
-   nickname,
-   profileUpdatedAt: serverTimestamp()
   };
 
-  if(file) {
-   changes.photoURL = photoURL;
+  footer.append(del);
+ }
+
+ card.append(footer);
+ $("posts").append(card);
+}
+
+/* SAVE PROFILE DETAILS */
+$("saveButton").addEventListener("click",async()=>{
+ const button=$("saveButton");
+ button.disabled=true;
+ $("message").textContent="Saving profile...";
+
+ try{
+  const nickname=$("nickname").value.trim();
+  const file=$("photoFile").files[0];
+
+  if(nickname.length>30)throw new Error("Nickname must be 30 characters or fewer.");
+
+  if(file){
+   if(file.size>3*1024*1024)throw new Error("Image must be 3 MB or smaller.");
+   if(!["image/jpeg","image/png","image/webp"].includes(file.type)){
+    throw new Error("Choose JPG, PNG or WebP.");
+   }
   }
 
-  const batch = writeBatch(db);
+  let photoURL=safe(currentData.photoURL);
 
-  batch.update(
-   doc(db,"users",currentUser.uid),
-   changes
-  );
+  if(file)photoURL=await uploadProfileImage(file);
 
-  batch.update(
-   doc(db,"publicProfiles",currentUser.uid),
-   changes
-  );
+  const changes={
+   nickname,
+   profileUpdatedAt:serverTimestamp()
+  };
+  if(file)changes.photoURL=photoURL;
 
+  const batch=writeBatch(db);
+  batch.update(doc(db,"users",currentUser.uid),changes);
+  batch.update(doc(db,"publicProfiles",currentUser.uid),changes);
   await batch.commit();
 
-  currentData = {
-   ...currentData,
-   ...changes,
-   photoURL
-  };
+  currentData={...currentData,...changes,photoURL};
 
-  displayName.textContent =
-   nickname || currentData.name;
+  $("displayName").textContent=display(currentData);
+  $("realName").textContent=nickname?safe(currentData.name):"";
+  showPhoto(photoURL,display(currentData));
 
-  realName.textContent =
-   nickname ? currentData.name || "" : "";
+  $("photoFile").value="";
+  $("message").textContent="Profile updated successfully.";
 
-  showPhoto(
-   photoURL,
-   nickname || currentData.name
-  );
-
-  photoFile.value = "";
-
-  message.textContent =
-   "Profile updated successfully.";
-
- } catch(error) {
-
-  console.error(error);
-
-  message.textContent =
-   error.message || "Could not update profile.";
-
- } finally {
-
-  saveButton.disabled = false;
-
+ }catch(error){
+  console.error("Profile update error:",error);
+  $("message").textContent=error.message||"Could not update profile.";
+ }finally{
+  button.disabled=false;
  }
-
 });
 
-// AUTHENTICATION
-
-onAuthStateChanged(auth,user => {
-
- if(!user) {
-
-  location.href = "login.html";
-
+/* AUTHENTICATION */
+onAuthStateChanged(auth,user=>{
+ if(!user){
+  location.href="login.html";
   return;
-
  }
 
- loadProfile(user).catch(error => {
-
-  console.error(error);
-
-  message.textContent =
-   "Could not load profile. Check Firestore rules.";
-
+ loadProfile(user).catch(error=>{
+  console.error("Profile loading error:",error);
+  $("displayName").textContent="Unable to load profile";
+  $("message").textContent="Could not load profile. Check Firestore rules.";
  });
-
 });
-
 </script>
-
 </body>
 </html>
