@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "269431579701",
+    "project_id": "magunga-high",
+    "storage_bucket": "magunga-high.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:269431579701:android:9ce8139daa0d47d9e43d7c",
+        "android_client_info": {
+          "package_name": "com.magungahigh.portal"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "269431579701-ks2eqgur6pa0ht1h7ucllhivs8qv1esh.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBCgAsUcuZ2yFi5LciHirnSRdjfzsTGnhI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "269431579701-ks2eqgur6pa0ht1h7ucllhivs8qv1esh.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
