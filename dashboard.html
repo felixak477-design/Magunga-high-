@@ -1,1234 +1,360 @@
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#090d16">
-<title>Home | The Magunga High</title>
+rules_version = '2';
 
-<style>
-* {
-  box-sizing: border-box;
-  font-family: Arial, sans-serif;
-}
+service cloud.firestore {
+  match /databases/{database}/documents {
 
-html {
-  width: 100%;
-  max-width: 100%;
-  overflow-x: hidden;
-  -webkit-text-size-adjust: 100%;
-}
-
-body {
-  margin: 0;
-  width: 100%;
-  min-height: 100vh;
-  background: #090d16;
-  color: #f2f4f8;
-  padding-top: 112px;
-  padding-bottom: env(safe-area-inset-bottom);
-  overflow-x: hidden;
-}
-
-a {
-  color: inherit;
-  text-decoration: none;
-}
-
-button,
-a {
-  -webkit-tap-highlight-color: transparent;
-}
-
-/* NAVIGATION */
-
-.topbar {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  width: 100%;
-  z-index: 1000;
-  background: #111827;
-  border-bottom: 1px solid rgba(255,204,92,.35);
-  box-shadow: 0 3px 15px rgba(0,0,0,.35);
-}
-
-.brand {
-  height: 48px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-  padding: 0 13px;
-}
-
-.brand h2 {
-  color: #ffd36a;
-  font-size: 16px;
-  margin: 0;
-}
-
-.brand small {
-  color: #9ca9bb;
-  font-size: 10px;
-  white-space: nowrap;
-}
-
-.navigation {
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-  height: 62px;
-  width: 100%;
-  border-top: 1px solid rgba(255,255,255,.06);
-}
-
-.nav-item {
-  flex: 1;
-  min-width: 0;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 4px;
-  color: #9da9bb;
-  font-size: 10px;
-  position: relative;
-  white-space: nowrap;
-}
-
-.nav-icon {
-  font-size: 23px;
-  line-height: 1;
-}
-
-.nav-item.active {
-  color: #ffd36a;
-}
-
-.nav-item.active::after {
-  content: "";
-  position: absolute;
-  bottom: 0;
-  left: 18%;
-  right: 18%;
-  height: 3px;
-  border-radius: 5px 5px 0 0;
-  background: #ffd36a;
-}
-
-/* MAIN */
-
-main {
-  width: 100%;
-  max-width: 720px;
-  margin: 0 auto;
-  padding: 15px;
-  min-width: 0;
-}
-
-section {
-  width: 100%;
-  min-width: 0;
-}
-
-/* PROFILE */
-
-.welcome {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 13px 0;
-  border-bottom: 1px solid #283448;
-  margin-bottom: 12px;
-  min-width: 0;
-}
-
-.avatar,
-.initial {
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  flex-shrink: 0;
-}
-
-.avatar {
-  object-fit: cover;
-  border: 2px solid #d6a83e;
-  background: #302511;
-}
-
-.initial {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: linear-gradient(135deg,#d6a83e,#755019);
-  color: white;
-  font-size: 20px;
-  font-weight: bold;
-  border: 2px solid #ffd36a;
-}
-
-.welcome-info {
-  min-width: 0;
-  overflow-wrap: anywhere;
-}
-
-.welcome h1 {
-  font-size: 17px;
-  color: #ffdc87;
-  margin: 0 0 5px;
-  overflow-wrap: anywhere;
-}
-
-.welcome p {
-  margin: 0;
-  color: #9eacc0;
-  font-size: 11px;
-}
-
-.stream {
-  color: #f4d58a;
-  font-size: 11px;
-  margin-top: 5px;
-}
-
-/* DASHBOARD UPLOAD CARD */
-
-.upload-card {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  width: 100%;
-  min-width: 0;
-  margin: 15px 0 22px;
-  padding: 16px;
-  border-radius: 19px;
-  background: linear-gradient(135deg,#293e5c,#111b2c);
-  border: 1px solid rgba(255,211,106,.55);
-  box-shadow: 0 6px 20px rgba(0,0,0,.25);
-  transition: transform .2s ease;
-}
-
-.upload-card:active {
-  transform: scale(.98);
-}
-
-.upload-logo {
-  width: 58px;
-  height: 58px;
-  flex-shrink: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 19px;
-  background: linear-gradient(145deg,#ffdf85,#c28b22);
-  color: #17120a;
-  font-size: 31px;
-  font-weight: bold;
-  box-shadow: 0 4px 13px #0005;
-}
-
-.upload-card-content {
-  flex: 1;
-  min-width: 0;
-}
-
-.upload-card h3 {
-  margin: 0 0 6px;
-  color: #ffdc87;
-  font-size: 15px;
-  overflow-wrap: anywhere;
-}
-
-.upload-card p {
-  margin: 0;
-  color: #b9c5d6;
-  font-size: 11px;
-  line-height: 1.5;
-}
-
-.upload-arrow {
-  color: #ffd36a;
-  font-size: 26px;
-  flex-shrink: 0;
-}
-
-/* STATUS */
-
-#libraryPreviewStatus,
-#announcementStatus,
-#statusMessage {
-  color: #aebbd0;
-  font-size: 12px;
-  line-height: 1.6;
-  padding: 8px 0;
-  overflow-wrap: anywhere;
-}
-
-/* SECTION HEADINGS */
-
-.section-heading {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 10px;
-  margin: 20px 0 12px;
-}
-
-.section-heading h2 {
-  color: #f5d98b;
-  font-size: 17px;
-  margin: 0;
-}
-
-.section-heading a {
-  color: #d6b35d;
-  font-size: 11px;
-  white-space: nowrap;
-}
-
-/* ANNOUNCEMENTS */
-
-.post {
-  width: 100%;
-  min-width: 0;
-  padding: 15px 0;
-  border-bottom: 1px solid #283448;
-}
-
-.post-header {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 12px;
-  min-width: 0;
-}
-
-.post-avatar {
-  width: 39px;
-  height: 39px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: #263751;
-  color: #f5d98b;
-  font-size: 19px;
-  flex-shrink: 0;
-}
-
-.post-author {
-  font-size: 12px;
-  font-weight: bold;
-  color: #f2d58f;
-}
-
-.post-date {
-  color: #8795aa;
-  font-size: 10px;
-  margin-top: 4px;
-}
-
-.post-tag {
-  margin-left: auto;
-  color: #e8c879;
-  font-size: 9px;
-  background: #302511;
-  padding: 5px 8px;
-  border-radius: 20px;
-  flex-shrink: 0;
-}
-
-.post h3 {
-  color: #f4d58b;
-  font-size: 15px;
-  margin: 8px 0;
-  overflow-wrap: anywhere;
-}
-
-.post-message {
-  color: #d1d8e4;
-  font-size: 13px;
-  line-height: 1.7;
-  white-space: pre-wrap;
-  overflow-wrap: anywhere;
-}
-
-.post-footer {
-  display: flex;
-  gap: 20px;
-  margin-top: 12px;
-  color: #94a1b4;
-  font-size: 11px;
-}
-
-.post-footer a {
-  color: #d8b45e;
-}
-
-/* LIBRARY PREVIEWS
-   ONE MATERIAL PER ROW */
-
-.library-grid {
-  display: grid;
-  grid-template-columns: minmax(0,1fr);
-  gap: 16px;
-  width: 100%;
-  margin-top: 12px;
-}
-
-.library-card {
-  width: 100%;
-  min-width: 0;
-  background: #111b2c;
-  border: 1px solid #34445f;
-  border-radius: 14px;
-  overflow: hidden;
-}
-
-.library-image {
-  width: 100%;
-  max-width: 100%;
-  height: auto;
-  max-height: 420px;
-  object-fit: contain;
-  display: block;
-  margin: 0 auto;
-  background: #1b2940;
-  cursor: pointer;
-}
-
-.library-pdf {
-  width: 100%;
-  height: 180px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  background: #1b2940;
-  color: #f5d98b;
-  font-size: 42px;
-}
-
-.library-pdf small {
-  font-size: 11px;
-}
-
-.library-details {
-  padding: 13px;
-}
-
-.library-details h3 {
-  color: #f5d98b;
-  font-size: 13px;
-  margin: 0 0 7px;
-  overflow-wrap: anywhere;
-}
-
-.library-details p {
-  color: #9eacc0;
-  font-size: 11px;
-  margin: 0 0 9px;
-}
-
-.library-view {
-  display: inline-block;
-  color: #e8c879;
-  font-size: 12px;
-  font-weight: bold;
-  padding: 5px 0;
-}
-
-.library-error {
-  color: #ffb6b6;
-  font-size: 11px;
-}
-
-/* LEARNING CENTRE */
-
-.learning-card {
-  margin: 22px 0;
-  padding: 19px;
-  border-radius: 16px;
-  background: linear-gradient(135deg,#202b3d,#111b2c);
-  border: 1px solid rgba(255,204,92,.5);
-  box-shadow: 0 5px 18px rgba(0,0,0,.2);
-}
-
-.learning-card h2 {
-  color: #f5d98b;
-  margin: 0 0 8px;
-  font-size: 18px;
-}
-
-.learning-card p {
-  color: #b5c0d0;
-  font-size: 12px;
-  line-height: 1.6;
-}
-
-.learning-button {
-  display: inline-block;
-  margin-top: 8px;
-  background: linear-gradient(120deg,#f5d078,#bd872a);
-  color: #17120a;
-  padding: 11px 15px;
-  border-radius: 9px;
-  font-size: 11px;
-  font-weight: bold;
-}
-
-/* MAGUNGA AI */
-
-.feed-section {
-  padding: 17px;
-  margin: 18px 0;
-  border: 1px solid #34445f;
-  border-radius: 15px;
-  background: #111b2c;
-}
-
-.feed-section h2 {
-  color: #f5d98b;
-  font-size: 16px;
-  margin: 0 0 8px;
-}
-
-.feed-section p {
-  color: #b2bdcd;
-  font-size: 12px;
-  line-height: 1.6;
-  margin: 0 0 9px;
-}
-
-.feed-link {
-  color: #e8c879;
-  font-size: 12px;
-  font-weight: bold;
-}
-
-/* IMAGE AND PDF VIEWERS */
-
-.viewer {
-  display: none;
-  position: fixed;
-  inset: 0;
-  z-index: 3000;
-  background: rgba(0,0,0,.94);
-  align-items: center;
-  justify-content: center;
-  padding: 55px 12px 15px;
-  width: 100%;
-  height: 100%;
-  height: 100dvh;
-}
-
-.viewer.active {
-  display: flex;
-}
-
-.viewer-close {
-  position: absolute;
-  top: max(12px, env(safe-area-inset-top));
-  right: 15px;
-  background: #263751;
-  color: white;
-  border: 0;
-  border-radius: 8px;
-  padding: 11px 15px;
-  font-size: 14px;
-  cursor: pointer;
-  z-index: 2;
-}
-
-#largeLibraryImage {
-  display: block;
-  max-width: 100%;
-  max-height: 85%;
-  object-fit: contain;
-}
-
-#pdfFrame {
-  width: 100%;
-  height: 100%;
-  border: 0;
-  background: white;
-  border-radius: 8px;
-}
-
-.empty {
-  color: #9eacc0;
-  font-size: 12px;
-  padding: 15px 0;
-}
-
-footer {
-  text-align: center;
-  color: #758399;
-  padding: 25px 10px;
-  font-size: 10px;
-}
-
-/* PHONE AND APK SCREEN FIXES */
-
-@media(max-width:480px) {
-  body {
-    padding-top: 108px;
-  }
-
-  .brand {
-    height: 46px;
-  }
-
-  .brand h2 {
-    font-size: 14px;
-  }
-
-  .navigation {
-    height: 62px;
-  }
-
-  .nav-item {
-    font-size: 9px;
-    gap: 5px;
-  }
-
-  .nav-icon {
-    font-size: 21px;
-  }
-
-  main {
-    padding: 12px;
-  }
-
-  .welcome h1 {
-    font-size: 15px;
-  }
-
-  .upload-card {
-    padding: 13px;
-    gap: 11px;
-  }
-
-  .upload-logo {
-    width: 51px;
-    height: 51px;
-    border-radius: 16px;
-    font-size: 27px;
-  }
-
-  .upload-card h3 {
-    font-size: 13px;
-  }
-
-  .upload-card p {
-    font-size: 10px;
-  }
-
-  .section-heading h2 {
-    font-size: 15px;
-  }
-
-  .library-image {
-    max-height: 360px;
-  }
-}
-
-@media(max-width:340px) {
-  .brand h2 {
-    font-size: 12px;
-  }
-
-  .brand small {
-    font-size: 9px;
-  }
-
-  .nav-item {
-    font-size: 8px;
-  }
-
-  .nav-icon {
-    font-size: 19px;
-  }
-
-  main {
-    padding: 10px;
-  }
-
-  .upload-card {
-    gap: 9px;
-    padding: 11px;
-  }
-
-  .upload-logo {
-    width: 44px;
-    height: 44px;
-  }
-}
-</style>
-</head>
-
-<body>
-
-<header class="topbar">
-  <div class="brand">
-    <h2>THE MAGUNGA HIGH</h2>
-    <small id="headerStream">Loading...</small>
-  </div>
-
-  <nav class="navigation">
-    <a href="dashboard.html" class="nav-item active">
-      <span class="nav-icon">⌂</span>
-      <span>Home</span>
-    </a>
-
-    <a href="community.html" class="nav-item">
-      <span class="nav-icon">♧</span>
-      <span>Friends</span>
-    </a>
-
-    <a href="chat.html" class="nav-item">
-      <span class="nav-icon">☏</span>
-      <span>Messages</span>
-    </a>
-
-    <a href="notifications.html" class="nav-item">
-      <span class="nav-icon">♧</span>
-      <span>Alerts</span>
-    </a>
-
-    <a href="profile.html" class="nav-item">
-      <span class="nav-icon">●</span>
-      <span>Account</span>
-    </a>
-  </nav>
-</header>
-
-<main>
-
-  <!-- STUDENT PROFILE -->
-
-  <section class="welcome">
-    <img
-      id="dashboardPhoto"
-      class="avatar"
-      src=""
-      alt="Profile"
-      style="display:none"
-    >
-
-    <div id="profileInitial" class="initial">?</div>
-
-    <div class="welcome-info">
-      <h1 id="welcomeName">Welcome, Student</h1>
-      <p id="profileNickname"></p>
-      <div class="stream" id="streamName">Loading stream...</div>
-    </div>
-  </section>
-
-  <p id="statusMessage"></p>
-
-  <!-- DIGITAL LIBRARY UPLOAD CARD -->
-
-  <a href="library.html#upload" class="upload-card">
-    <div class="upload-logo">⇧</div>
-
-    <div class="upload-card-content">
-      <h3>Upload to Digital Library</h3>
-      <p>
-        Share notes, revision materials, PDFs and pictures
-        with other students.
-      </p>
-    </div>
-
-    <span class="upload-arrow">›</span>
-  </a>
-
-  <!-- ANNOUNCEMENTS -->
-
-  <section>
-    <div class="section-heading">
-      <h2>📢 Announcements</h2>
-      <a href="announcements.html">View all →</a>
-    </div>
-
-    <p id="announcementStatus">Loading announcements...</p>
-    <div id="announcementFeed"></div>
-  </section>
-
-  <!-- DIGITAL LIBRARY FEED -->
-
-  <section>
-    <div class="section-heading">
-      <h2>📚 Digital Library</h2>
-      <a href="library.html">View all →</a>
-    </div>
-
-    <p id="libraryPreviewStatus">Loading learning materials...</p>
-    <div id="libraryPreviewFeed" class="library-grid"></div>
-  </section>
-
-  <!-- LEARNING CENTRE -->
-
-  <section class="learning-card">
-    <h2>🎓 Learning Centre</h2>
-
-    <p>
-      Explore learning resources, revision questions
-      and study materials to support your studies.
-    </p>
-
-    <a
-      class="learning-button"
-      href="https://esomake.co.ke/secondary/mathematics/form-4/revision-questions/"
-    >
-      Open Learning Centre →
-    </a>
-  </section>
-
-  <!-- MAGUNGA AI -->
-
-  <section class="feed-section">
-    <h2>✦ Magunga AI</h2>
-
-    <p>
-      Your personal AI study assistant. Ask questions,
-      revise KCSE topics and practise.
-    </p>
-
-    <a class="feed-link" href="ai.html">
-      Open Magunga AI →
-    </a>
-  </section>
-
-</main>
-
-<!-- IMAGE VIEWER -->
-
-<div id="imageViewer" class="viewer">
-  <button class="viewer-close" id="closeImageViewer">
-    Close ✕
-  </button>
-  <img id="largeLibraryImage" alt="Library material">
-</div>
-
-<!-- PDF VIEWER -->
-
-<div id="pdfViewer" class="viewer">
-  <button class="viewer-close" id="closePdfViewer">
-    Close ✕
-  </button>
-  <iframe id="pdfFrame" title="PDF document viewer"></iframe>
-</div>
-
-<footer>
-  THE MAGUNGA HIGH · STUDENT COMMUNITY
-</footer>
-
-<script type="module">
-
-import { auth, db }
-from "./assets/js/firebase.js";
-
-import {
-  onAuthStateChanged,
-  signOut
-} from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
-
-import {
-  doc,
-  getDoc,
-  collection,
-  getDocs,
-  query,
-  where
-} from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
-
-const $ = id => document.getElementById(id);
-
-let profile = null;
-
-/* PROFILE PHOTO */
-
-function showPhoto(photoURL, name) {
-  const initial = (name || "S").trim().charAt(0).toUpperCase();
-
-  $("profileInitial").textContent = initial || "S";
-
-  if (photoURL && /^https:\/\//i.test(photoURL)) {
-    $("dashboardPhoto").src = photoURL;
-    $("dashboardPhoto").style.display = "block";
-    $("profileInitial").style.display = "none";
-
-    $("dashboardPhoto").onerror = () => {
-      $("dashboardPhoto").style.display = "none";
-      $("profileInitial").style.display = "flex";
-    };
-  } else {
-    $("dashboardPhoto").style.display = "none";
-    $("profileInitial").style.display = "flex";
-  }
-}
-
-/* DATE FORMAT */
-
-function formatDate(timestamp) {
-  if (!timestamp?.toDate) return "Recently published";
-  return timestamp.toDate().toLocaleString();
-}
-
-/* ANNOUNCEMENTS */
-
-async function loadAnnouncements() {
-  const feed = $("announcementFeed");
-  const message = $("announcementStatus");
-
-  feed.replaceChildren();
-  message.textContent = "Loading announcements...";
-
-  try {
-    const stream = profile.stream || "";
-
-    const announcementQuery = query(
-      collection(db, "announcements"),
-      where("stream", "in", [stream, "All"])
-    );
-
-    const results = await getDocs(announcementQuery);
-
-    if (results.empty) {
-      message.textContent = "No announcements have been published yet.";
-      return;
+    function signedIn() {
+      return request.auth != null;
     }
 
-    const items = results.docs.map(item => ({
-      id: item.id,
-      ...item.data()
-    }));
-
-    items.sort((a, b) =>
-      (b.createdAt?.toMillis?.() || 0) -
-      (a.createdAt?.toMillis?.() || 0)
-    );
-
-    message.textContent = items.length + " announcement(s) available";
-
-    items.forEach(item => {
-      const post = document.createElement("article");
-      post.className = "post";
-
-      const top = document.createElement("div");
-      top.className = "post-header";
-
-      const avatar = document.createElement("div");
-      avatar.className = "post-avatar";
-      avatar.textContent = "🏫";
-
-      const author = document.createElement("div");
-
-      const authorName = document.createElement("div");
-      authorName.className = "post-author";
-      authorName.textContent = item.authorName || "School Administration";
-
-      const date = document.createElement("div");
-      date.className = "post-date";
-      date.textContent = formatDate(item.createdAt);
-
-      author.append(authorName, date);
-
-      const tag = document.createElement("span");
-      tag.className = "post-tag";
-      tag.textContent = item.stream === "All"
-        ? "ALL STUDENTS"
-        : (item.stream || "SCHOOL").toUpperCase();
-
-      top.append(avatar, author, tag);
-
-      const title = document.createElement("h3");
-      title.textContent = item.title || "School announcement";
-
-      const body = document.createElement("div");
-      body.className = "post-message";
-      body.textContent = item.message || item.body || "";
-
-      const footer = document.createElement("div");
-      footer.className = "post-footer";
-
-      const label = document.createElement("span");
-      label.textContent = "📢 School update";
-
-      const link = document.createElement("a");
-      link.href = "announcements.html";
-      link.textContent = "View details";
-
-      footer.append(label, link);
-      post.append(top, title, body, footer);
-      feed.append(post);
-    });
-
-  } catch (error) {
-    console.error("Announcement loading error:", error);
-    message.textContent = "Unable to load announcements. Please try again later.";
-  }
-}
-
-/* SECURE LIBRARY DOWNLOAD URL */
-
-async function getLibraryDownloadUrl(resourceId) {
-  const token = await auth.currentUser.getIdToken();
-
-  const response = await fetch("/api/library-download-url", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "Authorization": "Bearer " + token
-    },
-    body: JSON.stringify({ resourceId })
-  });
-
-  const result = await response.json();
-
-  if (!response.ok || !result.downloadUrl) {
-    throw new Error(result.error || "Unable to load file");
-  }
-
-  return result.downloadUrl;
-}
-
-/* IMAGE VIEWER */
-
-function showLargeImage(url) {
-  $("largeLibraryImage").src = url;
-  $("imageViewer").classList.add("active");
-}
-
-function closeImageViewer() {
-  $("imageViewer").classList.remove("active");
-  $("largeLibraryImage").src = "";
-}
-
-$("closeImageViewer").addEventListener("click", closeImageViewer);
-
-$("imageViewer").addEventListener("click", event => {
-  if (event.target === $("imageViewer")) {
-    closeImageViewer();
-  }
-});
-
-/* PDF VIEWER */
-
-function showPdf(url) {
-  $("pdfFrame").src = url;
-  $("pdfViewer").classList.add("active");
-}
-
-function closePdfViewer() {
-  $("pdfViewer").classList.remove("active");
-  $("pdfFrame").src = "about:blank";
-}
-
-$("closePdfViewer").addEventListener("click", closePdfViewer);
-
-$("pdfViewer").addEventListener("click", event => {
-  if (event.target === $("pdfViewer")) {
-    closePdfViewer();
-  }
-});
-
-/* DIGITAL LIBRARY PREVIEW FEED */
-
-async function loadLibraryPreview() {
-  const feed = $("libraryPreviewFeed");
-  const status = $("libraryPreviewStatus");
-
-  feed.replaceChildren();
-  status.textContent = "Loading learning materials...";
-
-  try {
-    const snapshot = await getDocs(
-      query(
-        collection(db, "libraryResources"),
-        where("status", "==", "approved")
-      )
-    );
-
-    const materials = snapshot.docs.map(item => ({
-      id: item.id,
-      ...item.data()
-    }));
-
-    materials.sort((a, b) =>
-      (b.createdAt?.toMillis?.() || 0) -
-      (a.createdAt?.toMillis?.() || 0)
-    );
-
-    if (materials.length === 0) {
-      status.textContent = "No learning materials have been uploaded yet.";
-      return;
+    function myProfile() {
+      return get(
+        /databases/$(database)/documents/users/$(request.auth.uid)
+      ).data;
     }
 
-    status.textContent = "Latest learning materials";
+    function approved() {
+      return signedIn()
+        && exists(
+          /databases/$(database)/documents/users/$(request.auth.uid)
+        )
+        && myProfile().status == "approved";
+    }
 
-    for (const material of materials.slice(0, 6)) {
-      const card = document.createElement("article");
-      card.className = "library-card";
+    function superAdmin() {
+      return approved()
+        && myProfile().role == "superadmin";
+    }
 
-      const preview = document.createElement("div");
-      const details = document.createElement("div");
-      details.className = "library-details";
+    function streamAdmin(stream) {
+      return approved()
+        && myProfile().role == "streamAdmin"
+        && myProfile().stream == stream;
+    }
 
-      const title = document.createElement("h3");
-      title.textContent =
-        material.title || material.fileName || "Learning material";
+    function canManageStream(stream) {
+      return superAdmin() || streamAdmin(stream);
+    }
 
-      const subject = document.createElement("p");
-      subject.textContent =
-        (material.subject || "General") +
-        (material.classLevel ? " · " + material.classLevel : "");
+    function validStream(stream) {
+      return stream in [
+        "Victors",
+        "Heroes",
+        "Winners",
+        "Champions",
+        "Archivers"
+      ];
+    }
 
-      const open = document.createElement("a");
-      open.className = "library-view";
-      open.href = "#";
-      open.textContent = "Preparing preview...";
+    function validMessage(data) {
+      return data.keys().hasAll([
+          "senderId",
+          "senderName",
+          "text",
+          "createdAt"
+        ])
+        && data.keys().hasOnly([
+          "senderId",
+          "senderName",
+          "text",
+          "createdAt",
+          "stream"
+        ])
+        && data.senderId == request.auth.uid
+        && data.senderName is string
+        && data.senderName.size() > 0
+        && data.senderName.size() <= 60
+        && data.text is string
+        && data.text.size() > 0
+        && data.text.size() <= 2000;
+    }
 
-      details.append(title, subject, open);
+    // STUDENT PROFILES
+    match /users/{userId} {
 
-      const isImage = (material.contentType || "")
-        .toLowerCase()
-        .startsWith("image/");
+      allow create: if signedIn()
+        && request.auth.uid == userId
+        && request.resource.data.keys().hasOnly([
+          "name",
+          "email",
+          "stream",
+          "role",
+          "status",
+          "createdAt"
+        ])
+        && request.resource.data.name is string
+        && request.resource.data.name.size() > 0
+        && request.resource.data.name.size() <= 60
+        && request.resource.data.email == request.auth.token.email
+        && validStream(request.resource.data.stream)
+        && request.resource.data.role == "member"
+        && request.resource.data.status == "pending";
 
-      const isPdf = (material.contentType || "")
-        .toLowerCase()
-        .includes("pdf");
+      allow read: if signedIn()
+        && (
+          request.auth.uid == userId
+          || superAdmin()
+          || (
+            approved()
+            && streamAdmin(resource.data.stream)
+          )
+        );
 
-      if (isImage) {
-        preview.className = "";
-        preview.textContent = "Loading image...";
-      } else {
-        preview.className = "library-pdf";
-        preview.innerHTML = "<span>📄</span><small>PDF DOCUMENT</small>";
+      // Students can edit only their own name.
+      allow update: if signedIn()
+        && request.auth.uid == userId
+        && request.resource.data.diff(resource.data)
+          .affectedKeys().hasOnly(["name"])
+        && request.resource.data.name is string
+        && request.resource.data.name.size() > 0
+        && request.resource.data.name.size() <= 60;
+
+      // Admins can review pending registrations.
+      allow update: if resource.data.status == "pending"
+        && request.resource.data.diff(resource.data)
+          .affectedKeys().hasOnly([
+            "status",
+            "reviewedBy",
+            "reviewedAt"
+          ])
+        && request.resource.data.status in [
+          "approved",
+          "rejected"
+        ]
+        && request.resource.data.reviewedBy == request.auth.uid
+        && canManageStream(resource.data.stream);
+
+      allow delete: if superAdmin();
+    }
+
+    // ANNOUNCEMENTS
+    match /announcements/{announcementId} {
+
+      allow read: if approved();
+
+      allow create: if approved()
+        && request.resource.data.stream is string
+        && (
+          request.resource.data.stream == "All"
+          ? superAdmin()
+          : validStream(request.resource.data.stream)
+            && canManageStream(request.resource.data.stream)
+        );
+
+      allow update: if canManageStream(resource.data.stream)
+        && request.resource.data.stream == resource.data.stream
+        && request.resource.data.diff(resource.data)
+          .affectedKeys().hasOnly([
+            "title",
+            "body",
+            "updatedAt"
+          ]);
+
+      allow delete: if canManageStream(resource.data.stream);
+    }
+
+    // STUDENT COMMUNITY POSTS
+    match /communityPosts/{postId} {
+
+      allow read: if approved();
+
+      allow create: if approved()
+        && request.resource.data.keys().hasAll([
+          "authorId",
+          "authorName",
+          "authorNickname",
+          "authorDisplayName",
+          "authorPhotoURL",
+          "text",
+          "imageUrls",
+          "createdAt"
+        ])
+        && request.resource.data.keys().hasOnly([
+          "authorId",
+          "authorName",
+          "authorNickname",
+          "authorDisplayName",
+          "authorPhotoURL",
+          "text",
+          "imageUrls",
+          "createdAt"
+        ])
+        && request.resource.data.authorId == request.auth.uid
+        && request.resource.data.authorName is string
+        && request.resource.data.authorName.size() <= 60
+        && request.resource.data.authorNickname is string
+        && request.resource.data.authorNickname.size() <= 40
+        && request.resource.data.authorDisplayName is string
+        && request.resource.data.authorDisplayName.size() > 0
+        && request.resource.data.authorDisplayName.size() <= 60
+        && request.resource.data.authorPhotoURL is string
+        && request.resource.data.text is string
+        && request.resource.data.text.size() <= 2000
+        && request.resource.data.imageUrls is list
+        && request.resource.data.imageUrls.size() <= 5
+        && (
+          request.resource.data.text.size() > 0
+          || request.resource.data.imageUrls.size() > 0
+        )
+        && request.resource.data.createdAt == request.time;
+
+      // Posts cannot be edited through this dashboard.
+      allow update: if false;
+
+      // Author or superadmin can delete a post.
+      allow delete: if approved()
+        && (
+          resource.data.authorId == request.auth.uid
+          || superAdmin()
+        );
+
+      // LIKES
+      match /likes/{userId} {
+
+        allow read: if approved();
+
+        allow create: if approved()
+          && request.auth.uid == userId
+          && request.resource.data.keys().hasOnly([
+            "uid",
+            "createdAt"
+          ])
+          && request.resource.data.uid == request.auth.uid
+          && request.resource.data.createdAt == request.time;
+
+        allow update: if false;
+
+        allow delete: if approved()
+          && request.auth.uid == userId;
       }
 
-      card.append(preview, details);
-      feed.append(card);
+      // COMMENTS
+      match /comments/{commentId} {
 
-      try {
-        const downloadUrl = await getLibraryDownloadUrl(material.id);
+        allow read: if approved();
 
-        if (isImage) {
-          const image = document.createElement("img");
-          image.className = "library-image";
-          image.src = downloadUrl;
-          image.alt = title.textContent;
-          image.loading = "lazy";
+        allow create: if approved()
+          && request.resource.data.keys().hasAll([
+            "authorId",
+            "authorName",
+            "authorNickname",
+            "authorDisplayName",
+            "authorPhotoURL",
+            "text",
+            "createdAt"
+          ])
+          && request.resource.data.keys().hasOnly([
+            "authorId",
+            "authorName",
+            "authorNickname",
+            "authorDisplayName",
+            "authorPhotoURL",
+            "text",
+            "createdAt"
+          ])
+          && request.resource.data.authorId == request.auth.uid
+          && request.resource.data.authorName is string
+          && request.resource.data.authorName.size() <= 60
+          && request.resource.data.authorNickname is string
+          && request.resource.data.authorNickname.size() <= 40
+          && request.resource.data.authorDisplayName is string
+          && request.resource.data.authorDisplayName.size() > 0
+          && request.resource.data.authorDisplayName.size() <= 60
+          && request.resource.data.authorPhotoURL is string
+          && request.resource.data.text is string
+          && request.resource.data.text.size() > 0
+          && request.resource.data.text.size() <= 1000
+          && request.resource.data.createdAt == request.time;
 
-          image.addEventListener("click", () => {
-            showLargeImage(downloadUrl);
-          });
+        allow update: if false;
 
-          image.addEventListener("error", () => {
-            preview.textContent = "Image preview unavailable";
-          });
+        allow delete: if approved()
+          && (
+            resource.data.authorId == request.auth.uid
+            || superAdmin()
+            || get(
+              /databases/$(database)/documents/communityPosts/$(postId)
+            ).data.authorId == request.auth.uid
+          );
+      }
+    }
 
-          preview.replaceChildren(image);
+    // STREAM CHAT
+    match /messages/{messageId} {
 
-          open.textContent = "View full image";
-          open.addEventListener("click", event => {
-            event.preventDefault();
-            showLargeImage(downloadUrl);
-          });
+      allow read: if approved()
+        && resource.data.stream == myProfile().stream;
 
-        } else if (isPdf) {
-          open.textContent = "Open PDF";
+      allow create: if approved()
+        && validStream(request.resource.data.stream)
+        && request.resource.data.stream == myProfile().stream
+        && validMessage(request.resource.data);
 
-          open.addEventListener("click", event => {
-            event.preventDefault();
-            showPdf(downloadUrl);
-          });
+      allow update, delete: if false;
+    }
 
-        } else {
-          open.textContent = "Open Digital Library";
-          open.href = "library.html";
+    // SCHOOL-WIDE GROUP CHAT
+    match /groupMessages/{messageId} {
+
+      allow read: if approved();
+
+      allow create: if approved()
+        && validMessage(request.resource.data)
+        && !("stream" in request.resource.data);
+
+      allow update, delete: if false;
+    }
+
+    // PRIVATE CONVERSATIONS
+    match /privateChats/{chatId} {
+
+      function isParticipant() {
+        return approved()
+          && request.auth.uid in resource.data.participants;
+      }
+
+      allow create: if approved()
+        && request.resource.data.keys().hasAll([
+          "participants",
+          "createdAt"
+        ])
+        && request.resource.data.keys().hasOnly([
+          "participants",
+          "createdAt"
+        ])
+        && request.resource.data.participants is list
+        && request.resource.data.participants.size() == 2
+        && request.auth.uid in request.resource.data.participants
+        && request.resource.data.participants[0]
+          != request.resource.data.participants[1];
+
+      allow read: if isParticipant();
+
+      allow update, delete: if false;
+
+      match /messages/{messageId} {
+
+        function chatParticipant() {
+          return approved()
+            && request.auth.uid in get(
+              /databases/$(database)/documents/privateChats/$(chatId)
+            ).data.participants;
         }
 
-      } catch (error) {
-        console.error("Library material preview error:", error);
-        open.textContent = "Preview unavailable";
-        open.classList.add("library-error");
-        open.removeAttribute("href");
+        allow read: if chatParticipant();
+
+        allow create: if chatParticipant()
+          && validMessage(request.resource.data)
+          && !("stream" in request.resource.data);
+
+        allow update, delete: if false;
       }
     }
 
-  } catch (error) {
-    console.error("Library loading error:", error);
-    status.textContent =
-      "Unable to load learning materials. Check library permissions.";
+    // DENY EVERYTHING ELSE
+    match /{document=**} {
+      allow read, write: if false;
+    }
   }
 }
-
-/* AUTHENTICATION AND DASHBOARD */
-
-onAuthStateChanged(auth, async user => {
-  if (!user) {
-    location.href = "login.html";
-    return;
-  }
-
-  try {
-    const profileSnap = await getDoc(
-      doc(db, "users", user.uid)
-    );
-
-    if (!profileSnap.exists()) {
-      await signOut(auth);
-      location.href = "login.html";
-      return;
-    }
-
-    profile = profileSnap.data();
-
-    if (profile.status !== "approved") {
-      await signOut(auth);
-      location.href = "login.html";
-      return;
-    }
-
-    const studentName = profile.name || "Student";
-    const nickname = profile.nickname || "";
-
-    $("welcomeName").textContent = "Welcome, " + studentName;
-    $("profileNickname").textContent = nickname ? "@" + nickname : "";
-
-    $("streamName").textContent =
-      profile.stream || "Not assigned";
-
-    $("headerStream").textContent =
-      profile.stream || "Student";
-
-    showPhoto(
-      profile.photoURL,
-      nickname || studentName
-    );
-
-    await Promise.all([
-      loadAnnouncements(),
-      loadLibraryPreview()
-    ]);
-
-  } catch (error) {
-    console.error("Dashboard error:", error);
-
-    $("statusMessage").textContent =
-      "Unable to load your profile. Please try again.";
-  }
-});
-
-</script>
-
-</body>
-</html>
