@@ -154,6 +154,8 @@ button{border:0;cursor:pointer}
 #privateScreen .message.mine{background:#075e54}
 #privateScreen .message strong{color:#b9e7df}
 #privateScreen .messageAttachment{background:#174d49;color:#b9f4e8}
+#privateScreen .sentTick{color:#fff;font-weight:bold;letter-spacing:-1px}
+#privateScreen .readTick{color:#39bfff;font-weight:bold;letter-spacing:-1px;text-shadow:0 0 5px #168acd}
 #privateScreen .sendButton{background:#128c7e;color:white}
 #privateScreen .attachButton{background:#28534e;color:#b9f4e8}
 
@@ -206,7 +208,6 @@ button{border:0;cursor:pointer}
  <div id="homeStatus"></div>
 </main>
 
-<!-- STREAM CHAT -->
 <section id="streamScreen" class="chatScreen hidden">
  <header class="chatHeader">
   <button class="backButton" type="button" data-back>‹</button>
@@ -231,7 +232,6 @@ button{border:0;cursor:pointer}
  <div id="streamFileName" class="fileLabel"></div>
 </section>
 
-<!-- SCHOOL GROUP CHAT -->
 <section id="groupScreen" class="chatScreen hidden">
  <header class="chatHeader">
   <button class="backButton" type="button" data-back>‹</button>
@@ -264,7 +264,6 @@ button{border:0;cursor:pointer}
  </section>
 </section>
 
-<!-- PRIVATE CHAT MEMBER LIST -->
 <section id="privateListScreen" class="chatScreen hidden">
  <header class="chatHeader">
   <button class="backButton" type="button" data-back>‹</button>
@@ -279,7 +278,6 @@ button{border:0;cursor:pointer}
  </div>
 </section>
 
-<!-- PRIVATE CONVERSATION -->
 <section id="privateScreen" class="chatScreen hidden">
  <header class="chatHeader">
   <button class="backButton" id="privateBack" type="button">‹</button>
@@ -304,13 +302,11 @@ button{border:0;cursor:pointer}
  <div id="privateFileName" class="fileLabel"></div>
 </section>
 
-<!-- GROUP MESSAGE OPTIONS -->
 <div id="groupMessageMenu" class="groupMenu hidden">
  <button type="button" data-action="unsend">Unsend message</button>
  <button type="button" data-action="views">Who viewed</button>
 </div>
 
-<!-- GROUP VIEWERS -->
 <div id="groupViewsModal" class="groupViewsModal hidden">
  <div class="groupViewsCard">
   <h3>Message viewers</h3>
@@ -322,7 +318,6 @@ button{border:0;cursor:pointer}
 <script type="module">
 import { auth, db } from "./assets/js/firebase.js";
 import { initGroupChat } from "./assets/js/group-chat.js";
-
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
 
 import {
@@ -340,6 +335,9 @@ let activeRecipient = null;
 let activeChatId = null;
 let streamUnsub = null;
 let privateUnsub = null;
+let privateReceiptUnsub = null;
+let latestPrivateSnapshot = null;
+let recipientReadAt = null;
 let groupController = null;
 
 const profilePhotos = new Map();
@@ -365,7 +363,11 @@ function stopStream() {
 
 function stopPrivate() {
  if (privateUnsub) privateUnsub();
+ if (privateReceiptUnsub) privateReceiptUnsub();
  privateUnsub = null;
+ privateReceiptUnsub = null;
+ latestPrivateSnapshot = null;
+ recipientReadAt = null;
  activeChatId = null;
 }
 
@@ -393,7 +395,7 @@ function formatTime(timestamp) {
  return date.toLocaleTimeString([], {hour:"2-digit",minute:"2-digit"});
 }
 
-function renderMessages(container, snapshot, chatType, chatId = "") {
+function renderMessages(container, snapshot, chatType, chatId = "", readAt = null) {
  container.replaceChildren();
 
  const docs = [...snapshot.docs].sort((a,b) =>
@@ -467,6 +469,19 @@ function renderMessages(container, snapshot, chatType, chatId = "") {
 
   const time = document.createElement("small");
   time.textContent = formatTime(data.createdAt);
+
+  if (chatType === "private" && mine && data.deleted !== true) {
+   const tick = document.createElement("span");
+   const sentAt = data.createdAt?.toMillis?.() || 0;
+   const readAtMillis = readAt?.toMillis?.() || 0;
+   const isRead = sentAt > 0 && readAtMillis >= sentAt;
+
+   tick.className = isRead ? "readTick" : "sentTick";
+   tick.textContent = isRead ? " ✓✓" : " ✓";
+   tick.setAttribute("aria-label", isRead ? "Read" : "Sent");
+   time.appendChild(tick);
+  }
+
   bubble.appendChild(time);
 
   const avatar = makeAvatar(
@@ -738,6 +753,21 @@ $("memberSearch").addEventListener("input",event => {
  displayMembers(event.target.value);
 });
 
+/* PRIVATE CHAT READ RECEIPTS */
+
+async function markPrivateChatRead(chatId) {
+ if (!user || !chatId) return;
+
+ await setDoc(
+  doc(db,"privateChats",chatId,"readReceipts",user.uid),
+  {
+   readerId:user.uid,
+   lastReadAt:serverTimestamp()
+  },
+  {merge:true}
+ );
+}
+
 /* OPEN PRIVATE CONVERSATION */
 
 async function openPrivateChat(member) {
@@ -783,15 +813,63 @@ async function openPrivateChat(member) {
    });
   }
 
+  latestPrivateSnapshot = null;
+  recipientReadAt = null;
+
+  /* Listen for the other student's read receipt. */
+  privateReceiptUnsub = onSnapshot(
+   doc(db,"privateChats",chatId,"readReceipts",member.id),
+   receiptSnapshot => {
+    if (activeChatId !== chatId) return;
+
+    recipientReadAt = receiptSnapshot.exists()
+     ? receiptSnapshot.data().lastReadAt || null
+     : null;
+
+    if (latestPrivateSnapshot) {
+     renderMessages(
+      $("privateMessages"),
+      latestPrivateSnapshot,
+      "private",
+      chatId,
+      recipientReadAt
+     );
+    }
+   },
+   error => setStatus("privateStatus","Unable to load read receipts: " + error.message)
+  );
+
+  /* Listen for messages and mark incoming messages as read. */
   privateUnsub = onSnapshot(
    collection(db,"privateChats",chatId,"messages"),
    snapshot => {
     if (activeChatId !== chatId) return;
-    renderMessages($("privateMessages"),snapshot,"private",chatId);
+
+    latestPrivateSnapshot = snapshot;
+
+    renderMessages(
+     $("privateMessages"),
+     snapshot,
+     "private",
+     chatId,
+     recipientReadAt
+    );
+
     setStatus("privateStatus","");
+
+    const hasIncomingMessages = snapshot.docs.some(
+     item => item.data().senderId !== user.uid
+    );
+
+    if (hasIncomingMessages) {
+     markPrivateChatRead(chatId).catch(error => {
+      console.warn("Could not update private read receipt:",error);
+     });
+    }
    },
    error => setStatus("privateStatus","Unable to load messages: " + error.message)
   );
+
  } catch (error) {
   setStatus("privateStatus","Could not open chat: " + error.message);
  }
