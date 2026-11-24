@@ -1,52 +1,8 @@
 
-import { randomUUID } from "node:crypto";
+import { createSign } from "node:crypto";
 
-async function verifyUser(req) {
-  const apiKey = process.env.FIREBASE_WEB_API_KEY;
-  const auth = req.headers.authorization || "";
-  const token = auth.startsWith("Bearer ") ? auth.slice(7) : "";
-
-  if (!apiKey || !token) throw new Error("Please sign in first.");
-
-  const response = await fetch(
-    `https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=${apiKey}`,
-    {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ idToken: token })
-    }
-  );
-
-  const data = await response.json();
-
-  if (!response.ok || !data.users?.length) {
-    throw new Error("Your login session is invalid.");
-  }
-
-  const uid = data.users[0].localId;
-  const projectId = process.env.FIREBASE_PROJECT_ID;
-
-  if (!projectId) throw new Error("Firebase project is not configured.");
-
-  const profileResponse = await fetch(
-    `https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents/users/${encodeURIComponent(uid)}`,
-    { headers: { Authorization: `Bearer ${token}` } }
-  );
-
-  const profile = await profileResponse.json();
-
-  if (
-    !profileResponse.ok ||
-    profile.fields?.status?.stringValue !== "approved"
-  ) {
-    throw new Error("Only approved students can upload files.");
-  }
-
-  return {
-    uid,
-    token,
-    stream: profile.fields?.stream?.stringValue || ""
-  };
+function base64url(value) {
+  return Buffer.from(value).toString("base64url");
 }
 
 function validId(value) {
@@ -54,84 +10,187 @@ function validId(value) {
     /^[a-zA-Z0-9_-]{1,150}$/.test(value);
 }
 
+async function getFirebaseAccessToken(serviceAccount) {
+  const now = Math.floor(Date.now() / 1000);
+
+  const header = base64url(JSON.stringify({
+    alg: "RS256",
+    typ: "JWT"
+  }));
+
+  const claims = base64url(JSON.stringify({
+    iss: serviceAccount.client_email,
+    scope: "https://www.googleapis.com/auth/datastore",
+    aud: "https://oauth2.googleapis.com/token",
+    iat: now,
+    exp: now + 3600
+  }));
+
+  const unsigned = `${header}.${claims}`;
+  const signer = createSign("RSA-SHA256");
+
+  signer.update(unsigned);
+  signer.end();
+
+  const signature = signer
+    .sign(serviceAccount.private_key)
+    .toString("base64url");
+
+  const response = await fetch(
+    "https://oauth2.googleapis.com/token",
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded"
+      },
+      body: new URLSearchParams({
+        grant_type:
+          "urn:ietf:params:oauth:grant-type:jwt-bearer",
+        assertion: `${unsigned}.${signature}`
+      })
+    }
+  );
+
+  const data = await response.json();
+
+  if (!response.ok || !data.access_token) {
+    throw new Error("Firebase server authentication failed.");
+  }
+
+  return data.access_token;
+}
+
+async function readDocument(projectId, path, headers) {
+  const response = await fetch(
+    `https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents/${path}`,
+    { headers }
+  );
+
+  const data = await response.json();
+
+  return {
+    ok: response.ok,
+    data
+  };
+}
+
 export default async function handler(req, res) {
   res.setHeader("Cache-Control", "no-store");
 
   if (req.method !== "POST") {
-    return res.status(405).json({ error: "Method not allowed." });
+    return res.status(405).json({
+      error: "Method not allowed."
+    });
   }
 
   try {
-    const { uid, token, stream: userStream } = await verifyUser(req);
+    const {
+      FIREBASE_WEB_API_KEY,
+      FIREBASE_PROJECT_ID,
+      FIREBASE_SERVICE_ACCOUNT,
+      SUPABASE_URL,
+      SUPABASE_SECRET_KEY
+    } = process.env;
 
-    const { SUPABASE_URL, SUPABASE_SECRET_KEY } = process.env;
-
-    if (!SUPABASE_URL || !SUPABASE_SECRET_KEY) {
+    if (
+      !FIREBASE_WEB_API_KEY ||
+      !FIREBASE_PROJECT_ID ||
+      !FIREBASE_SERVICE_ACCOUNT ||
+      !SUPABASE_URL ||
+      !SUPABASE_SECRET_KEY
+    ) {
       return res.status(500).json({
-        error: "Storage server configuration is incomplete."
+        error: "Server configuration is incomplete."
       });
     }
 
+    const authorization = req.headers.authorization || "";
+    const idToken = authorization.startsWith("Bearer ")
+      ? authorization.slice(7)
+      : "";
+
+    if (!idToken) {
+      return res.status(401).json({
+        error: "Please sign in first."
+      });
+    }
+
+    // Verify the signed-in Firebase user.
+    const verifyResponse = await fetch(
+      `https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=${FIREBASE_WEB_API_KEY}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ idToken })
+      }
+    );
+
+    const verifyData = await verifyResponse.json();
+
+    if (!verifyResponse.ok || !verifyData.users?.length) {
+      return res.status(401).json({
+        error: "Your login session is invalid."
+      });
+    }
+
+    const uid = verifyData.users[0].localId;
+
+    // Obtain server access for protected Firestore document checks.
+    const serviceAccount = JSON.parse(FIREBASE_SERVICE_ACCOUNT);
+    const accessToken =
+      await getFirebaseAccessToken(serviceAccount);
+
+    const headers = {
+      Authorization: `Bearer ${accessToken}`
+    };
+
+    // Only approved accounts may download chat attachments.
+    const profileResult = await readDocument(
+      FIREBASE_PROJECT_ID,
+      `users/${encodeURIComponent(uid)}`,
+      headers
+    );
+
+    const profile = profileResult.data;
+
+    if (
+      !profileResult.ok ||
+      profile.fields?.status?.stringValue !== "approved"
+    ) {
+      return res.status(403).json({
+        error: "Only approved students can download chat files."
+      });
+    }
+
+    const userStream =
+      profile.fields?.stream?.stringValue || "";
+
     const {
-      fileName,
-      contentType,
-      fileSize,
       chatType = "group",
-      stream,
+      messageId,
       chatId
     } = req.body || {};
 
-    const allowed = {
-      "application/pdf": [".pdf"],
-      "image/jpeg": [".jpg", ".jpeg"],
-      "image/png": [".png"],
-      "image/webp": [".webp"],
-      "text/plain": [".txt"]
-    };
-
-    if (
-      typeof fileName !== "string" ||
-      !fileName.trim() ||
-      fileName.length > 200
-    ) {
-      return res.status(400).json({ error: "Invalid file name." });
-    }
-
-    const extension = fileName.trim().toLowerCase()
-      .match(/\.[a-z0-9]+$/)?.[0];
-
-    if (!allowed[contentType] || !allowed[contentType].includes(extension)) {
+    if (!validId(messageId)) {
       return res.status(400).json({
-        error: "Allowed files: PDF, JPG, PNG, WEBP and TXT."
+        error: "Invalid message ID."
       });
     }
 
-    if (
-      typeof fileSize !== "number" ||
-      !Number.isInteger(fileSize) ||
-      fileSize <= 0 ||
-      fileSize > 10 * 1024 * 1024
-    ) {
-      return res.status(400).json({
-        error: "Files must be 10 MB or smaller."
-      });
-    }
-
-    let path;
+    let messagePath = "";
+    let allowedFilePrefix = "";
 
     if (chatType === "group") {
-      path = `chatfiles/group/${uid}/${randomUUID()}_`;
+      messagePath =
+        `groupMessages/${encodeURIComponent(messageId)}`;
+
+      allowedFilePrefix = "chatfiles/group/";
 
     } else if (chatType === "stream") {
-      if (!userStream || stream !== userStream) {
-        return res.status(403).json({
-          error: "You can only upload to your own stream chat."
-        });
-      }
-
-      const streamKey = userStream.replace(/[^a-zA-Z0-9_-]/g, "_");
-
-      path = `chatfiles/stream/${streamKey}/${uid}/${randomUUID()}_`;
+      messagePath =
+        `messages/${encodeURIComponent(messageId)}`;
 
     } else if (chatType === "private") {
       if (!validId(chatId)) {
@@ -140,27 +199,30 @@ export default async function handler(req, res) {
         });
       }
 
-      const chatResponse = await fetch(
-        `https://firestore.googleapis.com/v1/projects/${process.env.FIREBASE_PROJECT_ID}/databases/(default)/documents/privateChats/${encodeURIComponent(chatId)}`,
-        { headers: { Authorization: `Bearer ${token}` } }
+      // Confirm that this user belongs to the private conversation.
+      const chatResult = await readDocument(
+        FIREBASE_PROJECT_ID,
+        `privateChats/${encodeURIComponent(chatId)}`,
+        headers
       );
 
-      const chatData = await chatResponse.json();
-
       const participants =
-        chatData.fields?.participants?.arrayValue?.values || [];
+        chatResult.data.fields?.participants?.arrayValue?.values || [];
 
       const isParticipant = participants.some(
         item => item.stringValue === uid
       );
 
-      if (!chatResponse.ok || !isParticipant) {
+      if (!chatResult.ok || !isParticipant) {
         return res.status(403).json({
           error: "You are not a participant in this private chat."
         });
       }
 
-      path = `chatfiles/private/${chatId}/${uid}/${randomUUID()}_`;
+      messagePath =
+        `privateChats/${encodeURIComponent(chatId)}/messages/${encodeURIComponent(messageId)}`;
+
+      allowedFilePrefix = `chatfiles/private/${chatId}/`;
 
     } else {
       return res.status(400).json({
@@ -168,18 +230,69 @@ export default async function handler(req, res) {
       });
     }
 
-    const safeName = fileName.trim()
-      .replace(/[^a-zA-Z0-9._-]/g, "_")
-      .slice(0, 120);
+    const messageResult = await readDocument(
+      FIREBASE_PROJECT_ID,
+      messagePath,
+      headers
+    );
 
-    path += safeName;
+    const messageData = messageResult.data;
 
-    const encodedPath = path.split("/")
+    if (!messageResult.ok || !messageData.fields) {
+      return res.status(404).json({
+        error: "Message was not found."
+      });
+    }
+
+    const fields = messageData.fields;
+
+    if (fields.deleted?.booleanValue === true) {
+      return res.status(404).json({
+        error: "This message has been deleted."
+      });
+    }
+
+    // Stream messages must belong to the user's own stream.
+    if (chatType === "stream") {
+      const messageStream =
+        fields.stream?.stringValue || "";
+
+      if (!userStream || messageStream !== userStream) {
+        return res.status(403).json({
+          error: "You cannot download files from another stream."
+        });
+      }
+
+      const streamKey = userStream.replace(
+        /[^a-zA-Z0-9_-]/g,
+        "_"
+      );
+
+      allowedFilePrefix = `chatfiles/stream/${streamKey}/`;
+    }
+
+    const filePath = fields.filePath?.stringValue;
+
+    if (
+      typeof filePath !== "string" ||
+      !filePath.startsWith(allowedFilePrefix) ||
+      filePath.includes("..") ||
+      filePath.includes("\\") ||
+      filePath.startsWith("/")
+    ) {
+      return res.status(400).json({
+        error: "This message has no valid attachment."
+      });
+    }
+
+    const encodedPath = filePath
+      .split("/")
       .map(encodeURIComponent)
       .join("/");
 
-    const response = await fetch(
-      `${SUPABASE_URL}/storage/v1/object/upload/sign/magunga-library/${encodedPath}`,
+    // Create a temporary signed download link.
+    const signResponse = await fetch(
+      `${SUPABASE_URL}/storage/v1/object/sign/magunga-library/${encodedPath}`,
       {
         method: "POST",
         headers: {
@@ -187,31 +300,35 @@ export default async function handler(req, res) {
           apikey: SUPABASE_SECRET_KEY,
           "Content-Type": "application/json"
         },
-        body: JSON.stringify({ upsert: false })
+        body: JSON.stringify({
+          expiresIn: 3600
+        })
       }
     );
 
-    const result = await response.json();
+    const signData = await signResponse.json();
 
-    if (!response.ok || !result.token) {
-      console.error("Storage signing error:", result);
+    if (!signResponse.ok || !signData.signedURL) {
+      console.error("Download signing error:", signData);
 
       return res.status(500).json({
-        error: "Could not prepare the file upload."
+        error: "Could not prepare the secure download."
       });
     }
 
+    const downloadUrl = signData.signedURL.startsWith("http")
+      ? signData.signedURL
+      : `${SUPABASE_URL}/storage/v1${signData.signedURL}`;
+
     return res.status(200).json({
-      path,
-      token: result.token,
-      supabaseUrl: SUPABASE_URL
+      url: downloadUrl
     });
 
   } catch (error) {
-    console.error("Chat upload error:", error);
+    console.error("Chat download error:", error);
 
-    return res.status(403).json({
-      error: error.message || "Upload was not authorized."
+    return res.status(500).json({
+      error: "Could not prepare the file download."
     });
   }
 }
