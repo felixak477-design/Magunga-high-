@@ -3,7 +3,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#101522">
 <title>Friends | Magunga High</title>
 
@@ -13,37 +13,57 @@
  font-family: Arial, sans-serif;
 }
 
-body {
- margin: 0;
- background: #101522;
- color: white;
- padding-top: 75px;
+html {
+ width: 100%;
+ height: 100%;
+ overflow: hidden;
 }
 
-/* FIXED TOP NAVIGATION */
+body {
+ margin: 0;
+ width: 100%;
+ height: 100%;
+ height: 100dvh;
+ background: #101522;
+ color: white;
+ overflow: hidden;
+ display: flex;
+ flex-direction: column;
+ padding-top: env(safe-area-inset-top, 0px);
+}
+
+/* TOP NAVIGATION */
 
 .topbar {
- position: fixed;
- top: 0;
- left: 0;
- right: 0;
- height: 65px;
+ position: relative;
+ flex: 0 0 auto;
+ width: 100%;
+ min-height: 58px;
  background: #1b2435;
  border-bottom: 1px solid #344158;
  display: flex;
  align-items: center;
- justify-content: space-around;
- gap: 5px;
- padding: 0 8px;
+ justify-content: flex-start;
+ gap: 4px;
+ padding: 5px 8px;
  z-index: 1000;
+ overflow-x: auto;
+ overflow-y: hidden;
+ scrollbar-width: none;
+ -webkit-overflow-scrolling: touch;
+}
+
+.topbar::-webkit-scrollbar {
+ display: none;
 }
 
 .topbar a {
+ flex: 0 0 auto;
  color: #aab6c8;
  text-decoration: none;
- font-size: 13px;
+ font-size: 12px;
  font-weight: bold;
- padding: 12px 10px;
+ padding: 11px 10px;
  border-radius: 8px;
  white-space: nowrap;
 }
@@ -57,111 +77,229 @@ body {
  color: #e8c45e;
 }
 
+/* MAIN SCROLL AREA */
+
 main {
+ width: 100%;
  max-width: 950px;
- margin: auto;
- padding: 20px;
+ margin: 0 auto;
+ padding: 16px 15px calc(20px + env(safe-area-inset-bottom, 0px));
+ flex: 1 1 auto;
+ min-height: 0;
+ overflow-y: auto;
+ overflow-x: hidden;
+ overscroll-behavior-y: contain;
+ -webkit-overflow-scrolling: touch;
+ scrollbar-width: thin;
+}
+
+main::-webkit-scrollbar {
+ width: 4px;
+}
+
+main::-webkit-scrollbar-thumb {
+ background: #344158;
+ border-radius: 10px;
+}
+
+h1 {
+ font-size: 23px;
+ margin: 4px 0 7px;
+ color: #f2f4f8;
 }
 
 .muted {
  color: #aab6c8;
+ font-size: 13px;
+ line-height: 1.5;
+ margin: 0 0 14px;
 }
 
+/* SEARCH AND FILTER */
+
 input, select {
+ display: block;
  width: 100%;
- padding: 14px;
+ min-width: 0;
+ padding: 12px;
  margin: 8px 0;
  background: #1b2435;
  color: white;
  border: 1px solid #344158;
  border-radius: 9px;
  outline: none;
+ font-size: 14px;
 }
 
 input:focus, select:focus {
  border-color: #d5a52b;
+ box-shadow: 0 0 8px #d5a52b25;
 }
+
+input::placeholder {
+ color: #8996aa;
+}
+
+select {
+ color-scheme: dark;
+}
+
+/* STATUS MESSAGE */
+
+#message {
+ color: #ffbd75;
+ margin: 12px 0;
+ font-size: 12px;
+ line-height: 1.5;
+}
+
+/* MEMBERS GRID */
 
 .members {
  display: grid;
- grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
- gap: 15px;
- margin-top: 20px;
+ grid-template-columns: repeat(auto-fit, minmax(min(100%, 155px), 1fr));
+ gap: 11px;
+ margin-top: 12px;
+ width: 100%;
 }
+
+/* MEMBER CARD */
 
 .member {
+ min-width: 0;
  background: #1b2435;
- padding: 18px;
+ padding: 14px 9px;
  border: 1px solid #59471f;
- border-radius: 13px;
+ border-radius: 12px;
  text-align: center;
  cursor: pointer;
- transition: .2s;
+ transition: border-color .2s, box-shadow .2s;
+ overflow: hidden;
 }
 
-.member:hover {
+.member:hover,
+.member:focus-visible {
  border-color: #d5a52b;
- transform: translateY(-3px);
- box-shadow: 0 5px 18px #d5a52220;
+ box-shadow: 0 4px 16px #d5a52220;
+ outline: none;
 }
 
 .avatar {
- width: 85px;
- height: 85px;
+ width: 66px;
+ height: 66px;
  border-radius: 50%;
  object-fit: cover;
  background: #293b59;
- margin: auto;
+ margin: 0 auto;
  display: flex;
  align-items: center;
  justify-content: center;
- font-size: 28px;
+ font-size: 23px;
  color: #e8c45e;
  border: 2px solid #d5a52b;
 }
 
 .member h3 {
- margin: 12px 0 5px;
+ font-size: 14px;
+ margin: 10px 0 4px;
+ overflow-wrap: anywhere;
 }
 
 .member p {
  color: #aab6c8;
+ font-size: 12px;
+ margin: 4px 0 9px;
+ overflow-wrap: anywhere;
 }
 
 .stream {
  display: inline-block;
+ max-width: 100%;
  background: #293b59;
- padding: 6px 12px;
+ color: #e8c45e;
+ padding: 5px 10px;
  border-radius: 20px;
- font-size: 12px;
+ font-size: 10px;
+ overflow-wrap: anywhere;
 }
 
-#message {
- color: #ffbd75;
- margin-top: 15px;
-}
+/* SMALL PHONES */
 
-@media(max-width:480px) {
+@media(max-width: 380px) {
  .topbar {
-  justify-content: flex-start;
-  overflow-x: auto;
+  min-height: 53px;
  }
 
  .topbar a {
-  font-size: 12px;
-  padding: 12px 9px;
+  font-size: 11px;
+  padding: 10px 8px;
  }
 
  main {
-  padding: 15px;
+  padding: 13px 11px calc(18px + env(safe-area-inset-bottom, 0px));
+ }
+
+ h1 {
+  font-size: 21px;
+ }
+
+ .members {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 9px;
+ }
+
+ .member {
+  padding: 12px 7px;
+ }
+
+ .avatar {
+  width: 60px;
+  height: 60px;
+ }
+}
+
+/* SHORT SCREENS */
+
+@media(max-height: 550px) {
+ .topbar {
+  min-height: 47px;
+ }
+
+ .topbar a {
+  padding: 8px;
+ }
+
+ main {
+  padding-top: 10px;
+ }
+
+ h1 {
+  font-size: 20px;
+  margin-top: 2px;
+ }
+
+ .muted {
+  margin-bottom: 8px;
+ }
+
+ input, select {
+  padding: 10px;
+  margin: 6px 0;
+ }
+}
+
+/* ACCESSIBILITY */
+
+@media(prefers-reduced-motion: reduce) {
+ * {
+  scroll-behavior: auto !important;
+  transition: none !important;
  }
 }
 </style>
 </head>
 
 <body>
-
-<!-- FIXED NAVIGATION -->
 
 <nav class="topbar">
  <a href="dashboard.html">Home</a>
