@@ -7,6 +7,15 @@
 <meta name="theme-color" content="#101827">
 <title>Notifications | The Magunga High</title>
 
+<script type="importmap">
+{
+  "imports": {
+    "@capacitor/core": "https://esm.sh/@capacitor/core@7",
+    "@capacitor/push-notifications": "https://esm.sh/@capacitor/push-notifications@7?external=@capacitor/core"
+  }
+}
+</script>
+
 <style>
 *{box-sizing:border-box}
 
@@ -151,6 +160,8 @@ footer{
   <strong>Notifications include:</strong><br>
   • School announcements<br>
   • Stream updates<br>
+  • Private messages<br>
+  • Group messages<br>
   • Important school information
  </div>
 
@@ -177,6 +188,7 @@ footer{
 <script type="module">
 
 import {app} from "./assets/js/firebase.js";
+import {Capacitor} from "@capacitor/core";
 
 import {
  getMessaging,
@@ -192,10 +204,7 @@ const loginButton=document.getElementById("loginButton");
 const registerButton=document.getElementById("registerButton");
 const status=document.getElementById("status");
 
-let ready=false;
-
 function allowContinue(message){
- ready=true;
  loginButton.disabled=false;
  registerButton.disabled=false;
  status.textContent=message;
@@ -209,12 +218,126 @@ function continueTo(page){
 loginButton.onclick=()=>continueTo("login.html");
 registerButton.onclick=()=>continueTo("register.html");
 
+/* ANDROID NATIVE NOTIFICATIONS */
+
+async function enableNativeNotifications(){
+
+ const {PushNotifications}=await import("@capacitor/push-notifications");
+
+ let permission=await PushNotifications.checkPermissions();
+
+ if(permission.receive==="prompt" ||
+    permission.receive==="prompt-with-rationale"){
+  permission=await PushNotifications.requestPermissions();
+ }
+
+ if(permission.receive!=="granted"){
+  throw new Error("Android notification permission was not granted.");
+ }
+
+ await PushNotifications.createChannel({
+  id:"magunga_messages",
+  name:"Magunga High messages",
+  description:"Private messages, group messages and school updates",
+  importance:4,
+  visibility:1,
+  vibration:true,
+  lights:true,
+  sound:"default"
+ });
+
+ const token=await new Promise(async(resolve,reject)=>{
+
+  let finished=false;
+  let registrationHandle;
+  let errorHandle;
+
+  const timer=setTimeout(()=>{
+   finish(reject,new Error("Android did not return an FCM token. Try again."));
+  },20000);
+
+  async function cleanup(){
+   clearTimeout(timer);
+
+   if(registrationHandle){
+    await registrationHandle.remove();
+   }
+
+   if(errorHandle){
+    await errorHandle.remove();
+   }
+  }
+
+  async function finish(callback,value){
+   if(finished)return;
+
+   finished=true;
+   await cleanup();
+   callback(value);
+  }
+
+  try{
+
+   registrationHandle=await PushNotifications.addListener(
+    "registration",
+    result=>{
+     finish(resolve,result.value);
+    }
+   );
+
+   errorHandle=await PushNotifications.addListener(
+    "registrationError",
+    error=>{
+     finish(reject,new Error(error.error||"Android push registration failed."));
+    }
+   );
+
+   await PushNotifications.register();
+
+  }catch(error){
+   finish(reject,error);
+  }
+
+ });
+
+ if(!token){
+  throw new Error("Firebase returned an empty Android token.");
+ }
+
+ localStorage.setItem("magunga_pending_fcm_token",token);
+ localStorage.setItem("magunga_pending_fcm_platform","android");
+ localStorage.setItem("magunga_notification_permission","granted");
+
+ return token;
+}
+
+/* ENABLE BUTTON */
+
 enableButton.onclick=async()=>{
 
  enableButton.disabled=true;
  status.textContent="Preparing notifications...";
 
  try{
+
+  /* Detect the Android APK */
+
+  if(Capacitor.isNativePlatform()){
+
+   status.textContent="Requesting Android notification permission...";
+
+   await enableNativeNotifications();
+
+   allowContinue(
+    "Android notifications are enabled. You can continue."
+   );
+
+   enableButton.textContent="Notifications Enabled";
+
+   return;
+  }
+
+  /* EXISTING BROWSER NOTIFICATIONS */
 
   if(!("Notification" in window)){
    throw new Error("This browser does not support notifications.");
@@ -237,7 +360,7 @@ enableButton.onclick=async()=>{
   }
 
   if(permission!=="granted"){
-   throw new Error("Permission was not granted. You can continue without notifications.");
+   throw new Error("Notification permission was not granted.");
   }
 
   status.textContent="Registering your device...";
@@ -257,12 +380,13 @@ enableButton.onclick=async()=>{
    throw new Error("Could not generate a notification token.");
   }
 
-  // Save temporarily until the student signs in.
   localStorage.setItem("magunga_pending_fcm_token",token);
-
+  localStorage.setItem("magunga_pending_fcm_platform","web");
   localStorage.setItem("magunga_notification_permission","granted");
 
-  allowContinue("Notifications are enabled on this device. Choose where to continue.");
+  allowContinue(
+   "Browser notifications are enabled. Choose where to continue."
+  );
 
   enableButton.textContent="Notifications Enabled";
 
@@ -283,15 +407,29 @@ enableButton.onclick=async()=>{
 
 };
 
-// If permission was granted previously, reuse it.
+/* REUSE PREVIOUSLY REGISTERED PERMISSIONS */
+
 if(
+ Capacitor.isNativePlatform() &&
+ localStorage.getItem("magunga_pending_fcm_token") &&
+ localStorage.getItem("magunga_pending_fcm_platform")==="android"
+){
+
+ allowContinue("Android notifications are already enabled. Continue below.");
+ enableButton.textContent="Already Enabled";
+ enableButton.disabled=true;
+
+}else if(
+ !Capacitor.isNativePlatform() &&
  "Notification" in window &&
  Notification.permission==="granted" &&
  localStorage.getItem("magunga_pending_fcm_token")
 ){
+
  allowContinue("Notifications are already enabled. Continue below.");
  enableButton.textContent="Already Enabled";
  enableButton.disabled=true;
+
 }
 
 </script>
