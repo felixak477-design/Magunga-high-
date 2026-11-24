@@ -48,6 +48,61 @@ jobs:
           mkdir -p android/app
           cp google-services.json android/app/google-services.json
 
+      - name: Configure Google Services Gradle plugin
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+
+          root_file = Path("android/build.gradle")
+          app_file = Path("android/app/build.gradle")
+
+          root = root_file.read_text()
+          app = app_file.read_text()
+
+          if "com.google.gms:google-services" not in root:
+              match = re.search(r"dependencies\s*\{", root)
+              if not match:
+                  raise SystemExit("Could not find root Gradle dependencies block.")
+              pos = match.end()
+              root = (
+                  root[:pos]
+                  + "\n        classpath 'com.google.gms:google-services:4.4.2'"
+                  + root[pos:]
+              )
+
+          if "com.google.gms.google-services" not in app:
+              apply_line = re.search(
+                  r"(?m)^apply plugin:\s*['\"]com\.android\.application['\"]\s*$",
+                  app
+              )
+
+              if apply_line:
+                  pos = apply_line.end()
+                  app = (
+                      app[:pos]
+                      + "\napply plugin: 'com.google.gms.google-services'"
+                      + app[pos:]
+                  )
+              else:
+                  plugin_line = re.search(
+                      r"(?m)^\s*id\s*['\"]com\.android\.application['\"]\s*$",
+                      app
+                  )
+                  if not plugin_line:
+                      raise SystemExit("Could not find Android application plugin.")
+                  pos = plugin_line.end()
+                  app = (
+                      app[:pos]
+                      + "\n    id 'com.google.gms.google-services'"
+                      + app[pos:]
+                  )
+
+          root_file.write_text(root)
+          app_file.write_text(app)
+          print("Google Services plugin configured.")
+          PY
+
       - name: Sync Android project
         run: npx cap sync android
 
