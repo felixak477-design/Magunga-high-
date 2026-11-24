@@ -1,3 +1,4 @@
+
 import { randomUUID } from "node:crypto";
 
 async function verifyUser(req) {
@@ -5,9 +6,7 @@ async function verifyUser(req) {
   const auth = req.headers.authorization || "";
   const token = auth.startsWith("Bearer ") ? auth.slice(7) : "";
 
-  if (!apiKey || !token) {
-    throw new Error("Please sign in first.");
-  }
+  if (!apiKey || !token) throw new Error("Please sign in first.");
 
   const response = await fetch(
     `https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=${apiKey}`,
@@ -27,19 +26,32 @@ async function verifyUser(req) {
   const uid = data.users[0].localId;
   const projectId = process.env.FIREBASE_PROJECT_ID;
 
+  if (!projectId) throw new Error("Firebase project is not configured.");
+
   const profileResponse = await fetch(
-    `https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents/users/${uid}`,
+    `https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents/users/${encodeURIComponent(uid)}`,
     { headers: { Authorization: `Bearer ${token}` } }
   );
 
   const profile = await profileResponse.json();
 
-  if (!profileResponse.ok ||
-      profile.fields?.status?.stringValue !== "approved") {
+  if (
+    !profileResponse.ok ||
+    profile.fields?.status?.stringValue !== "approved"
+  ) {
     throw new Error("Only approved students can upload files.");
   }
 
-  return uid;
+  return {
+    uid,
+    token,
+    stream: profile.fields?.stream?.stringValue || ""
+  };
+}
+
+function validId(value) {
+  return typeof value === "string" &&
+    /^[a-zA-Z0-9_-]{1,150}$/.test(value);
 }
 
 export default async function handler(req, res) {
@@ -50,12 +62,9 @@ export default async function handler(req, res) {
   }
 
   try {
-    const uid = await verifyUser(req);
+    const { uid, token, stream: userStream } = await verifyUser(req);
 
-    const {
-      SUPABASE_URL,
-      SUPABASE_SECRET_KEY
-    } = process.env;
+    const { SUPABASE_URL, SUPABASE_SECRET_KEY } = process.env;
 
     if (!SUPABASE_URL || !SUPABASE_SECRET_KEY) {
       return res.status(500).json({
@@ -63,7 +72,14 @@ export default async function handler(req, res) {
       });
     }
 
-    const { fileName, contentType, fileSize } = req.body || {};
+    const {
+      fileName,
+      contentType,
+      fileSize,
+      chatType = "group",
+      stream,
+      chatId
+    } = req.body || {};
 
     const allowed = {
       "application/pdf": [".pdf"],
@@ -73,27 +89,82 @@ export default async function handler(req, res) {
       "text/plain": [".txt"]
     };
 
-    if (typeof fileName !== "string" ||
-        !fileName.trim() ||
-        fileName.length > 200) {
+    if (
+      typeof fileName !== "string" ||
+      !fileName.trim() ||
+      fileName.length > 200
+    ) {
       return res.status(400).json({ error: "Invalid file name." });
     }
 
     const extension = fileName.trim().toLowerCase()
       .match(/\.[a-z0-9]+$/)?.[0];
 
-    if (!allowed[contentType] ||
-        !allowed[contentType].includes(extension)) {
+    if (!allowed[contentType] || !allowed[contentType].includes(extension)) {
       return res.status(400).json({
         error: "Allowed files: PDF, JPG, PNG, WEBP and TXT."
       });
     }
 
-    if (typeof fileSize !== "number" ||
-        fileSize <= 0 ||
-        fileSize > 10 * 1024 * 1024) {
+    if (
+      typeof fileSize !== "number" ||
+      !Number.isInteger(fileSize) ||
+      fileSize <= 0 ||
+      fileSize > 10 * 1024 * 1024
+    ) {
       return res.status(400).json({
-        error: "Files must be smaller than 10 MB."
+        error: "Files must be 10 MB or smaller."
+      });
+    }
+
+    let path;
+
+    if (chatType === "group") {
+      path = `chatfiles/group/${uid}/${randomUUID()}_`;
+
+    } else if (chatType === "stream") {
+      if (!userStream || stream !== userStream) {
+        return res.status(403).json({
+          error: "You can only upload to your own stream chat."
+        });
+      }
+
+      const streamKey = userStream.replace(/[^a-zA-Z0-9_-]/g, "_");
+
+      path = `chatfiles/stream/${streamKey}/${uid}/${randomUUID()}_`;
+
+    } else if (chatType === "private") {
+      if (!validId(chatId)) {
+        return res.status(400).json({
+          error: "Invalid private chat ID."
+        });
+      }
+
+      const chatResponse = await fetch(
+        `https://firestore.googleapis.com/v1/projects/${process.env.FIREBASE_PROJECT_ID}/databases/(default)/documents/privateChats/${encodeURIComponent(chatId)}`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      const chatData = await chatResponse.json();
+
+      const participants =
+        chatData.fields?.participants?.arrayValue?.values || [];
+
+      const isParticipant = participants.some(
+        item => item.stringValue === uid
+      );
+
+      if (!chatResponse.ok || !isParticipant) {
+        return res.status(403).json({
+          error: "You are not a participant in this private chat."
+        });
+      }
+
+      path = `chatfiles/private/${chatId}/${uid}/${randomUUID()}_`;
+
+    } else {
+      return res.status(400).json({
+        error: "Unknown chat type."
       });
     }
 
@@ -101,10 +172,11 @@ export default async function handler(req, res) {
       .replace(/[^a-zA-Z0-9._-]/g, "_")
       .slice(0, 120);
 
-    const path = `groupchat/${uid}/${randomUUID()}_${safeName}`;
+    path += safeName;
 
     const encodedPath = path.split("/")
-      .map(encodeURIComponent).join("/");
+      .map(encodeURIComponent)
+      .join("/");
 
     const response = await fetch(
       `${SUPABASE_URL}/storage/v1/object/upload/sign/magunga-library/${encodedPath}`,
@@ -123,6 +195,7 @@ export default async function handler(req, res) {
 
     if (!response.ok || !result.token) {
       console.error("Storage signing error:", result);
+
       return res.status(500).json({
         error: "Could not prepare the file upload."
       });
@@ -135,6 +208,8 @@ export default async function handler(req, res) {
     });
 
   } catch (error) {
+    console.error("Chat upload error:", error);
+
     return res.status(403).json({
       error: error.message || "Upload was not authorized."
     });
