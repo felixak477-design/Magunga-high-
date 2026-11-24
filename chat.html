@@ -1,1584 +1,950 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#111827">
-<title>Magunga High | Chats</title>
+<meta name="theme-color" content="#101522">
+<title>Magunga High | Messages</title>
 
 <style>
-* {
-  box-sizing: border-box;
-  font-family: Arial, sans-serif;
-}
-
-body {
-  margin: 0;
-  background: #eef2f7;
-  color: #17212b;
-  padding-top: 112px;
-}
-
-.topbar {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 1000;
-  background: #111827;
-  color: white;
-  box-shadow: 0 2px 10px #0003;
-}
-
-.top-brand {
-  height: 48px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 15px;
-}
-
-.top-brand strong {
-  color: #ffd36a;
-  font-size: 16px;
-}
-
-.top-brand small {
-  color: #aeb9ca;
-  font-size: 11px;
-}
-
-.navigation {
-  display: flex;
-  height: 62px;
-  justify-content: space-around;
-  border-top: 1px solid #283448;
-}
-
-.nav-item {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 4px;
-  color: #aeb9ca;
-  text-decoration: none;
-  font-size: 10px;
-  position: relative;
-}
-
-.nav-icon {
-  font-size: 22px;
-  line-height: 1;
-}
-
-.nav-item.active {
-  color: #ffd36a;
-}
-
-.nav-item.active::after {
-  content: "";
-  position: absolute;
-  bottom: 0;
-  left: 18%;
-  right: 18%;
-  height: 3px;
-  background: #ffd36a;
-  border-radius: 5px 5px 0 0;
-}
-
-main {
-  max-width: 850px;
-  margin: auto;
-  padding: 12px;
-}
-
-button {
-  border: 0;
-  border-radius: 9px;
-  padding: 12px;
-  background: #0866ff;
-  color: white;
-  font-weight: bold;
-  cursor: pointer;
-}
-
-button:disabled {
-  opacity: .5;
-}
-
-.tabs {
-  display: flex;
-  gap: 8px;
-  margin: 15px 0;
-  flex-wrap: wrap;
-}
-
-.tabs button {
-  flex: 1;
-  background: #dce5f2;
-  color: #26364b;
-}
-
-.tabs button.active {
-  background: #0866ff;
-  color: white;
-}
-
-.panel {
-  padding: 12px;
-  border-radius: 14px;
-  background: white;
-  box-shadow: 0 2px 12px #17212b12;
-}
-
-.hidden {
-  display: none !important;
-}
-
-#streamPanel,
-#groupPanel {
-  min-height: calc(100dvh - 290px);
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-}
-
-#streamPanel h3 {
-  flex-shrink: 0;
-  margin: 5px 0 8px;
-}
-
-#streamPanel .messages {
-  flex: 1;
-  height: auto;
-  min-height: 350px;
-  overflow-y: auto;
-  padding: 14px;
-  margin: 10px 0;
-}
-
-#streamPanel form {
-  flex-shrink: 0;
-  padding-bottom: max(5px, env(safe-area-inset-bottom));
-}
-
-.messages {
-  height: 350px;
-  overflow-y: auto;
-  padding: 14px;
-  background: #f1f4f8;
-  border-radius: 12px;
-  margin: 12px 0;
-}
-
-.messageRow {
-  display: flex;
-  align-items: flex-end;
-  gap: 8px;
-  margin: 10px 0;
-}
-
-.messageRow.mine {
-  justify-content: flex-end;
-}
-
-.messageAvatar {
-  width: 32px;
-  height: 32px;
-  min-width: 32px;
-  border-radius: 50%;
-  background: #0866ff;
-  color: white;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: bold;
-  font-size: 13px;
-  overflow: hidden;
-  flex-shrink: 0;
-}
-
-.messageAvatarImage {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-}
-
-.message {
-  background: white;
-  color: #17212b;
-  padding: 9px 12px;
-  border-radius: 14px 14px 14px 4px;
-  margin: 0;
-  max-width: 85%;
-  overflow-wrap: anywhere;
-  box-shadow: 0 1px 3px #00000012;
-}
-
-.message.mine {
-  background: #d9fdd3;
-  color: #17212b;
-  border-radius: 14px 14px 4px 14px;
-}
-
-.message strong {
-  font-size: 12px;
-  color: #0866ff;
-}
-
-.message p {
-  margin: 6px 0;
-  font-size: 13px;
-  line-height: 1.4;
-  white-space: pre-wrap;
-}
-
-.message small {
-  display: block;
-  color: #718096;
-  font-size: 10px;
-  text-align: right;
-}
-
-form {
-  display: flex;
-  gap: 8px;
-}
-
-input {
-  min-width: 0;
-  flex: 1;
-  padding: 13px;
-  border-radius: 22px;
-  border: 1px solid #d5dce5;
-  background: white;
-  color: #17212b;
-  font-size: 15px;
-  outline: none;
-}
-
-input:focus {
-  border-color: #0866ff;
-}
-
-#status {
-  color: #d97706;
-  min-height: 22px;
-}
-
-/* STREAM CHAT */
-
-#streamPanel {
-  background: white;
-  border: 1px solid #d9e7f1;
-}
-
-#streamPanel h3 {
-  color: #168acd;
-}
-
-#streamPanel .messages {
-  background-color: #dcecf5;
-  background-image: radial-gradient(#ffffff80 1px, transparent 1px);
-  background-size: 22px 22px;
-}
-
-#streamPanel .message {
-  background: white;
-  border-radius: 12px 12px 12px 3px;
-  border: 1px solid #e5edf2;
-}
-
-#streamPanel .message.mine {
-  background: #c9f3d8;
-  border-radius: 12px 12px 3px 12px;
-}
-
-#streamPanel .message strong {
-  color: #168acd;
-}
-
-#streamPanel form button {
-  background: #168acd;
-  border-radius: 22px;
-}
-
-/* SCHOOL GROUP CHAT */
-
-#groupPanel {
-  background: #fff;
-  border: 1px solid #e1e7ef;
-  min-height: calc(100dvh - 220px);
-  max-height: calc(100dvh - 140px);
-  padding: 0;
-  border-radius: 15px;
-  overflow: hidden;
-}
-
-.groupHeader {
-  background: #111827;
-  color: white;
-  padding: 14px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 10px;
-  flex-shrink: 0;
-}
-
-.groupHeader h3 {
-  margin: 0;
-  color: #ffd36a;
-  font-size: 17px;
-}
-
-.groupHeader p {
-  margin: 5px 0 0;
-  color: #c3ccda;
-  font-size: 12px;
-}
-
-.groupOnline {
-  color: #ffd36a;
-  font-size: 11px;
-  white-space: nowrap;
-}
-
-#groupPanel .messages {
-  flex: 1;
-  min-height: 250px;
-  height: auto;
-  margin: 0;
-  padding: 14px 10px;
-  overflow-y: auto;
-  border-radius: 0;
-  background-color: #f2f3f5;
-  background-image: radial-gradient(#d7dce3 0.7px, transparent 0.7px);
-  background-size: 19px 19px;
-}
-
-#groupPanel .messageRow {
-  margin: 12px 0;
-}
-
-#groupPanel .groupMessageBubble {
-  position: relative;
-  max-width: 82%;
-  padding: 9px 12px;
-  background: white;
-  border: 1px solid #e4e6eb;
-  border-radius: 13px 13px 13px 4px;
-  color: #17212b;
-  box-shadow: 0 1px 2px #00000010;
-  touch-action: pan-y;
-  user-select: none;
-  -webkit-user-select: none;
-}
-
-#groupPanel .groupMessageBubble.mine {
-  background: #fff0c9;
-  border-color: #f1d58d;
-  border-radius: 13px 13px 4px 13px;
-}
-
-#groupPanel .groupMessageBubble strong {
-  display: block;
-  color: #a66c00;
-  font-size: 12px;
-  margin-bottom: 4px;
-}
-
-#groupPanel .groupMessageBubble p {
-  margin: 5px 0;
-  font-size: 14px;
-  line-height: 1.45;
-  white-space: pre-wrap;
-  overflow-wrap: anywhere;
-}
-
-#groupPanel .groupMessageBubble small {
-  display: block;
-  text-align: right;
-  color: #7b8492;
-  font-size: 10px;
-  margin-top: 5px;
-}
-
-.groupDateSeparator {
-  width: fit-content;
-  margin: 13px auto;
-  padding: 6px 12px;
-  border-radius: 20px;
-  background: #e4e8ee;
-  color: #566171;
-  font-size: 11px;
-  box-shadow: 0 1px 2px #00000010;
-}
-
-.deletedMessage {
-  color: #858b95 !important;
-  font-style: italic;
-  font-size: 12px !important;
-  margin: 4px 0 !important;
-}
-
-.groupAttachment {
-  display: block;
-  width: 100%;
-  max-width: 230px;
-  text-align: left;
-  margin-top: 8px;
-  padding: 10px;
-  border-radius: 9px;
-  background: #f0f2f5;
-  color: #253247;
-  border: 1px solid #dce1e8;
-  font-size: 12px;
-  overflow-wrap: anywhere;
-}
-
-.groupAttachment:active {
-  background: #e1e6ee;
-}
-
-#groupStatus {
-  flex-shrink: 0;
-  min-height: 20px;
-  padding: 3px 12px;
-  font-size: 11px;
-  color: #9a6900;
-  background: #fff;
-}
-
-.groupComposer {
-  display: flex;
-  align-items: center;
-  gap: 7px;
-  padding: 9px;
-  background: #fff;
-  border-top: 1px solid #e6e9ef;
-  flex-shrink: 0;
-  padding-bottom: max(9px, env(safe-area-inset-bottom));
-}
-
-#groupPanel .groupComposer input {
-  min-width: 0;
-  flex: 1;
-  padding: 12px 15px;
-  border: 1px solid #d9dee7;
-  border-radius: 24px;
-  background: #f6f7f9;
-  font-size: 14px;
-}
-
-#groupAttach {
-  width: 42px;
-  height: 42px;
-  min-width: 42px;
-  padding: 0;
-  border-radius: 50%;
-  background: #f0e4c5;
-  color: #805400;
-  font-size: 26px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-#groupSend {
-  width: 44px;
-  height: 44px;
-  min-width: 44px;
-  padding: 0;
-  border-radius: 50%;
-  background: #111827;
-  color: #ffd36a;
-  font-size: 19px;
-}
-
-#groupFileName {
-  flex-shrink: 0;
-  padding: 0 12px 8px;
-  color: #8b650d;
-  font-size: 11px;
-  overflow-wrap: anywhere;
-  background: white;
-}
-
-/* LONG-PRESS MESSAGE MENU */
-
-.groupMenu {
-  position: fixed;
-  z-index: 3000;
-  width: 170px;
-  padding: 5px;
-  background: #172033;
-  border: 1px solid #34415a;
-  border-radius: 10px;
-  box-shadow: 0 8px 25px #0005;
-}
-
-.groupMenu button {
-  width: 100%;
-  display: block;
-  padding: 11px;
-  text-align: left;
-  color: white;
-  background: transparent;
-  border-radius: 6px;
-  font-size: 13px;
-}
-
-.groupMenu button:hover {
-  background: #293750;
-}
-
-.groupMenu button[data-action="unsend"] {
-  color: #ffb6a9;
-}
-
-/* WHO VIEWED MODAL */
-
-.groupViewsModal {
-  position: fixed;
-  inset: 0;
-  z-index: 4000;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
-  background: #0008;
-}
-
-.groupViewsCard {
-  width: 100%;
-  max-width: 360px;
-  max-height: 75vh;
-  overflow-y: auto;
-  padding: 18px;
-  background: white;
-  color: #17212b;
-  border-radius: 15px;
-  box-shadow: 0 10px 35px #0004;
-}
-
-.groupViewsCard h3 {
-  margin: 0 0 14px;
-  color: #805400;
-}
-
-.groupViewer {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-  padding: 11px 0;
-  border-bottom: 1px solid #edf0f4;
-  font-size: 13px;
-}
-
-.groupViewer small {
-  color: #788394;
-}
-
-#groupViewsClose {
-  width: 100%;
-  margin-top: 15px;
-  background: #111827;
-  color: #ffd36a;
-}
-
-/* PRIVATE CHAT */
-
-.chatChoice {
-  width: 100%;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin: 7px 0;
-  background: white;
-  color: #17212b;
-  text-align: left;
-  border: 1px solid #e5eaf0;
-}
-
-.chatChoice:hover {
-  background: #f1f6ff;
-}
-
-.avatar {
-  width: 45px;
-  height: 45px;
-  border-radius: 50%;
-  object-fit: cover;
-  background: #d5e5f8;
-  color: #0866ff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
-
-.note {
-  color: #718096;
-  font-size: 13px;
-}
-
-#privateScreen {
-  display: none;
-  position: fixed;
-  inset: 112px 0 0;
-  z-index: 900;
-  background: #101522;
-  flex-direction: column;
-}
-
-#privateScreen.active {
-  display: flex;
-}
-
-.chatHeader {
-  background: #075e54;
-  color: white;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 12px;
-  min-height: 68px;
-}
-
-.backButton {
-  background: transparent;
-  color: white;
-  font-size: 24px;
-  padding: 5px 10px;
-}
-
-#recipientAvatar {
-  width: 42px;
-  height: 42px;
-}
-
-.recipientInfo {
-  flex: 1;
-  min-width: 0;
-}
-
-.recipientInfo strong {
-  display: block;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.recipientInfo small {
-  color: #d1e8e4;
-}
-
-#privateMessages {
-  flex: 1;
-  overflow-y: auto;
-  padding: 14px;
-  background: radial-gradient(circle at center, #182337 0%, #101522 75%);
-}
-
-#privateMessages .message {
-  background: #263249;
-  color: white;
-}
-
-#privateMessages .message.mine {
-  background: #075e54;
-  color: white;
-}
-
-#privateMessages .message strong {
-  color: #b9e7df;
-}
-
-#privateMessages .message small {
-  color: #c2d0d8;
-}
-
-#privateStatus {
-  padding: 4px 12px;
-  color: #ffbd75;
-  font-size: 12px;
-  min-height: 20px;
-  background: #101522;
-}
-
-.privateComposer {
-  display: flex;
-  gap: 8px;
-  padding: 10px;
-  background: #1b2435;
-  padding-bottom: max(10px, env(safe-area-inset-bottom));
-}
-
-.privateComposer input {
-  border-radius: 25px;
-  background: #111a2a;
-  color: white;
-  border-color: #39465e;
-}
-
-.privateComposer button {
-  background: #128c7e;
-  border-radius: 50%;
-  width: 48px;
-  height: 48px;
-  flex-shrink: 0;
-}
-
-@media(max-width:520px) {
-  main {
-    padding: 8px;
-  }
-
-  #streamPanel {
-    min-height: calc(100dvh - 290px);
-    padding: 10px;
-  }
-
-  #streamPanel .messages {
-    min-height: 350px;
-  }
-
-  #groupPanel {
-    min-height: calc(100dvh - 220px);
-    max-height: calc(100dvh - 140px);
-  }
-
-  .tabs button {
-    font-size: 12px;
-    padding: 11px 5px;
-  }
-
-  .top-brand strong {
-    font-size: 14px;
-  }
-
-  .nav-item {
-    font-size: 9px;
-  }
-
-  .nav-icon {
-    font-size: 21px;
-  }
+*{box-sizing:border-box;font-family:Arial,sans-serif}
+body{margin:0;background:#101522;color:#eef3fb}
+button,input{font:inherit}
+button{border:0;cursor:pointer}
+.hidden{display:none!important}
+.note{color:#9aa8bd;font-size:13px}
+#chatHome{max-width:850px;margin:auto;padding:20px}
+.homeHeader{padding:18px 5px}
+.homeHeader h2{margin:0 0 8px;color:#ffd36a}
+.homeHeader p{color:#aab6c8;font-size:13px}
+.chatChoice{
+ width:100%;display:flex;align-items:center;gap:15px;
+ padding:17px;margin:12px 0;border-radius:15px;
+ background:#1b2639;color:white;text-align:left;
+ border:1px solid #34425a;
+}
+.chatChoice:active{background:#26364f}
+.choiceIcon{
+ width:52px;height:52px;border-radius:16px;
+ display:grid;place-items:center;font-size:25px;
+ background:#263b57;color:#ffd36a;flex-shrink:0
+}
+.chatChoice strong{display:block;font-size:15px}
+.chatChoice small{display:block;color:#aab6c8;margin-top:5px}
+.choiceArrow{margin-left:auto;color:#ffd36a;font-size:22px}
+#homeStatus{min-height:22px;color:#ffc16b;font-size:12px}
+
+.chatScreen{
+ position:fixed;inset:0;z-index:2000;
+ display:flex;flex-direction:column;background:#101522;
+}
+.chatHeader{
+ min-height:68px;display:flex;align-items:center;gap:12px;
+ padding:10px 14px;background:#182338;
+ border-bottom:1px solid #34425a;flex-shrink:0
+}
+.backButton{
+ width:40px;height:40px;border-radius:50%;
+ background:#293951;color:white;font-size:25px
+}
+.headerInfo{min-width:0;flex:1}
+.headerInfo strong{display:block;color:#ffd36a;font-size:16px}
+.headerInfo small{display:block;color:#aab6c8;margin-top:4px}
+.headerBadge{font-size:11px;color:#9fe0bd}
+
+.chatMessages{
+ flex:1;min-height:0;overflow-y:auto;padding:14px 11px;
+ background:#111a29;
+}
+.messageRow{display:flex;align-items:flex-end;gap:8px;margin:12px 0}
+.messageRow.mine{justify-content:flex-end}
+.messageAvatar{
+ width:32px;height:32px;min-width:32px;border-radius:50%;
+ display:flex;align-items:center;justify-content:center;
+ background:#344b6c;color:white;font-size:13px;
+ font-weight:bold;overflow:hidden
+}
+.messageAvatar img{width:100%;height:100%;object-fit:cover}
+.message{
+ max-width:82%;padding:9px 12px;border-radius:14px 14px 14px 4px;
+ background:#263249;color:white;overflow-wrap:anywhere;
+ box-shadow:0 2px 8px #0003;border:1px solid #35445d
+}
+.message.mine{
+ background:#164e48;border-color:#277c70;
+ border-radius:14px 14px 4px 14px
+}
+.message strong{display:block;color:#9fd8cf;font-size:12px;margin-bottom:4px}
+.message p{margin:5px 0;font-size:14px;line-height:1.45;white-space:pre-wrap}
+.message small{display:block;text-align:right;color:#bdc9d8;font-size:10px;margin-top:6px}
+.messageAttachment{
+ display:block;width:100%;text-align:left;margin-top:9px;
+ padding:10px;border-radius:9px;background:#34445c;
+ color:#f5d78c;border:1px solid #536681;
+ overflow-wrap:anywhere;font-size:12px
+}
+.deletedMessage{font-style:italic;color:#aab6c8!important;font-size:12px!important}
+.dateSeparator{
+ width:max-content;margin:15px auto;padding:6px 12px;
+ border-radius:20px;background:#29364b;color:#c4cede;font-size:11px
+}
+.chatStatus{min-height:21px;padding:3px 12px;color:#ffc16b;font-size:11px;background:#182338}
+.chatComposer{
+ display:flex;align-items:center;gap:8px;padding:10px;
+ background:#182338;border-top:1px solid #34425a;
+ padding-bottom:max(10px,env(safe-area-inset-bottom));flex-shrink:0
+}
+.chatComposer input[type=text]{
+ min-width:0;flex:1;padding:13px 15px;border-radius:24px;
+ background:#101a2b;color:white;border:1px solid #3b4a62;outline:none
+}
+.chatComposer input:focus{border-color:#ffd36a}
+.attachButton{
+ width:43px;height:43px;min-width:43px;border-radius:50%;
+ background:#34445c;color:#ffd36a;font-size:23px
+}
+.sendButton{
+ width:45px;height:45px;min-width:45px;border-radius:50%;
+ background:#ffd36a;color:#172033;font-size:19px;font-weight:bold
+}
+.sendButton:disabled{opacity:.5}
+.fileLabel{padding:0 13px 7px;color:#ffd36a;font-size:11px;overflow-wrap:anywhere}
+
+#streamScreen .chatHeader{background:#102b40}
+#streamScreen .headerInfo strong{color:#72d0ff}
+#streamScreen .message{background:#17344b;border-color:#28516c}
+#streamScreen .message.mine{background:#124c5b;border-color:#237b88}
+#streamScreen .message strong{color:#8edcff}
+#streamScreen .messageAttachment{background:#20465d;color:#a9e4ff}
+#streamScreen .sendButton{background:#168acd;color:white}
+#streamScreen .attachButton{background:#20465d;color:#8edcff}
+
+#groupScreen .chatHeader{background:#22202b}
+#groupScreen .headerInfo strong{color:#ffd36a}
+#groupScreen .message{background:#282b35;border-color:#414654}
+#groupScreen .message.mine{background:#57431e;border-color:#94712c}
+#groupScreen .message strong{color:#ffd36a}
+#groupScreen .messageAttachment{background:#3b3c40;color:#ffdf91}
+#groupPanel{display:flex;flex:1;min-height:0;flex-direction:column;background:#111a29}
+#groupPanel .messages{flex:1;min-height:0;overflow-y:auto;padding:14px 11px}
+#groupPanel .groupHeader{display:none}
+#groupPanel #groupStatus{display:none}
+#groupPanel .groupComposer{display:flex;align-items:center;gap:8px;padding:10px;background:#182338;border-top:1px solid #34425a;padding-bottom:max(10px,env(safe-area-inset-bottom))}
+#groupPanel .groupComposer input{
+ min-width:0;flex:1;padding:13px 15px;border-radius:24px;
+ background:#101a2b;color:white;border:1px solid #3b4a62
+}
+#groupAttach{width:43px;height:43px;min-width:43px;border-radius:50%;background:#34445c;color:#ffd36a;font-size:23px;padding:0}
+#groupSend{width:45px;height:45px;min-width:45px;border-radius:50%;background:#ffd36a;color:#172033;font-size:19px;padding:0}
+#groupFileName{padding:0 13px 7px;background:#182338;color:#ffd36a;font-size:11px}
+.groupMenu{position:fixed;z-index:4000;width:170px;padding:5px;background:#202c40;border:1px solid #45536b;border-radius:10px;box-shadow:0 8px 25px #0008}
+.groupMenu button{width:100%;display:block;padding:11px;text-align:left;color:white;background:transparent;border-radius:6px;font-size:13px}
+.groupMenu button[data-action=unsend]{color:#ffaaa0}
+.groupViewsModal{position:fixed;inset:0;z-index:5000;display:flex;align-items:center;justify-content:center;padding:20px;background:#0009}
+.groupViewsCard{width:100%;max-width:360px;max-height:75vh;overflow-y:auto;padding:18px;background:#202c40;color:white;border-radius:15px}
+.groupViewsCard h3{color:#ffd36a}
+.groupViewer{display:flex;justify-content:space-between;gap:10px;padding:11px 0;border-bottom:1px solid #3b4658;font-size:13px}
+.groupViewer small{color:#aab6c8}
+#groupViewsClose{width:100%;padding:12px;margin-top:15px;background:#ffd36a;color:#172033;border-radius:9px}
+
+#privateScreen .chatHeader{background:#075e54}
+#privateScreen .headerInfo strong{color:#b8f1df}
+#privateScreen .message{background:#263249}
+#privateScreen .message.mine{background:#075e54}
+#privateScreen .message strong{color:#b9e7df}
+#privateScreen .messageAttachment{background:#174d49;color:#b9f4e8}
+#privateScreen .sendButton{background:#128c7e;color:white}
+#privateScreen .attachButton{background:#28534e;color:#b9f4e8}
+
+.memberSearch{
+ width:100%;padding:13px;margin:8px 0 15px;border-radius:12px;
+ border:1px solid #3b4a62;background:#182338;color:white
+}
+.memberChoice{
+ width:100%;display:flex;align-items:center;gap:12px;
+ padding:12px;margin:7px 0;border-radius:12px;
+ background:#1b2639;color:white;text-align:left;border:1px solid #34425a
+}
+.memberAvatar{width:43px;height:43px;min-width:43px;border-radius:50%;object-fit:cover;background:#344b6c;display:grid;place-items:center}
+.memberChoice small{display:block;color:#aab6c8;margin-top:4px}
+@media(max-width:520px){
+ #chatHome{padding:14px}
+ .message{max-width:86%}
+ .chatHeader{min-height:64px}
 }
 </style>
 </head>
 
 <body>
 
-<header class="topbar">
-  <div class="top-brand">
-    <strong>THE MAGUNGA HIGH</strong>
-    <small>Student Community</small>
-  </div>
+<main id="chatHome">
+ <div class="homeHeader">
+  <h2>MAGUNGA MESSAGES</h2>
+  <p id="welcome">Connecting to your account...</p>
+  <p class="note">Choose a conversation to open its chat.</p>
+ </div>
 
-  <nav class="navigation">
-    <a href="dashboard.html" class="nav-item">
-      <span class="nav-icon">⌂</span>
-      <span>Home</span>
-    </a>
+ <button class="chatChoice" id="openStream" type="button">
+  <span class="choiceIcon">◉</span>
+  <span><strong>Stream Chat</strong><small id="streamDescription">Talk with students in your stream</small></span>
+  <span class="choiceArrow">›</span>
+ </button>
 
-    <a href="community.html" class="nav-item">
-      <span class="nav-icon">♧</span>
-      <span>Friends</span>
-    </a>
+ <button class="chatChoice" id="openGroup" type="button">
+  <span class="choiceIcon">▣</span>
+  <span><strong>School Group</strong><small>Join the Magunga High community</small></span>
+  <span class="choiceArrow">›</span>
+ </button>
 
-    <a href="chat.html" class="nav-item active">
-      <span class="nav-icon">☏</span>
-      <span>Messages</span>
-    </a>
+ <button class="chatChoice" id="openPrivate" type="button">
+  <span class="choiceIcon">✉</span>
+  <span><strong>Private Chat</strong><small>Send a private message to a student</small></span>
+  <span class="choiceArrow">›</span>
+ </button>
 
-    <a href="notifications.html" class="nav-item">
-      <span class="nav-icon">♧</span>
-      <span>Alerts</span>
-    </a>
-
-    <a href="profile.html" class="nav-item">
-      <span class="nav-icon">●</span>
-      <span>Account</span>
-    </a>
-  </nav>
-</header>
-
-<main>
-  <h2>Student Chats</h2>
-  <p id="welcome" class="note">Connecting...</p>
-
-  <div class="tabs">
-    <button class="active" data-tab="streamPanel">Stream Chat</button>
-    <button data-tab="groupPanel">School Group</button>
-    <button data-tab="privatePanel">Private Chat</button>
-  </div>
-
-  <!-- STREAM CHAT -->
-  <section id="streamPanel" class="panel">
-    <h3 id="streamTitle">Stream Chat</h3>
-
-    <div id="streamMessages" class="messages">
-      <p class="note">Loading messages...</p>
-    </div>
-
-    <form id="streamForm">
-      <input
-        id="streamInput"
-        maxlength="2000"
-        placeholder="Message your stream..."
-        autocomplete="off"
-        required
-      >
-      <button type="submit">Send</button>
-    </form>
-  </section>
-
-  <!-- SCHOOL GROUP CHAT -->
-  <section id="groupPanel" class="panel hidden">
-
-    <div class="groupHeader">
-      <div>
-        <h3>Magunga High Group</h3>
-        <p>School community chat</p>
-      </div>
-      <span class="groupOnline">● Group</span>
-    </div>
-
-    <div id="groupMessages" class="messages">
-      <p class="note">Loading messages...</p>
-    </div>
-
-    <div id="groupStatus"></div>
-
-    <form id="groupForm" class="groupComposer">
-      <button id="groupAttach" type="button" title="Attach file">＋</button>
-
-      <input
-        id="groupInput"
-        maxlength="2000"
-        placeholder="Message..."
-        autocomplete="off"
-      >
-
-      <input
-        id="groupFile"
-        type="file"
-        accept=".pdf,.jpg,.jpeg,.png,.webp,.txt"
-        hidden
-      >
-
-      <button id="groupSend" type="submit">➤</button>
-    </form>
-
-    <div id="groupFileName"></div>
-  </section>
-
-  <!-- MESSAGE OPTIONS -->
-  <div id="groupMessageMenu" class="groupMenu hidden">
-    <button type="button" data-action="unsend">Unsend message</button>
-    <button type="button" data-action="views">Who viewed</button>
-  </div>
-
-  <!-- VIEWERS MODAL -->
-  <div id="groupViewsModal" class="groupViewsModal hidden">
-    <div class="groupViewsCard">
-      <h3>Message viewers</h3>
-      <div id="groupViewsList"></div>
-      <button id="groupViewsClose" type="button">Close</button>
-    </div>
-  </div>
-
-  <!-- PRIVATE CHAT -->
-  <section id="privatePanel" class="panel hidden">
-    <h3>Private Messages</h3>
-    <input id="memberSearch" placeholder="Search students..." autocomplete="off">
-    <div id="chatList">
-      <p class="note">Loading students...</p>
-    </div>
-  </section>
-
-  <p id="status"></p>
+ <div id="homeStatus"></div>
 </main>
 
-<!-- PRIVATE CHAT SCREEN -->
-<div id="privateScreen">
+<!-- STREAM CHAT -->
+<section id="streamScreen" class="chatScreen hidden">
+ <header class="chatHeader">
+  <button class="backButton" type="button" data-back>‹</button>
+  <div class="headerInfo">
+   <strong id="streamTitle">Stream Chat</strong>
+   <small>Students in your stream</small>
+  </div>
+  <span class="headerBadge">● Stream</span>
+ </header>
 
-  <div class="chatHeader">
-    <button id="backButton" class="backButton" type="button">‹</button>
+ <div id="streamMessages" class="chatMessages">
+  <p class="note">Loading messages...</p>
+ </div>
+ <div id="streamStatus" class="chatStatus"></div>
 
-    <div id="recipientAvatar" class="avatar">?</div>
+ <form id="streamForm" class="chatComposer">
+  <button class="attachButton" id="streamAttach" type="button">＋</button>
+  <input id="streamInput" type="text" maxlength="2000" placeholder="Message your stream..." autocomplete="off">
+  <input id="streamFile" type="file" accept=".pdf,.jpg,.jpeg,.png,.webp,.txt" hidden>
+  <button class="sendButton" id="streamSend" type="submit">➤</button>
+ </form>
+ <div id="streamFileName" class="fileLabel"></div>
+</section>
 
-    <div class="recipientInfo">
-      <strong id="recipientName">Student</strong>
-      <small id="recipientStream">Private conversation</small>
-    </div>
+<!-- SCHOOL GROUP CHAT -->
+<section id="groupScreen" class="chatScreen hidden">
+ <header class="chatHeader">
+  <button class="backButton" type="button" data-back>‹</button>
+  <div class="headerInfo">
+   <strong>Magunga High Group</strong>
+   <small>School community chat</small>
+  </div>
+  <span class="headerBadge">● Group</span>
+ </header>
+
+ <section id="groupPanel">
+  <div class="groupHeader">
+   <div><h3>Magunga High Group</h3><p>School community chat</p></div>
+   <span class="groupOnline">● Group</span>
   </div>
 
-  <div id="privateMessages">
-    <p class="note">Loading conversation...</p>
+  <div id="groupMessages" class="messages">
+   <p class="note">Loading messages...</p>
   </div>
 
-  <div id="privateStatus"></div>
+  <div id="groupStatus"></div>
 
-  <form id="privateForm" class="privateComposer">
-    <input
-      id="privateInput"
-      maxlength="2000"
-      placeholder="Message..."
-      autocomplete="off"
-      required
-    >
-    <button id="privateSend" type="submit">➤</button>
+  <form id="groupForm" class="groupComposer">
+   <button id="groupAttach" type="button">＋</button>
+   <input id="groupInput" maxlength="2000" placeholder="Message..." autocomplete="off">
+   <input id="groupFile" type="file" accept=".pdf,.jpg,.jpeg,.png,.webp,.txt" hidden>
+   <button id="groupSend" type="submit">➤</button>
   </form>
+  <div id="groupFileName"></div>
+ </section>
+</section>
+
+<!-- PRIVATE CHAT MEMBER LIST -->
+<section id="privateListScreen" class="chatScreen hidden">
+ <header class="chatHeader">
+  <button class="backButton" type="button" data-back>‹</button>
+  <div class="headerInfo">
+   <strong>Private Chats</strong>
+   <small>Choose a student</small>
+  </div>
+ </header>
+ <div style="padding:14px;overflow-y:auto;flex:1">
+  <input id="memberSearch" class="memberSearch" placeholder="Search students..." autocomplete="off">
+  <div id="chatList"><p class="note">Loading students...</p></div>
+ </div>
+</section>
+
+<!-- PRIVATE CONVERSATION -->
+<section id="privateScreen" class="chatScreen hidden">
+ <header class="chatHeader">
+  <button class="backButton" id="privateBack" type="button">‹</button>
+  <div id="recipientAvatar" class="memberAvatar">?</div>
+  <div class="headerInfo">
+   <strong id="recipientName">Student</strong>
+   <small id="recipientStream">Private conversation</small>
+  </div>
+ </header>
+
+ <div id="privateMessages" class="chatMessages">
+  <p class="note">Loading conversation...</p>
+ </div>
+ <div id="privateStatus" class="chatStatus"></div>
+
+ <form id="privateForm" class="chatComposer">
+  <button class="attachButton" id="privateAttach" type="button">＋</button>
+  <input id="privateInput" type="text" maxlength="2000" placeholder="Message..." autocomplete="off">
+  <input id="privateFile" type="file" accept=".pdf,.jpg,.jpeg,.png,.webp,.txt" hidden>
+  <button class="sendButton" id="privateSend" type="submit">➤</button>
+ </form>
+ <div id="privateFileName" class="fileLabel"></div>
+</section>
+
+<!-- GROUP MESSAGE OPTIONS -->
+<div id="groupMessageMenu" class="groupMenu hidden">
+ <button type="button" data-action="unsend">Unsend message</button>
+ <button type="button" data-action="views">Who viewed</button>
+</div>
+
+<!-- GROUP VIEWERS -->
+<div id="groupViewsModal" class="groupViewsModal hidden">
+ <div class="groupViewsCard">
+  <h3>Message viewers</h3>
+  <div id="groupViewsList"></div>
+  <button id="groupViewsClose" type="button">Close</button>
+ </div>
 </div>
 
 <script type="module">
 import { auth, db } from "./assets/js/firebase.js";
 import { initGroupChat } from "./assets/js/group-chat.js";
 
-import {
-  onAuthStateChanged
-} from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
+import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
 
 import {
-  collection,
-  doc,
-  getDoc,
-  getDocs,
-  setDoc,
-  addDoc,
-  query,
-  where,
-  onSnapshot,
-  serverTimestamp
+ collection, doc, getDoc, getDocs, setDoc, addDoc,
+ query, where, onSnapshot, serverTimestamp
 } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
 
 const $ = id => document.getElementById(id);
 
 let user = null;
 let profile = null;
-let activeRecipient = null;
 let approvedMembers = [];
 let membersLoaded = false;
+let activeRecipient = null;
+let activeChatId = null;
+let streamUnsub = null;
+let privateUnsub = null;
+let groupController = null;
 
 const profilePhotos = new Map();
 
-let streamUnsub = null;
-let privateUnsub = null;
-let readUnsub = null;
-
-let currentPrivateSnapshot = null;
-let recipientReadAt = 0;
-let activeChatId = null;
-
-let groupChatController = null;
-
-function status(message) {
-  $("status").textContent = message || "";
+function setStatus(id, message) {
+ $(id).textContent = message || "";
 }
 
-function privateStatus(message) {
-  $("privateStatus").textContent = message || "";
+function getToken() {
+ if (!auth.currentUser) throw new Error("Please sign in again.");
+ return auth.currentUser.getIdToken();
 }
 
-function stopPrivate() {
-  if (privateUnsub) privateUnsub();
-  if (readUnsub) readUnsub();
-
-  privateUnsub = null;
-  readUnsub = null;
-  currentPrivateSnapshot = null;
-  recipientReadAt = 0;
-  activeChatId = null;
+function showScreen(id) {
+ ["chatHome","streamScreen","groupScreen","privateListScreen","privateScreen"]
+  .forEach(screen => $(screen).classList.toggle("hidden", screen !== id));
 }
 
 function stopStream() {
-  if (streamUnsub) streamUnsub();
-  streamUnsub = null;
+ if (streamUnsub) streamUnsub();
+ streamUnsub = null;
 }
 
-/* AVATARS */
+function stopPrivate() {
+ if (privateUnsub) privateUnsub();
+ privateUnsub = null;
+ activeChatId = null;
+}
 
-function makeAvatar(name, photoURL = "") {
-  const avatar = document.createElement("div");
-  avatar.className = "messageAvatar";
+function makeAvatar(name, photo = "") {
+ const avatar = document.createElement("div");
+ avatar.className = "messageAvatar";
 
-  const initial = (name || "S").trim().charAt(0).toUpperCase();
+ if (photo) {
+  const image = document.createElement("img");
+  image.src = photo;
+  image.alt = "";
+  image.onerror = () => {
+   avatar.replaceChildren();
+   avatar.textContent = (name || "S").trim().charAt(0).toUpperCase();
+  };
+  avatar.appendChild(image);
+ } else {
+  avatar.textContent = (name || "S").trim().charAt(0).toUpperCase();
+ }
+ return avatar;
+}
 
-  if (photoURL) {
-    const image = document.createElement("img");
-    image.className = "messageAvatarImage";
-    image.src = photoURL;
-    image.alt = "";
+function formatTime(timestamp) {
+ const date = timestamp?.toDate ? timestamp.toDate() : new Date();
+ return date.toLocaleTimeString([], {hour:"2-digit",minute:"2-digit"});
+}
 
-    image.onerror = () => {
-      avatar.replaceChildren();
-      avatar.textContent = initial;
-    };
+function renderMessages(container, snapshot, chatType, chatId = "") {
+ container.replaceChildren();
 
-    avatar.appendChild(image);
+ const docs = [...snapshot.docs].sort((a,b) =>
+  (a.data().createdAt?.toMillis?.() || 0) -
+  (b.data().createdAt?.toMillis?.() || 0)
+ );
+
+ if (!docs.length) {
+  const empty = document.createElement("p");
+  empty.className = "note";
+  empty.textContent = "No messages yet. Start the conversation!";
+  container.appendChild(empty);
+  return;
+ }
+
+ let previousDate = "";
+
+ docs.forEach(item => {
+  const data = item.data();
+  const date = data.createdAt?.toDate?.() || new Date();
+  const dateLabel = date.toLocaleDateString();
+
+  if (dateLabel !== previousDate) {
+   const separator = document.createElement("div");
+   separator.className = "dateSeparator";
+   separator.textContent = dateLabel;
+   container.appendChild(separator);
+   previousDate = dateLabel;
+  }
+
+  const mine = data.senderId === user.uid;
+  const senderName = data.senderName || "Student";
+  const row = document.createElement("div");
+  row.className = "messageRow" + (mine ? " mine" : "");
+
+  const bubble = document.createElement("div");
+  bubble.className = "message" + (mine ? " mine" : "");
+
+  if (data.deleted === true) {
+   const deleted = document.createElement("p");
+   deleted.className = "deletedMessage";
+   deleted.textContent = mine ? "You deleted this message." : "This message was deleted.";
+   bubble.appendChild(deleted);
   } else {
-    avatar.textContent = initial;
-  }
+   const sender = document.createElement("strong");
+   sender.textContent = senderName;
 
-  return avatar;
-}
+   const body = document.createElement("p");
+   body.textContent = data.text || "";
 
-/* LOAD APPROVED PROFILE PHOTOS */
+   bubble.appendChild(sender);
+   if (data.text) bubble.appendChild(body);
 
-async function loadPublicProfiles() {
-  try {
-    const q = query(
-      collection(db, "publicProfiles"),
-      where("status", "==", "approved")
+   if (data.filePath) {
+    const file = document.createElement("button");
+    file.type = "button";
+    file.className = "messageAttachment";
+    file.textContent = "📎 " + (data.fileName || "Attachment");
+    file.addEventListener("click", () =>
+     downloadAttachment(chatType, item.id, data.fileName, chatId)
     );
+    bubble.appendChild(file);
+   }
 
-    const snapshot = await getDocs(q);
-
-    snapshot.docs.forEach(item => {
-      const data = item.data();
-
-      const photo =
-        data.photoURL ||
-        data.photoUrl ||
-        data.profilePic ||
-        "";
-
-      if (photo) profilePhotos.set(item.id, photo);
-    });
-  } catch (error) {
-    console.warn("Profile photos could not be loaded:", error);
+   if (!data.text && !data.filePath) {
+    const empty = document.createElement("p");
+    empty.textContent = "Empty message";
+    bubble.appendChild(empty);
+   }
   }
+
+  const time = document.createElement("small");
+  time.textContent = formatTime(data.createdAt);
+  bubble.appendChild(time);
+
+  const avatar = makeAvatar(
+   senderName,
+   profilePhotos.get(data.senderId) || ""
+  );
+
+  if (mine) row.append(bubble, avatar);
+  else row.append(avatar, bubble);
+
+  container.appendChild(row);
+ });
+
+ container.scrollTop = container.scrollHeight;
 }
 
-/* RENDER STREAM AND PRIVATE MESSAGES */
+/* SECURE UPLOAD */
 
-function renderMessages(container, snapshot, options = {}) {
-  const { showReceipts = false, readAt = 0 } = options;
+async function uploadChatFile(file, chatType, chatId = "") {
+ if (!file) return null;
+ if (file.size <= 0 || file.size > 10 * 1024 * 1024) {
+  throw new Error("Files must be 10 MB or smaller.");
+ }
 
-  container.replaceChildren();
+ const token = await getToken();
 
-  if (snapshot.empty) {
-    const empty = document.createElement("p");
-    empty.className = "note";
-    empty.textContent = "No messages yet. Send the first message!";
-    container.appendChild(empty);
-    return;
+ const payload = {
+  fileName: file.name,
+  contentType: file.type,
+  fileSize: file.size,
+  chatType
+ };
+
+ if (chatType === "stream") payload.stream = profile.stream;
+ if (chatType === "private") payload.chatId = chatId;
+
+ const response = await fetch("/api/chat-upload-url", {
+  method:"POST",
+  headers:{
+   "Content-Type":"application/json",
+   Authorization:`Bearer ${token}`
+  },
+  body:JSON.stringify(payload)
+ });
+
+ const data = await response.json();
+ if (!response.ok) throw new Error(data.error || "Could not prepare upload.");
+
+ const encodedPath = data.path.split("/").map(encodeURIComponent).join("/");
+ const uploadResponse = await fetch(
+  `${data.supabaseUrl}/storage/v1/object/upload/sign/magunga-library/${encodedPath}?token=${encodeURIComponent(data.token)}`,
+  {
+   method:"PUT",
+   headers:{"Content-Type":file.type},
+   body:file
   }
+ );
 
-  const docs = [...snapshot.docs].sort((a, b) => {
-    const first = a.data().createdAt?.toMillis?.() || 0;
-    const second = b.data().createdAt?.toMillis?.() || 0;
-    return first - second;
+ if (!uploadResponse.ok) throw new Error("File upload failed.");
+ return data.path;
+}
+
+/* SECURE DOWNLOAD */
+
+async function downloadAttachment(chatType, messageId, fileName, chatId = "") {
+ try {
+  setStatus(
+   chatType === "private" ? "privateStatus" : "streamStatus",
+   "Preparing download..."
+  );
+
+  const token = await getToken();
+  const payload = {chatType,messageId};
+  if (chatType === "private") payload.chatId = chatId;
+
+  const response = await fetch("/api/chat-download-url", {
+   method:"POST",
+   headers:{
+    "Content-Type":"application/json",
+    Authorization:`Bearer ${token}`
+   },
+   body:JSON.stringify(payload)
   });
 
-  let previousDate = "";
+  const data = await response.json();
+  if (!response.ok) throw new Error(data.error || "Could not open file.");
 
-  docs.forEach(item => {
-    const data = item.data();
-    const mine = data.senderId === user.uid;
+  const link = document.createElement("a");
+  link.href = data.url;
+  link.target = "_blank";
+  link.rel = "noopener";
+  link.download = fileName || "attachment";
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
 
-    const date = data.createdAt?.toDate
-      ? data.createdAt.toDate()
-      : new Date();
+  setStatus(chatType === "private" ? "privateStatus" : "streamStatus", "");
+ } catch (error) {
+  setStatus(chatType === "private" ? "privateStatus" : "streamStatus", error.message);
+ }
+}
 
-    const dateLabel = date.toLocaleDateString();
-
-    if (dateLabel !== previousDate) {
-      const separator = document.createElement("div");
-      separator.className = "note";
-      separator.style.textAlign = "center";
-      separator.style.margin = "14px 0";
-      separator.textContent = dateLabel;
-      container.appendChild(separator);
-      previousDate = dateLabel;
-    }
-
-    const row = document.createElement("div");
-    row.className = "messageRow";
-
-    if (mine) row.classList.add("mine");
-
-    const name = data.senderName || "Student";
-    const photoURL = profilePhotos.get(data.senderId) || "";
-    const avatar = makeAvatar(name, photoURL);
-
-    const bubble = document.createElement("div");
-    bubble.className = "message";
-
-    if (mine) bubble.classList.add("mine");
-
-    const sender = document.createElement("strong");
-    sender.textContent = mine ? "You" : name;
-
-    const messageText = document.createElement("p");
-    messageText.textContent = data.text || "";
-
-    const time = document.createElement("small");
-    time.textContent = date.toLocaleTimeString([], {
-      hour: "2-digit",
-      minute: "2-digit"
-    });
-
-    if (showReceipts && mine) {
-      const tick = document.createElement("span");
-      tick.className = "readTicks";
-
-      const messageTime = data.createdAt?.toMillis?.() || 0;
-      const hasBeenRead = messageTime > 0 && readAt >= messageTime;
-
-      tick.classList.add(hasBeenRead ? "readTick" : "sentTick");
-      tick.textContent = "✓✓";
-      tick.title = hasBeenRead ? "Read" : "Sent";
-
-      time.appendChild(tick);
-    }
-
-    bubble.append(sender, messageText, time);
-
-    if (mine) {
-      row.append(bubble, avatar);
-    } else {
-      row.append(avatar, bubble);
-    }
-
-    container.appendChild(row);
-  });
-
-  container.scrollTop = container.scrollHeight;
+function setupFilePicker(buttonId, inputId, labelId) {
+ $(buttonId).addEventListener("click", () => $(inputId).click());
+ $(inputId).addEventListener("change", event => {
+  const file = event.target.files[0];
+  $(labelId).textContent = file ? "Selected: " + file.name : "";
+ });
 }
 
 /* STREAM CHAT */
 
 function loadStream() {
-  stopStream();
+ stopStream();
 
-  if (!profile?.stream) return;
+ if (!profile?.stream) {
+  setStatus("streamStatus","Your account has no stream assigned.");
+  return;
+ }
 
-  $("streamTitle").textContent = profile.stream + " Stream Chat";
+ $("streamTitle").textContent = profile.stream + " Stream Chat";
 
-  const q = query(
-    collection(db, "messages"),
-    where("stream", "==", profile.stream)
-  );
+ const q = query(
+  collection(db,"messages"),
+  where("stream","==",profile.stream)
+ );
 
-  streamUnsub = onSnapshot(
-    q,
-    snapshot => {
-      renderMessages($("streamMessages"), snapshot);
-    },
-    error => {
-      $("streamMessages").textContent = "Unable to load stream messages.";
-      status(error.message);
-    }
-  );
+ streamUnsub = onSnapshot(q, snapshot => {
+  renderMessages($("streamMessages"),snapshot,"stream");
+ }, error => {
+  setStatus("streamStatus","Could not load messages: " + error.message);
+ });
 }
 
-/* LOAD PRIVATE CHAT MEMBERS */
+$("streamForm").addEventListener("submit", async event => {
+ event.preventDefault();
+
+ const input = $("streamInput");
+ const fileInput = $("streamFile");
+ const file = fileInput.files[0] || null;
+ const text = input.value.trim();
+
+ if (!text && !file) return;
+
+ const button = $("streamSend");
+
+ try {
+  button.disabled = true;
+  setStatus("streamStatus",file ? "Uploading file..." : "Sending...");
+
+  let filePath = "";
+  if (file) filePath = await uploadChatFile(file,"stream");
+
+  const message = {
+   senderId:user.uid,
+   senderName:profile.name || user.displayName || "Student",
+   text,
+   stream:profile.stream,
+   createdAt:serverTimestamp()
+  };
+
+  if (file) {
+   message.filePath = filePath;
+   message.fileName = file.name;
+   message.fileType = file.type;
+   message.fileSize = file.size;
+  }
+
+  await addDoc(collection(db,"messages"),message);
+
+  input.value = "";
+  fileInput.value = "";
+  $("streamFileName").textContent = "";
+  setStatus("streamStatus","");
+ } catch (error) {
+  setStatus("streamStatus",error.message);
+ } finally {
+  button.disabled = false;
+ }
+});
+
+/* PRIVATE STUDENT LIST */
 
 async function loadMembers() {
-  if (membersLoaded) {
-    displayMembers();
-    return;
-  }
+ if (membersLoaded) {
+  displayMembers();
+  return;
+ }
 
-  $("chatList").textContent = "Loading students...";
+ $("chatList").textContent = "Loading students...";
 
-  try {
-    const q = query(
-      collection(db, "publicProfiles"),
-      where("status", "==", "approved")
-    );
+ try {
+  const q = query(
+   collection(db,"publicProfiles"),
+   where("status","==","approved")
+  );
 
-    const snapshot = await getDocs(q);
+  const snapshot = await getDocs(q);
 
-    approvedMembers = snapshot.docs.map(item => {
-      const data = item.data();
+  approvedMembers = snapshot.docs.map(item => {
+   const data = item.data();
+   const photo = data.photoURL || data.photoUrl || data.profilePic || "";
+   if (photo) profilePhotos.set(item.id,photo);
+   return {id:item.id,...data};
+  }).filter(member => member.id !== user.uid);
 
-      const photo =
-        data.photoURL ||
-        data.photoUrl ||
-        data.profilePic ||
-        "";
-
-      if (photo) profilePhotos.set(item.id, photo);
-
-      return { id: item.id, ...data };
-    }).filter(member => member.id !== user.uid);
-
-    membersLoaded = true;
-    displayMembers();
-
-  } catch (error) {
-    $("chatList").textContent =
-      "Could not load students. Check publicProfiles permissions.";
-
-    status(error.message);
-  }
+  membersLoaded = true;
+  displayMembers();
+ } catch (error) {
+  $("chatList").textContent = "Could not load students: " + error.message;
+ }
 }
-
-/* DISPLAY MEMBERS */
 
 function displayMembers(search = "") {
-  const list = $("chatList");
-  list.replaceChildren();
+ const list = $("chatList");
+ list.replaceChildren();
 
-  const filtered = approvedMembers.filter(member => {
-    const name = member.name || member.fullName || "Student";
-    return name.toLowerCase().includes(search.toLowerCase());
-  });
+ const filtered = approvedMembers.filter(member =>
+  (member.name || member.fullName || "Student")
+   .toLowerCase().includes(search.toLowerCase())
+ );
 
-  if (!filtered.length) {
-    list.textContent = "No students found.";
-    return;
+ if (!filtered.length) {
+  list.textContent = "No students found.";
+  return;
+ }
+
+ filtered.forEach(member => {
+  const button = document.createElement("button");
+  button.type = "button";
+  button.className = "memberChoice";
+
+  const nameText = member.name || member.fullName || "Student";
+  const photo = member.photoURL || member.photoUrl || member.profilePic || "";
+
+  let avatar;
+  if (photo) {
+   avatar = document.createElement("img");
+   avatar.src = photo;
+   avatar.className = "memberAvatar";
+   avatar.alt = "";
+   avatar.onerror = () => {
+    const fallback = document.createElement("div");
+    fallback.className = "memberAvatar";
+    fallback.textContent = nameText.charAt(0).toUpperCase();
+    avatar.replaceWith(fallback);
+   };
+  } else {
+   avatar = document.createElement("div");
+   avatar.className = "memberAvatar";
+   avatar.textContent = nameText.charAt(0).toUpperCase();
   }
 
-  filtered.forEach(member => {
-    const button = document.createElement("button");
-    button.type = "button";
-    button.className = "chatChoice";
+  const details = document.createElement("div");
+  const name = document.createElement("strong");
+  name.textContent = nameText;
 
-    const photo =
-      member.photoURL ||
-      member.photoUrl ||
-      member.profilePic ||
-      "";
+  const stream = document.createElement("small");
+  stream.textContent = member.stream || "Magunga High";
 
-    let avatar;
-
-    if (photo) {
-      avatar = document.createElement("img");
-      avatar.src = photo;
-      avatar.alt = "";
-      avatar.className = "avatar";
-
-      avatar.onerror = () => {
-        const fallback = document.createElement("div");
-        fallback.className = "avatar";
-        fallback.textContent =
-          (member.name || "S").trim().charAt(0).toUpperCase();
-
-        avatar.replaceWith(fallback);
-      };
-    } else {
-      avatar = document.createElement("div");
-      avatar.className = "avatar";
-      avatar.textContent =
-        (member.name || "S").trim().charAt(0).toUpperCase();
-    }
-
-    const details = document.createElement("div");
-
-    const name = document.createElement("strong");
-    name.textContent = member.name || member.fullName || "Student";
-
-    const stream = document.createElement("div");
-    stream.className = "note";
-    stream.textContent = member.stream || "Magunga High";
-
-    details.append(name, stream);
-    button.append(avatar, details);
-
-    button.addEventListener("click", () => openPrivateChat(member));
-
-    list.appendChild(button);
-  });
+  details.append(name,stream);
+  button.append(avatar,details);
+  button.addEventListener("click",() => openPrivateChat(member));
+  list.appendChild(button);
+ });
 }
 
-/* MARK PRIVATE CONVERSATION AS READ */
+$("memberSearch").addEventListener("input",event => {
+ displayMembers(event.target.value);
+});
 
-async function markPrivateChatRead(chatId) {
-  if (
-    !user ||
-    !chatId ||
-    !$("privateScreen").classList.contains("active")
-  ) return;
-
-  try {
-    await setDoc(
-      doc(db, "privateChats", chatId, "readReceipts", user.uid),
-      {
-        readerId: user.uid,
-        lastReadAt: serverTimestamp()
-      },
-      { merge: true }
-    );
-  } catch (error) {
-    console.warn("Read receipt could not be saved:", error);
-  }
-}
-
-/* OPEN PRIVATE CHAT */
+/* OPEN PRIVATE CONVERSATION */
 
 async function openPrivateChat(member) {
-  stopPrivate();
+ stopPrivate();
+ activeRecipient = member;
+ showScreen("privateScreen");
 
-  activeRecipient = member;
-  $("privateScreen").classList.add("active");
+ $("recipientName").textContent = member.name || member.fullName || "Student";
+ $("recipientStream").textContent = member.stream || "Magunga High";
 
-  $("recipientName").textContent =
-    member.name || member.fullName || "Student";
+ const avatar = $("recipientAvatar");
+ avatar.replaceChildren();
 
-  $("recipientStream").textContent =
-    member.stream || "Magunga High";
+ const photo = member.photoURL || member.photoUrl || member.profilePic || "";
+ if (photo) {
+  const image = document.createElement("img");
+  image.src = photo;
+  image.className = "memberAvatar";
+  image.alt = "";
+  image.onerror = () => {
+   avatar.textContent = (member.name || "S").charAt(0).toUpperCase();
+  };
+  avatar.appendChild(image);
+ } else {
+  avatar.textContent = (member.name || "S").charAt(0).toUpperCase();
+ }
 
-  const avatar = $("recipientAvatar");
-  avatar.replaceChildren();
+ setStatus("privateStatus","Opening conversation...");
+ $("privateMessages").innerHTML = '<p class="note">Loading conversation...</p>';
 
-  const photo =
-    member.photoURL ||
-    member.photoUrl ||
-    member.profilePic ||
-    "";
+ try {
+  const participants = [user.uid,member.id].sort();
+  const chatId = participants.join("_");
+  activeChatId = chatId;
 
-  if (photo) {
-    const image = document.createElement("img");
-    image.src = photo;
-    image.className = "avatar";
-    image.alt = "";
+  const chatRef = doc(db,"privateChats",chatId);
+  const chatSnapshot = await getDoc(chatRef);
 
-    image.onerror = () => {
-      avatar.textContent =
-        (member.name || "S").trim().charAt(0).toUpperCase();
-    };
-
-    avatar.appendChild(image);
-  } else {
-    avatar.textContent =
-      (member.name || "S").trim().charAt(0).toUpperCase();
+  if (!chatSnapshot.exists()) {
+   await setDoc(chatRef,{
+    participants,
+    createdAt:serverTimestamp()
+   });
   }
 
-  privateStatus("Opening conversation...");
-  $("privateMessages").innerHTML =
-    '<p class="note">Loading conversation...</p>';
-
-  try {
-    const participants = [user.uid, member.id].sort();
-    const chatId = participants.join("_");
-    activeChatId = chatId;
-
-    const chatRef = doc(db, "privateChats", chatId);
-    const chatSnap = await getDoc(chatRef);
-
-    if (!chatSnap.exists()) {
-      await setDoc(chatRef, {
-        participants,
-        createdAt: serverTimestamp()
-      });
-    }
-
-    readUnsub = onSnapshot(
-      doc(db, "privateChats", chatId, "readReceipts", member.id),
-      receiptSnap => {
-        recipientReadAt =
-          receiptSnap.data()?.lastReadAt?.toMillis?.() || 0;
-
-        if (currentPrivateSnapshot) {
-          renderMessages(
-            $("privateMessages"),
-            currentPrivateSnapshot,
-            { showReceipts: true, readAt: recipientReadAt }
-          );
-        }
-      },
-      error => {
-        console.warn("Read receipt listener:", error);
-      }
-    );
-
-    const messagesRef = collection(
-      db,
-      "privateChats",
-      chatId,
-      "messages"
-    );
-
-    privateUnsub = onSnapshot(
-      messagesRef,
-      snapshot => {
-        if (activeChatId !== chatId) return;
-
-        currentPrivateSnapshot = snapshot;
-
-        renderMessages(
-          $("privateMessages"),
-          snapshot,
-          { showReceipts: true, readAt: recipientReadAt }
-        );
-
-        privateStatus("");
-        markPrivateChatRead(chatId);
-      },
-      error => {
-        privateStatus("Unable to load messages: " + error.message);
-      }
-    );
-
-  } catch (error) {
-    privateStatus("Could not open chat: " + error.message);
-  }
+  privateUnsub = onSnapshot(
+   collection(db,"privateChats",chatId,"messages"),
+   snapshot => {
+    if (activeChatId !== chatId) return;
+    renderMessages($("privateMessages"),snapshot,"private",chatId);
+    setStatus("privateStatus","");
+   },
+   error => setStatus("privateStatus","Unable to load messages: " + error.message)
+  );
+ } catch (error) {
+  setStatus("privateStatus","Could not open chat: " + error.message);
+ }
 }
 
-/* CLOSE PRIVATE CHAT */
-
-$("backButton").addEventListener("click", () => {
-  stopPrivate();
-  $("privateScreen").classList.remove("active");
-  activeRecipient = null;
+$("privateBack").addEventListener("click",() => {
+ stopPrivate();
+ activeRecipient = null;
+ showScreen("privateListScreen");
 });
 
-/* SEND STREAM MESSAGE */
+/* SEND PRIVATE MESSAGE */
 
-async function sendStreamMessage() {
-  const input = $("streamInput");
-  const text = input.value.trim();
+$("privateForm").addEventListener("submit",async event => {
+ event.preventDefault();
 
-  if (!text || !user || !profile) return;
+ if (!activeRecipient || !activeChatId) return;
 
-  try {
-    await addDoc(collection(db, "messages"), {
-      senderId: user.uid,
-      senderName: profile.name || user.displayName || "Student",
-      text,
-      stream: profile.stream,
-      createdAt: serverTimestamp()
-    });
+ const input = $("privateInput");
+ const fileInput = $("privateFile");
+ const file = fileInput.files[0] || null;
+ const text = input.value.trim();
 
-    input.value = "";
-    status("");
+ if (!text && !file) return;
 
-  } catch (error) {
-    status("Message failed: " + error.message);
+ const button = $("privateSend");
+
+ try {
+  button.disabled = true;
+  setStatus("privateStatus",file ? "Uploading file..." : "Sending...");
+
+  let filePath = "";
+  if (file) filePath = await uploadChatFile(file,"private",activeChatId);
+
+  const message = {
+   senderId:user.uid,
+   senderName:profile.name || user.displayName || "Student",
+   text,
+   createdAt:serverTimestamp()
+  };
+
+  if (file) {
+   message.filePath = filePath;
+   message.fileName = file.name;
+   message.fileType = file.type;
+   message.fileSize = file.size;
   }
-}
 
-/* STREAM FORM */
+  await addDoc(
+   collection(db,"privateChats",activeChatId,"messages"),
+   message
+  );
 
-$("streamForm").addEventListener("submit", event => {
-  event.preventDefault();
-  sendStreamMessage();
+  input.value = "";
+  fileInput.value = "";
+  $("privateFileName").textContent = "";
+  setStatus("privateStatus","");
+ } catch (error) {
+  setStatus("privateStatus",error.message);
+ } finally {
+  button.disabled = false;
+ }
 });
 
-/* PRIVATE MESSAGE FORM */
+/* NAVIGATION */
 
-$("privateForm").addEventListener("submit", async event => {
-  event.preventDefault();
-
-  if (!activeRecipient || !activeChatId) return;
-
-  const input = $("privateInput");
-  const text = input.value.trim();
-
-  if (!text) return;
-
-  try {
-    await addDoc(
-      collection(db, "privateChats", activeChatId, "messages"),
-      {
-        senderId: user.uid,
-        senderName: profile.name || user.displayName || "Student",
-        text,
-        createdAt: serverTimestamp()
-      }
-    );
-
-    input.value = "";
-    privateStatus("");
-
-  } catch (error) {
-    privateStatus("Message failed: " + error.message);
-  }
+$("openStream").addEventListener("click",() => {
+ showScreen("streamScreen");
+ loadStream();
 });
 
-/* CHAT TABS */
-
-document.querySelectorAll("[data-tab]").forEach(button => {
-  button.addEventListener("click", () => {
-    const target = button.dataset.tab;
-
-    document.querySelectorAll("[data-tab]").forEach(tab => {
-      tab.classList.toggle("active", tab === button);
-    });
-
-    ["streamPanel", "groupPanel", "privatePanel"].forEach(id => {
-      $(id).classList.toggle("hidden", id !== target);
-    });
-
-    if (target === "streamPanel") loadStream();
-    if (target === "privatePanel") loadMembers();
-  });
+$("openGroup").addEventListener("click",() => {
+ showScreen("groupScreen");
+ if (groupController) groupController.load();
 });
 
-/* SEARCH PRIVATE CHAT MEMBERS */
-
-$("memberSearch").addEventListener("input", event => {
-  displayMembers(event.target.value);
+$("openPrivate").addEventListener("click",() => {
+ showScreen("privateListScreen");
+ loadMembers();
 });
+
+document.querySelectorAll("[data-back]").forEach(button => {
+ button.addEventListener("click",() => {
+  stopStream();
+  showScreen("chatHome");
+ });
+});
+
+/* FILE PICKERS */
+
+setupFilePicker("streamAttach","streamFile","streamFileName");
+setupFilePicker("privateAttach","privateFile","privateFileName");
 
 /* AUTHENTICATION */
 
-onAuthStateChanged(auth, async currentUser => {
-  stopStream();
-  stopPrivate();
+onAuthStateChanged(auth,async currentUser => {
+ stopStream();
+ stopPrivate();
 
-  if (!currentUser) {
-    location.href = "index.html";
-    return;
+ if (!currentUser) {
+  location.href = "index.html";
+  return;
+ }
+
+ user = currentUser;
+
+ try {
+  const profileSnapshot = await getDoc(doc(db,"users",user.uid));
+
+  if (!profileSnapshot.exists()) {
+   setStatus("homeStatus","Your account profile was not found.");
+   return;
   }
 
-  user = currentUser;
+  profile = profileSnapshot.data();
 
-  try {
-    const profileSnap = await getDoc(doc(db, "users", user.uid));
-
-    if (!profileSnap.exists()) {
-      status("Your account profile was not found.");
-      return;
-    }
-
-    profile = profileSnap.data();
-
-    if (profile.status !== "approved") {
-      status("Your account is awaiting approval.");
-      return;
-    }
-
-    $("welcome").textContent =
-      "Welcome, " + (profile.name || "Student");
-
-    await loadPublicProfiles();
-
-    /* START THE NEW SCHOOL GROUP CHAT */
-    groupChatController = initGroupChat(
-      user,
-      profile,
-      profilePhotos
-    );
-
-    loadStream();
-
-  } catch (error) {
-    status("Could not load your account: " + error.message);
+  if (profile.status !== "approved") {
+   setStatus("homeStatus","Your account is awaiting approval.");
+   return;
   }
+
+  $("welcome").textContent =
+   "Welcome, " + (profile.name || "Student");
+
+  $("streamDescription").textContent = profile.stream
+   ? "Chat with " + profile.stream + " students"
+   : "Your stream has not been assigned";
+
+  const publicProfiles = await getDocs(
+   query(collection(db,"publicProfiles"),where("status","==","approved"))
+  );
+
+  publicProfiles.docs.forEach(item => {
+   const data = item.data();
+   const photo = data.photoURL || data.photoUrl || data.profilePic || "";
+   if (photo) profilePhotos.set(item.id,photo);
+  });
+
+  groupController = initGroupChat(user,profile,profilePhotos);
+
+ } catch (error) {
+  setStatus("homeStatus","Could not load your account: " + error.message);
+ }
 });
 
-/* CLEAN UP */
+/* CLEANUP */
 
-window.addEventListener("beforeunload", () => {
-  stopStream();
-  stopPrivate();
-
-  if (groupChatController) {
-    groupChatController.stop();
-  }
+window.addEventListener("beforeunload",() => {
+ stopStream();
+ stopPrivate();
+ if (groupController) groupController.stop();
 });
 </script>
 
 </body>
-   </html>
+</html>
