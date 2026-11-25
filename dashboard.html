@@ -70,9 +70,24 @@ textarea{min-height:75px;resize:vertical}
 .post-images.multi{grid-template-columns:repeat(2,minmax(0,1fr))}
 .post-images img{width:100%;max-height:520px;object-fit:cover;display:block}
 .post-images.multi img{height:190px}
-.post-actions{display:flex;align-items:center;gap:16px;border-top:1px solid #283448;margin-top:12px;padding-top:10px}
+.post-actions{display:flex;align-items:center;gap:16px;border-top:1px solid #283448;margin-top:12px;padding-top:10px;flex-wrap:wrap}
 .post-action{min-height:36px;border:0;background:none;color:#aebbd0;font-size:12px;padding:5px 0}
+.post-action:disabled{opacity:.5}
+.post-action.liked{color:#ff7185;font-weight:bold}
+.post-counts{color:#8999b0;font-size:11px;margin-left:auto}
 .delete-post{color:#ff9b9b}
+.comments-area{display:none;margin-top:12px;padding-top:10px;border-top:1px solid #283448}
+.comments-area.open{display:block}
+.comments-list{display:flex;flex-direction:column;gap:10px;margin-bottom:12px}
+.comment-item{display:flex;align-items:flex-start;gap:8px}
+.comment-item .community-avatar{width:32px;height:32px}
+.comment-bubble{min-width:0;flex:1;background:#111b2c;border:1px solid #283448;border-radius:10px;padding:9px 11px}
+.comment-name{color:#f5d98b;font-size:11px;font-weight:bold;margin-bottom:5px}
+.comment-text{color:#d0d8e5;font-size:12px;line-height:1.5;overflow-wrap:anywhere;white-space:pre-wrap}
+.comment-form{display:flex;align-items:center;gap:8px}
+.comment-form input{flex:1;min-width:0;background:#111b2c;color:white;border:1px solid #34445f;border-radius:9px;padding:11px;font-size:12px}
+.comment-form button{background:#302511;color:#ffe1a0;border:1px solid #9a7634;border-radius:8px;padding:10px 13px}
+.comment-form button:disabled{opacity:.5}
 .empty{font-size:12px;color:#9eacc0;padding:12px 0}
 .announcement-post,.library-card{padding:13px 0;border-bottom:1px solid #283448}
 .announcement-post h3,.library-card h3{font-size:14px;color:#f5d98b;margin:7px 0}
@@ -109,22 +124,18 @@ footer{text-align:center;color:#758399;padding:25px;padding-bottom:calc(25px + e
    <svg viewBox="0 0 24 24"><path d="m3 10 9-7 9 7M5 9v12h14V9M9 21v-7h6v7"/></svg>
    <span>Home</span>
   </a>
-
   <a href="community.html" class="nav-item">
    <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M8 2v4M16 2v4M7 10h10"/></svg>
    <span>Friends</span>
   </a>
-
   <a href="chat.html" class="nav-item">
    <svg viewBox="0 0 24 24"><path d="M21 11.5a8.5 8.5 0 0 1-8.5 8.5 9 9 0 0 1-4-.9L3 21l1.9-5.1a9 9 0 0 1-.9-4A8.5 8.5 0 0 1 12.5 3h.5a8.5 8.5 0 0 1 8 8z"/></svg>
    <span>Messages</span>
   </a>
-
   <a href="notifications.html" class="nav-item">
    <svg viewBox="0 0 24 24"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"/></svg>
    <span>Alerts</span>
   </a>
-
   <a href="profile.html" class="nav-item">
    <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>
    <span>Account</span>
@@ -137,7 +148,6 @@ footer{text-align:center;color:#758399;padding:25px;padding-bottom:calc(25px + e
 <section class="welcome">
  <img id="dashboardPhoto" class="avatar" alt="Profile" hidden>
  <div id="profileInitial" class="initial">?</div>
-
  <div class="welcome-info">
   <h1 id="welcomeName">Welcome, Student</h1>
   <p id="profileNickname"></p>
@@ -175,7 +185,6 @@ footer{text-align:center;color:#758399;padding:25px;padding-bottom:calc(25px + e
  <textarea id="postText" maxlength="2000" placeholder="What's happening at school?"></textarea>
 
  <label class="field-label" for="postAudience">Who can see this post?</label>
-
  <select id="postAudience">
   <option value="all">All school · All approved students</option>
   <option value="stream">My stream · Students in my stream</option>
@@ -183,7 +192,6 @@ footer{text-align:center;color:#758399;padding:25px;padding-bottom:calc(25px + e
  </select>
 
  <p class="privacy-help" id="privacyHelp">All approved students can see this post.</p>
-
  <div id="selectedPreview" class="selected-preview"></div>
 
  <div class="composer-actions">
@@ -193,7 +201,6 @@ footer{text-align:center;color:#758399;padding:25px;padding-bottom:calc(25px + e
   </label>
   <button id="publishPost" class="post-button">Post</button>
  </div>
-
  <div id="postStatus"></div>
 </section>
 
@@ -232,7 +239,7 @@ import {onAuthStateChanged} from "https://www.gstatic.com/firebasejs/11.6.0/fire
 
 import {
  doc,getDoc,collection,getDocs,query,where,
- addDoc,deleteDoc,serverTimestamp
+ addDoc,setDoc,deleteDoc,serverTimestamp
 } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
 
 const $=id=>document.getElementById(id);
@@ -532,11 +539,30 @@ function renderPost(post){
   card.append(images);
  }
 
- if(post.authorId===currentUser.uid){
-  const actions=document.createElement("div");
-  actions.className="post-actions";
+ /* LIKE AND COMMENT BUTTONS */
 
+ const actions=document.createElement("div");
+ actions.className="post-actions";
+
+ const like=document.createElement("button");
+ like.type="button";
+ like.className="post-action";
+ like.textContent="♡ Like";
+
+ const comment=document.createElement("button");
+ comment.type="button";
+ comment.className="post-action";
+ comment.textContent="💬 Comment";
+
+ const counts=document.createElement("span");
+ counts.className="post-counts";
+ counts.textContent="Loading...";
+
+ actions.append(like,comment,counts);
+
+ if(post.authorId===currentUser.uid){
   const remove=document.createElement("button");
+  remove.type="button";
   remove.className="post-action delete-post";
   remove.textContent="Delete post";
 
@@ -556,10 +582,208 @@ function renderPost(post){
   });
 
   actions.append(remove);
-  card.append(actions);
  }
 
+ card.append(actions);
+
+ /* COMMENTS AREA */
+
+ const area=document.createElement("div");
+ area.className="comments-area";
+
+ const list=document.createElement("div");
+ list.className="comments-list";
+
+ const form=document.createElement("form");
+ form.className="comment-form";
+
+ const input=document.createElement("input");
+ input.type="text";
+ input.maxLength=1000;
+ input.placeholder="Write a comment...";
+ input.required=true;
+
+ const send=document.createElement("button");
+ send.type="submit";
+ send.textContent="Send";
+
+ form.append(input,send);
+ area.append(list,form);
+ card.append(area);
+
+ comment.addEventListener("click",()=>{
+  area.classList.toggle("open");
+
+  if(area.classList.contains("open")){
+   input.focus();
+  }
+ });
+
  $("communityFeed").append(card);
+
+ loadEngagement(post,like,counts,list,form,input);
+}
+
+/* LOAD LIKES AND COMMENTS */
+
+async function loadEngagement(post,like,counts,list,form,input){
+
+ const likesRef=collection(
+  db,"communityPosts",post.id,"likes"
+ );
+
+ const commentsRef=collection(
+  db,"communityPosts",post.id,"comments"
+ );
+
+ async function refreshEngagement(){
+
+  const [likesSnap,commentsSnap]=await Promise.all([
+   getDocs(likesRef),
+   getDocs(commentsRef)
+  ]);
+
+  const liked=likesSnap.docs.some(
+   item=>item.id===currentUser.uid
+  );
+
+  like.textContent=liked?"♥ Liked":"♡ Like";
+  like.classList.toggle("liked",liked);
+
+  counts.textContent=
+   likesSnap.size+" likes · "+
+   commentsSnap.size+" comments";
+
+  list.replaceChildren();
+
+  const comments=commentsSnap.docs.map(item=>({
+   id:item.id,
+   ...item.data()
+  }));
+
+  comments.sort((a,b)=>
+   (a.createdAt?.toMillis?.()||0)-
+   (b.createdAt?.toMillis?.()||0)
+  );
+
+  if(!comments.length){
+   const empty=document.createElement("p");
+   empty.className="empty";
+   empty.textContent="No comments yet.";
+   list.append(empty);
+  }
+
+  comments.forEach(item=>{
+
+   const row=document.createElement("div");
+   row.className="comment-item";
+
+   row.append(
+    makeAvatar(
+     item.authorPhotoURL,
+     item.authorDisplayName||
+     item.authorName||
+     "Student"
+    )
+   );
+
+   const bubble=document.createElement("div");
+   bubble.className="comment-bubble";
+
+   const author=document.createElement("div");
+   author.className="comment-name";
+   author.textContent=
+    item.authorDisplayName||
+    item.authorNickname||
+    item.authorName||
+    "Student";
+
+   const message=document.createElement("div");
+   message.className="comment-text";
+   message.textContent=item.text||"";
+
+   bubble.append(author,message);
+   row.append(bubble);
+   list.append(row);
+  });
+ }
+
+ /* LIKE OR UNLIKE */
+
+ like.addEventListener("click",async()=>{
+
+  like.disabled=true;
+
+  try{
+   const likeRef=doc(
+    db,
+    "communityPosts",
+    post.id,
+    "likes",
+    currentUser.uid
+   );
+
+   const existing=await getDoc(likeRef);
+
+   if(existing.exists()){
+    await deleteDoc(likeRef);
+   }else{
+    await setDoc(likeRef,{
+     uid:currentUser.uid,
+     createdAt:serverTimestamp()
+    });
+   }
+
+   await refreshEngagement();
+
+  }catch(error){
+   console.error("Like error:",error);
+   alert("Could not update like: "+error.message);
+  }finally{
+   like.disabled=false;
+  }
+ });
+
+ /* ADD COMMENT */
+
+ form.addEventListener("submit",async event=>{
+
+  event.preventDefault();
+
+  const text=input.value.trim();
+
+  if(!text)return;
+
+  send.disabled=true;
+
+  try{
+   await addDoc(commentsRef,{
+    authorId:currentUser.uid,
+    authorName:safe(profile.name)||"Student",
+    authorNickname:safe(profile.nickname),
+    authorDisplayName:displayName(profile),
+    authorPhotoURL:safe(profile.photoURL),
+    text,
+    createdAt:serverTimestamp()
+   });
+
+   input.value="";
+   await refreshEngagement();
+
+  }catch(error){
+   console.error("Comment error:",error);
+   alert("Could not send comment: "+error.message);
+  }finally{
+   send.disabled=false;
+  }
+ });
+
+ try{
+  await refreshEngagement();
+ }catch(error){
+  console.error("Engagement loading error:",error);
+  counts.textContent="Unable to load likes and comments";
+ }
 }
 
 /* PUBLISH POST */
