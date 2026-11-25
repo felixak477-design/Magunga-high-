@@ -646,6 +646,9 @@ function renderPost(post){
 
 async function loadEngagement(post,like,counts,list,form,input){
 
+ /* FIX: Get the Send button from this form's own scope. */
+ const send=form.querySelector('button[type="submit"]');
+
  const likesRef=collection(
   db,"communityPosts",post.id,"likes"
  );
