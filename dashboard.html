@@ -70,12 +70,17 @@ textarea{min-height:75px;resize:vertical}
 .post-images.multi{grid-template-columns:repeat(2,minmax(0,1fr))}
 .post-images img{width:100%;max-height:520px;object-fit:cover;display:block}
 .post-images.multi img{height:190px}
-.post-actions{display:flex;align-items:center;gap:16px;border-top:1px solid #283448;margin-top:12px;padding-top:10px;flex-wrap:wrap}
-.post-action{min-height:36px;border:0;background:none;color:#aebbd0;font-size:12px;padding:5px 0}
+
+/* FACEBOOK-STYLE POST ACTIONS */
+.post-actions{display:flex;align-items:center;gap:20px;border-top:1px solid #283448;margin-top:12px;padding-top:10px;flex-wrap:wrap}
+.post-action{min-height:36px;border:0;background:none;color:#aebbd0;font-size:13px;padding:5px 0;display:inline-flex;align-items:center;justify-content:center;gap:7px;font-weight:600}
+.post-action svg{width:19px;height:19px;display:block;flex-shrink:0;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;fill:none}
 .post-action:disabled{opacity:.5}
-.post-action.liked{color:#ff7185;font-weight:bold}
+.post-action.liked{color:#1877f2}
+.post-action.liked svg{fill:#1877f2;stroke:#1877f2}
 .post-counts{color:#8999b0;font-size:11px;margin-left:auto}
 .delete-post{color:#ff9b9b}
+
 .comments-area{display:none;margin-top:12px;padding-top:10px;border-top:1px solid #283448}
 .comments-area.open{display:block}
 .comments-list{display:flex;flex-direction:column;gap:10px;margin-bottom:12px}
@@ -86,7 +91,7 @@ textarea{min-height:75px;resize:vertical}
 .comment-text{color:#d0d8e5;font-size:12px;line-height:1.5;overflow-wrap:anywhere;white-space:pre-wrap}
 .comment-form{display:flex;align-items:center;gap:8px}
 .comment-form input{flex:1;min-width:0;background:#111b2c;color:white;border:1px solid #34445f;border-radius:9px;padding:11px;font-size:12px}
-.comment-form button{background:#302511;color:#ffe1a0;border:1px solid #9a7634;border-radius:8px;padding:10px 13px}
+.comment-form button{background:#1877f2;color:white;border:0;border-radius:8px;padding:10px 13px;font-weight:bold}
 .comment-form button:disabled{opacity:.5}
 .empty{font-size:12px;color:#9eacc0;padding:12px 0}
 .announcement-post,.library-card{padding:13px 0;border-bottom:1px solid #283448}
@@ -539,7 +544,7 @@ function renderPost(post){
   card.append(images);
  }
 
- /* LIKE AND COMMENT BUTTONS */
+ /* FACEBOOK-STYLE LIKE AND COMMENT BUTTONS */
 
  const actions=document.createElement("div");
  actions.className="post-actions";
@@ -547,12 +552,25 @@ function renderPost(post){
  const like=document.createElement("button");
  like.type="button";
  like.className="post-action";
- like.textContent="♡ Like";
+
+ like.innerHTML=`
+  <svg viewBox="0 0 24 24" aria-hidden="true">
+   <path d="M7 10v11H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3z"/>
+   <path d="M7 10l5-8c2 0 3 1 3 3l-1 5h5a2 2 0 0 1 2 2l-2 7a2 2 0 0 1-2 2H7"/>
+  </svg>
+  <span>Like</span>
+ `;
 
  const comment=document.createElement("button");
  comment.type="button";
  comment.className="post-action";
- comment.textContent="💬 Comment";
+
+ comment.innerHTML=`
+  <svg viewBox="0 0 24 24" aria-hidden="true">
+   <path d="M21 11.5a8.4 8.4 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.4 8.4 0 0 1-3.8-.9L3 21l1.9-5.7a8.4 8.4 0 0 1-.9-3.8A8.5 8.5 0 0 1 8.7 3.9a8.4 8.4 0 0 1 3.8-.9h.5a8.5 8.5 0 0 1 8 8v.5z"/>
+  </svg>
+  <span>Comment</span>
+ `;
 
  const counts=document.createElement("span");
  counts.className="post-counts";
@@ -647,8 +665,10 @@ async function loadEngagement(post,like,counts,list,form,input){
    item=>item.id===currentUser.uid
   );
 
-  like.textContent=liked?"♥ Liked":"♡ Like";
   like.classList.toggle("liked",liked);
+
+  const likeLabel=like.querySelector("span");
+  likeLabel.textContent=liked?"Liked":"Like";
 
   counts.textContent=
    likesSnap.size+" likes · "+
@@ -678,25 +698,17 @@ async function loadEngagement(post,like,counts,list,form,input){
    const row=document.createElement("div");
    row.className="comment-item";
 
-   row.append(
-    makeAvatar(
-     item.authorPhotoURL,
-     item.authorDisplayName||
-     item.authorName||
-     "Student"
-    )
-   );
+   /* The comment rules use userName, not authorName. */
+   const commentName=item.userName||"Student";
+
+   row.append(makeAvatar("",commentName));
 
    const bubble=document.createElement("div");
    bubble.className="comment-bubble";
 
    const author=document.createElement("div");
    author.className="comment-name";
-   author.textContent=
-    item.authorDisplayName||
-    item.authorNickname||
-    item.authorName||
-    "Student";
+   author.textContent=commentName;
 
    const message=document.createElement("div");
    message.className="comment-text";
@@ -757,13 +769,14 @@ async function loadEngagement(post,like,counts,list,form,input){
   send.disabled=true;
 
   try{
+   /*
+    * These four fields match the comment rules:
+    * userId, userName, text, createdAt.
+    */
    await addDoc(commentsRef,{
-    authorId:currentUser.uid,
-    authorName:safe(profile.name)||"Student",
-    authorNickname:safe(profile.nickname),
-    authorDisplayName:displayName(profile),
-    authorPhotoURL:safe(profile.photoURL),
-    text,
+    userId:currentUser.uid,
+    userName:displayName(profile),
+    text:text,
     createdAt:serverTimestamp()
    });
 
