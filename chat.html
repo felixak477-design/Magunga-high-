@@ -580,6 +580,14 @@ button{border:0;cursor:pointer}
  margin-top:4px;
 }
 
+.memberChoice .chatPreview{
+ max-width:100%;
+ overflow:hidden;
+ text-overflow:ellipsis;
+ white-space:nowrap;
+ font-size:12px;
+}
+
 /* SMALL SCREENS */
 
 @media(max-width:520px){
@@ -788,7 +796,7 @@ button{border:0;cursor:pointer}
 <script type="module">
 import { auth, db } from "./assets/js/firebase.js";
 import { initGroupChat } from "./assets/js/group-chat.js";
- import { notifyChatMessage } from "./assets/js/chat-notifications.js";
+import { notifyChatMessage } from "./assets/js/chat-notifications.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
 
 import {
@@ -802,6 +810,8 @@ let user = null;
 let profile = null;
 let approvedMembers = [];
 let membersLoaded = false;
+let privateChatsUnsub = null;
+let privateChatsById = new Map();
 let activeRecipient = null;
 let activeChatId = null;
 let streamUnsub = null;
@@ -830,6 +840,32 @@ function showScreen(id) {
 function stopStream() {
  if (streamUnsub) streamUnsub();
  streamUnsub = null;
+}
+
+function stopPrivateChatsListener() {
+ if (privateChatsUnsub) privateChatsUnsub();
+ privateChatsUnsub = null;
+}
+
+function listenToPrivateChats() {
+ stopPrivateChatsListener();
+ if (!user) return;
+
+ const chatsQuery = query(
+  collection(db,"privateChats"),
+  where("participants","array-contains",user.uid)
+ );
+
+ privateChatsUnsub = onSnapshot(chatsQuery,snapshot => {
+  privateChatsById.clear();
+  snapshot.docs.forEach(item => privateChatsById.set(item.id,item.data()));
+
+  if (membersLoaded) {
+   displayMembers($("memberSearch").value);
+  }
+ },error => {
+  console.error("Private chat list error:",error);
+ });
 }
 
 function stopPrivate() {
@@ -864,6 +900,58 @@ function makeAvatar(name, photo = "") {
 function formatTime(timestamp) {
  const date = timestamp?.toDate ? timestamp.toDate() : new Date();
  return date.toLocaleTimeString([], {hour:"2-digit",minute:"2-digit"});
+}
+
+function renderMessageText(element,text) {
+ const value = String(text || "");
+ const pattern = /https?:\/\/[^\s]+|www\.[^\s]+/gi;
+ let lastIndex = 0;
+ let match;
+
+ while ((match = pattern.exec(value)) !== null) {
+  const start = match.index;
+  const original = match[0];
+
+  element.appendChild(
+   document.createTextNode(value.slice(lastIndex,start))
+  );
+
+  const cleanUrl = original.replace(/[.,!?;:)}\]]+$/g,"");
+  const punctuation = original.slice(cleanUrl.length);
+
+  if (cleanUrl) {
+   const href = cleanUrl.startsWith("www.")
+    ? "https://" + cleanUrl
+    : cleanUrl;
+
+   try {
+    const parsed = new URL(href);
+
+    if (parsed.protocol === "http:" || parsed.protocol === "https:") {
+     const link = document.createElement("a");
+     link.href = parsed.href;
+     link.textContent = cleanUrl;
+     link.target = "_blank";
+     link.rel = "noopener noreferrer";
+     element.appendChild(link);
+    } else {
+     element.appendChild(document.createTextNode(cleanUrl));
+    }
+   } catch {
+    element.appendChild(document.createTextNode(cleanUrl));
+   }
+  }
+
+  if (punctuation) {
+   element.appendChild(document.createTextNode(punctuation));
+  }
+
+  lastIndex = start + original.length;
+ }
+
+ element.appendChild(
+  document.createTextNode(value.slice(lastIndex))
+ );
 }
 
 function renderMessages(container, snapshot, chatType, chatId = "", readAt = null) {
@@ -908,14 +996,16 @@ function renderMessages(container, snapshot, chatType, chatId = "", readAt = nul
   if (data.deleted === true) {
    const deleted = document.createElement("p");
    deleted.className = "deletedMessage";
-   deleted.textContent = mine ? "You deleted this message." : "This message was deleted.";
+   deleted.textContent = mine
+    ? "You deleted this message."
+    : "This message was deleted.";
    bubble.appendChild(deleted);
   } else {
    const sender = document.createElement("strong");
    sender.textContent = senderName;
 
    const body = document.createElement("p");
-   body.textContent = data.text || "";
+   renderMessageText(body,data.text || "");
 
    bubble.appendChild(sender);
    if (data.text) bubble.appendChild(body);
@@ -973,6 +1063,7 @@ function renderMessages(container, snapshot, chatType, chatId = "", readAt = nul
 
 async function uploadChatFile(file, chatType, chatId = "") {
  if (!file) return null;
+
  if (file.size <= 0 || file.size > 10 * 1024 * 1024) {
   throw new Error("Files must be 10 MB or smaller.");
  }
@@ -999,9 +1090,12 @@ async function uploadChatFile(file, chatType, chatId = "") {
  });
 
  const data = await response.json();
- if (!response.ok) throw new Error(data.error || "Could not prepare upload.");
+ if (!response.ok) {
+  throw new Error(data.error || "Could not prepare upload.");
+ }
 
  const encodedPath = data.path.split("/").map(encodeURIComponent).join("/");
+
  const uploadResponse = await fetch(
   `${data.supabaseUrl}/storage/v1/object/upload/sign/magunga-library/${encodedPath}?token=${encodeURIComponent(data.token)}`,
   {
@@ -1026,6 +1120,7 @@ async function downloadAttachment(chatType, messageId, fileName, chatId = "") {
 
   const token = await getToken();
   const payload = {chatType,messageId};
+
   if (chatType === "private") payload.chatId = chatId;
 
   const response = await fetch("/api/chat-download-url", {
@@ -1038,7 +1133,9 @@ async function downloadAttachment(chatType, messageId, fileName, chatId = "") {
   });
 
   const data = await response.json();
-  if (!response.ok) throw new Error(data.error || "Could not open file.");
+  if (!response.ok) {
+   throw new Error(data.error || "Could not open file.");
+  }
 
   const link = document.createElement("a");
   link.href = data.url;
@@ -1051,12 +1148,16 @@ async function downloadAttachment(chatType, messageId, fileName, chatId = "") {
 
   setStatus(chatType === "private" ? "privateStatus" : "streamStatus", "");
  } catch (error) {
-  setStatus(chatType === "private" ? "privateStatus" : "streamStatus", error.message);
+  setStatus(
+   chatType === "private" ? "privateStatus" : "streamStatus",
+   error.message
+  );
  }
 }
 
 function setupFilePicker(buttonId, inputId, labelId) {
  $(buttonId).addEventListener("click", () => $(inputId).click());
+
  $(inputId).addEventListener("change", event => {
   const file = event.target.files[0];
   $(labelId).textContent = file ? "Selected: " + file.name : "";
@@ -1122,15 +1223,11 @@ $("streamForm").addEventListener("submit", async event => {
   }
 
   const savedMessage = await addDoc(
-  collection(db,"messages"),
-  message
-);
+   collection(db,"messages"),
+   message
+  );
 
-void notifyChatMessage(
-  user,
-  "stream",
-  savedMessage.id
-);
+  void notifyChatMessage(user,"stream",savedMessage.id);
 
   input.value = "";
   fileInput.value = "";
@@ -1164,14 +1261,17 @@ async function loadMembers() {
   approvedMembers = snapshot.docs.map(item => {
    const data = item.data();
    const photo = data.photoURL || data.photoUrl || data.profilePic || "";
+
    if (photo) profilePhotos.set(item.id,photo);
+
    return {id:item.id,...data};
   }).filter(member => member.id !== user.uid);
 
   membersLoaded = true;
-  displayMembers();
+  displayMembers($("memberSearch").value);
  } catch (error) {
-  $("chatList").textContent = "Could not load students: " + error.message;
+  $("chatList").textContent =
+   "Could not load students: " + error.message;
  }
 }
 
@@ -1179,10 +1279,26 @@ function displayMembers(search = "") {
  const list = $("chatList");
  list.replaceChildren();
 
- const filtered = approvedMembers.filter(member =>
-  (member.name || member.fullName || "Student")
-   .toLowerCase().includes(search.toLowerCase())
- );
+ const filtered = approvedMembers
+  .filter(member =>
+   (member.name || member.fullName || "Student")
+    .toLowerCase()
+    .includes(search.toLowerCase())
+  )
+  .sort((a,b) => {
+   const chatA = privateChatsById.get(
+    [user.uid,a.id].sort().join("_")
+   );
+
+   const chatB = privateChatsById.get(
+    [user.uid,b.id].sort().join("_")
+   );
+
+   const timeA = chatA?.lastMessageAt?.toMillis?.() || 0;
+   const timeB = chatB?.lastMessageAt?.toMillis?.() || 0;
+
+   return timeB - timeA;
+  });
 
  if (!filtered.length) {
   list.textContent = "No students found.";
@@ -1198,11 +1314,13 @@ function displayMembers(search = "") {
   const photo = member.photoURL || member.photoUrl || member.profilePic || "";
 
   let avatar;
+
   if (photo) {
    avatar = document.createElement("img");
    avatar.src = photo;
    avatar.className = "memberAvatar";
    avatar.alt = "";
+
    avatar.onerror = () => {
     const fallback = document.createElement("div");
     fallback.className = "memberAvatar";
@@ -1216,15 +1334,30 @@ function displayMembers(search = "") {
   }
 
   const details = document.createElement("div");
+  details.style.minWidth = "0";
+  details.style.flex = "1";
+
   const name = document.createElement("strong");
   name.textContent = nameText;
 
-  const stream = document.createElement("small");
-  stream.textContent = member.stream || "Magunga High";
+  const chatId = [user.uid,member.id].sort().join("_");
+  const chat = privateChatsById.get(chatId);
 
-  details.append(name,stream);
+  const preview = document.createElement("small");
+  preview.className = "chatPreview";
+
+  if (chat?.lastMessage) {
+   preview.textContent =
+    (chat.lastSenderId === user.uid ? "You: " : "") + chat.lastMessage;
+  } else {
+   preview.textContent = member.stream || "Magunga High";
+  }
+
+  details.append(name,preview);
   button.append(avatar,details);
+
   button.addEventListener("click",() => openPrivateChat(member));
+
   list.appendChild(button);
  });
 }
@@ -1255,28 +1388,35 @@ async function openPrivateChat(member) {
  activeRecipient = member;
  showScreen("privateScreen");
 
- $("recipientName").textContent = member.name || member.fullName || "Student";
- $("recipientStream").textContent = member.stream || "Magunga High";
+ $("recipientName").textContent =
+  member.name || member.fullName || "Student";
+
+ $("recipientStream").textContent =
+  member.stream || "Magunga High";
 
  const avatar = $("recipientAvatar");
  avatar.replaceChildren();
 
  const photo = member.photoURL || member.photoUrl || member.profilePic || "";
+
  if (photo) {
   const image = document.createElement("img");
   image.src = photo;
   image.className = "memberAvatar";
   image.alt = "";
+
   image.onerror = () => {
    avatar.textContent = (member.name || "S").charAt(0).toUpperCase();
   };
+
   avatar.appendChild(image);
  } else {
   avatar.textContent = (member.name || "S").charAt(0).toUpperCase();
  }
 
  setStatus("privateStatus","Opening conversation...");
- $("privateMessages").innerHTML = '<p class="note">Loading conversation...</p>';
+ $("privateMessages").innerHTML =
+  '<p class="note">Loading conversation...</p>';
 
  try {
   const participants = [user.uid,member.id].sort();
@@ -1297,6 +1437,7 @@ async function openPrivateChat(member) {
   recipientReadAt = null;
 
   /* Listen for the other student's read receipt. */
+
   privateReceiptUnsub = onSnapshot(
    doc(db,"privateChats",chatId,"readReceipts",member.id),
    receiptSnapshot => {
@@ -1316,10 +1457,14 @@ async function openPrivateChat(member) {
      );
     }
    },
-   error => setStatus("privateStatus","Unable to load read receipts: " + error.message)
+   error => setStatus(
+    "privateStatus",
+    "Unable to load read receipts: " + error.message
+   )
   );
 
   /* Listen for messages and mark incoming messages as read. */
+
   privateUnsub = onSnapshot(
    collection(db,"privateChats",chatId,"messages"),
    snapshot => {
@@ -1347,7 +1492,10 @@ async function openPrivateChat(member) {
      });
     }
    },
-   error => setStatus("privateStatus","Unable to load messages: " + error.message)
+   error => setStatus(
+    "privateStatus",
+    "Unable to load messages: " + error.message
+   )
   );
 
  } catch (error) {
@@ -1382,7 +1530,10 @@ $("privateForm").addEventListener("submit",async event => {
   setStatus("privateStatus",file ? "Uploading file..." : "Sending...");
 
   let filePath = "";
-  if (file) filePath = await uploadChatFile(file,"private",activeChatId);
+
+  if (file) {
+   filePath = await uploadChatFile(file,"private",activeChatId);
+  }
 
   const message = {
    senderId:user.uid,
@@ -1398,17 +1549,31 @@ $("privateForm").addEventListener("submit",async event => {
    message.fileSize = file.size;
   }
 
- const savedMessage = await addDoc(
-  collection(db,"privateChats",activeChatId,"messages"),
-  message
-);
+  const chatIdForUpdate = activeChatId;
 
-void notifyChatMessage(
-  user,
-  "private",
-  savedMessage.id,
-  activeChatId
-);
+  const savedMessage = await addDoc(
+   collection(db,"privateChats",chatIdForUpdate,"messages"),
+   message
+  );
+
+  const latestText = text || (file ? "📎 " + file.name : "Attachment");
+
+  await setDoc(
+   doc(db,"privateChats",chatIdForUpdate),
+   {
+    lastMessage:latestText.slice(0,160),
+    lastMessageAt:serverTimestamp(),
+    lastSenderId:user.uid
+   },
+   {merge:true}
+  );
+
+  void notifyChatMessage(
+   user,
+   "private",
+   savedMessage.id,
+   chatIdForUpdate
+  );
 
   input.value = "";
   fileInput.value = "";
@@ -1455,6 +1620,8 @@ setupFilePicker("privateAttach","privateFile","privateFileName");
 onAuthStateChanged(auth,async currentUser => {
  stopStream();
  stopPrivate();
+ stopPrivateChatsListener();
+ privateChatsById.clear();
 
  if (!currentUser) {
   location.href = "index.html";
@@ -1478,6 +1645,8 @@ onAuthStateChanged(auth,async currentUser => {
    return;
   }
 
+  listenToPrivateChats();
+
   $("welcome").textContent =
    "Welcome, " + (profile.name || "Student");
 
@@ -1492,6 +1661,7 @@ onAuthStateChanged(auth,async currentUser => {
   publicProfiles.docs.forEach(item => {
    const data = item.data();
    const photo = data.photoURL || data.photoUrl || data.profilePic || "";
+
    if (photo) profilePhotos.set(item.id,photo);
   });
 
@@ -1507,6 +1677,8 @@ onAuthStateChanged(auth,async currentUser => {
 window.addEventListener("beforeunload",() => {
  stopStream();
  stopPrivate();
+ stopPrivateChatsListener();
+
  if (groupController) groupController.stop();
 });
 </script>
