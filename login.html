@@ -216,6 +216,18 @@ button:disabled{
  overflow-wrap:anywhere;
 }
 
+#resendVerification{
+ display:none;
+ width:100%;
+ padding:13px;
+ margin-top:12px;
+ border:1px solid var(--gold);
+ border-radius:9px;
+ background:#211f1c;
+ color:var(--light);
+ font-size:14px;
+}
+
 .links{
  display:flex;
  justify-content:center;
@@ -532,6 +544,10 @@ button:disabled{
 
   <p id="message" role="status" aria-live="polite"></p>
 
+  <button id="resendVerification" type="button">
+   Resend Verification Email
+  </button>
+
   <nav class="links">
    <a href="#" id="forgotPassword">Forgot Password?</a>
    <span>|</span>
@@ -601,7 +617,9 @@ import {
  GoogleAuthProvider,
  signInWithRedirect,
  getRedirectResult,
- sendPasswordResetEmail
+ sendPasswordResetEmail,
+ sendEmailVerification,
+ reload
 } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
 
 import {
@@ -618,8 +636,16 @@ const googleButton=document.getElementById("googleButton");
 const email=document.getElementById("email");
 const password=document.getElementById("password");
 const switchPanel=document.getElementById("switchPanel");
+const resendButton=document.getElementById("resendVerification");
 
-/* Show greeting when an input is focused */
+let verificationUser=null;
+
+function showMessage(text,success=false){
+ message.textContent=text;
+ message.style.color=success?"#b8efbd":"#ffd36c";
+}
+
+/* INPUT GREETING */
 
 [email,password].forEach(input=>{
 
@@ -639,12 +665,48 @@ const switchPanel=document.getElementById("switchPanel");
 
 });
 
-function showMessage(text,success=false){
- message.textContent=text;
- message.style.color=success?"#b8efbd":"#ffd36c";
-}
+/* RESEND EMAIL VERIFICATION */
 
-/* SAVE BOTH ANDROID AND WEB NOTIFICATION TOKENS */
+resendButton.onclick=async()=>{
+
+ if(!verificationUser){
+  showMessage("Please sign in again first.");
+  return;
+ }
+
+ resendButton.disabled=true;
+
+ try{
+
+  await reload(verificationUser);
+
+  if(verificationUser.emailVerified){
+   showMessage("Your email is already verified. Sign in again.",true);
+   resendButton.style.display="none";
+   return;
+  }
+
+  await sendEmailVerification(verificationUser,{
+   url:"https://magunga-high.vercel.app/verify-email.html",
+   handleCodeInApp:false
+  });
+
+  showMessage("A new verification email has been sent.",true);
+
+ }catch(error){
+
+  console.error(error);
+  showMessage("Could not resend email: "+(error.code||error.message));
+
+ }finally{
+
+  resendButton.disabled=false;
+
+ }
+
+};
+
+/* SAVE NOTIFICATION TOKENS */
 
 async function savePendingNotificationToken(user){
 
@@ -656,9 +718,6 @@ async function savePendingNotificationToken(user){
  if(!token){
   return;
  }
-
- // Browser tokens require browser permission.
- // Android tokens have already received native permission through Capacitor.
 
  if(
   platform==="web" &&
@@ -699,14 +758,13 @@ async function savePendingNotificationToken(user){
 
  }catch(error){
 
-  console.warn(
-   "Notification token could not be saved:",
-   error
-  );
+  console.warn("Notification token could not be saved:",error);
 
  }
 
 }
+
+/* BOOK ANIMATION */
 
 function openBook(destination){
 
@@ -718,19 +776,86 @@ function openBook(destination){
 
 }
 
+/* CHECK EMAIL AND AUTOMATIC APPROVAL */
+
 async function finishLogin(user){
 
- const profile=await getDoc(doc(db,"users",user.uid));
+ verificationUser=null;
+ resendButton.style.display="none";
+
+ // Refresh Firebase account information.
+ await reload(user);
+
+ if(!user.emailVerified){
+
+  verificationUser=user;
+  resendButton.style.display="block";
+
+  showMessage(
+   "Your email is not verified yet. Check your inbox and click the verification link."
+  );
+
+  return;
+ }
+
+ showMessage("Checking your student account...");
+
+ const profileRef=doc(db,"users",user.uid);
+ let profile=await getDoc(profileRef);
 
  if(!profile.exists()){
   showMessage("Account profile not found. Contact the administrator.");
   return;
  }
 
- const data=profile.data();
+ let data=profile.data();
+
+ // Automatically approve verified student accounts.
+ // Administrator accounts are never automatically modified.
+ if(data.role==="member" && data.status==="pending"){
+
+  showMessage("Your email is verified. Approving your student account...");
+
+  const idToken=await user.getIdToken(true);
+
+  const response=await fetch(
+   "/api/approve-verified-student",
+   {
+    method:"POST",
+    headers:{
+     "Authorization":"Bearer "+idToken,
+     "Content-Type":"application/json"
+    },
+    body:JSON.stringify({})
+   }
+  );
+
+  const result=await response.json();
+
+  if(!response.ok || !result.success){
+   throw new Error(
+    result.error||"Automatic account approval failed."
+   );
+  }
+
+  // Read the updated profile from Firestore.
+  profile=await getDoc(profileRef);
+
+  if(!profile.exists()){
+   showMessage("Student profile could not be loaded.");
+   return;
+  }
+
+  data=profile.data();
+
+ }
 
  if(data.status!=="approved"){
-  showMessage("Your account is awaiting admin approval.");
+
+  showMessage(
+   "Your account is not approved. Please contact the school administrator."
+  );
+
   return;
  }
 
@@ -745,6 +870,8 @@ async function finishLogin(user){
 
 }
 
+/* PASSWORD VISIBILITY */
+
 document.getElementById("togglePassword").onclick=()=>{
 
  const hidden=password.type==="password";
@@ -755,6 +882,8 @@ document.getElementById("togglePassword").onclick=()=>{
   hidden?"◎":"◉";
 
 };
+
+/* EMAIL AND PASSWORD LOGIN */
 
 form.addEventListener("submit",async event=>{
 
@@ -774,22 +903,29 @@ form.addEventListener("submit",async event=>{
 
   await finishLogin(user);
 
-  if(!document.getElementById("bookScreen").classList.contains("active")){
+ }catch(error){
+
+  console.error("Login error:",error);
+
+  showMessage(
+   "Login failed: "+(error.code||error.message)
+  );
+
+ }finally{
+
+  if(
+   !document.getElementById("bookScreen")
+    .classList.contains("active")
+  ){
    loginButton.disabled=false;
    googleButton.disabled=false;
   }
 
- }catch(error){
-
-  console.error(error);
-  showMessage("Login failed: "+(error.code||error.message));
-
-  loginButton.disabled=false;
-  googleButton.disabled=false;
-
  }
 
 });
+
+/* GOOGLE LOGIN */
 
 googleButton.onclick=async()=>{
 
@@ -812,7 +948,9 @@ googleButton.onclick=async()=>{
 
   console.error("Google redirect error:",error);
 
-  showMessage("Google sign-in failed: "+(error.code||error.message));
+  showMessage(
+   "Google sign-in failed: "+(error.code||error.message)
+  );
 
   googleButton.disabled=false;
   loginButton.disabled=false;
@@ -821,29 +959,37 @@ googleButton.onclick=async()=>{
 
 };
 
-/* Complete Google sign-in after returning from Google */
+/* COMPLETE GOOGLE LOGIN */
 
 try{
 
  const result=await getRedirectResult(auth);
 
  if(result && result.user){
+
   loginButton.disabled=true;
   googleButton.disabled=true;
+
   showMessage("Checking your Google account...");
+
   await finishLogin(result.user);
+
  }
 
 }catch(error){
 
  console.error("Google return error:",error);
 
- showMessage("Google sign-in failed: "+(error.code||error.message));
+ showMessage(
+  "Google sign-in failed: "+(error.code||error.message)
+ );
 
  loginButton.disabled=false;
  googleButton.disabled=false;
 
 }
+
+/* PASSWORD RESET */
 
 document.getElementById("forgotPassword").onclick=async event=>{
 
@@ -861,11 +1007,16 @@ document.getElementById("forgotPassword").onclick=async event=>{
 
   await sendPasswordResetEmail(auth,address);
 
-  showMessage("Password reset email sent. Check your inbox.",true);
+  showMessage(
+   "Password reset email sent. Check your inbox.",
+   true
+  );
 
  }catch(error){
 
-  showMessage("Could not send reset email: "+(error.code||error.message));
+  showMessage(
+   "Could not send reset email: "+(error.code||error.message)
+  );
 
  }
 
