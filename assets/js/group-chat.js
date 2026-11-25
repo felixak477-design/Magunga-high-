@@ -1,5 +1,6 @@
 
 import { auth, db } from "./firebase.js";
+import { notifyChatMessage } from "./chat-notifications.js";
 
 import {
   collection,
