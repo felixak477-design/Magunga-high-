@@ -157,7 +157,16 @@ async function sendGroupMessage(event) {
       message.fileSize = file.size;
     }
 
-    await addDoc(collection(db, "groupMessages"), message);
+    const savedMessage = await addDoc(
+      collection(db, "groupMessages"),
+      message
+    );
+
+    void notifyChatMessage(
+      currentUser,
+      "group",
+      savedMessage.id
+    );
 
     input.value = "";
     fileInput.value = "";
@@ -319,7 +328,6 @@ async function unsendGroupMessage(messageId) {
       deletedAt: serverTimestamp()
     });
 
-    // Remove the attachment from private storage, if one exists.
     if (data.filePath) {
       try {
         const token = await getToken();
@@ -608,3 +616,4 @@ export function initGroupChat(user, profile, photos = new Map()) {
     stop: stopGroupChat
   };
 }
+  
