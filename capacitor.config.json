@@ -4,7 +4,7 @@
   "appName": "Magunga High",
   "webDir": "www",
   "server": {
-    "url": "https://magunga-high.vercel.app/login.html",
+    "url": "https://magunga-high.vercel.app/",
     "cleartext": false,
     "allowNavigation": [
       "magunga-high.vercel.app"
