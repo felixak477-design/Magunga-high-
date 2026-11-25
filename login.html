@@ -15,11 +15,7 @@ if(localStorage.getItem("magunga_notification_gate_completed")!=="yes"){
 
 <style>
 *{box-sizing:border-box}
-
-:root{
- --gold:#f6b91b;
- --light:#ffe18a;
-}
+:root{--gold:#f6b91b;--light:#ffe18a}
 
 body{
  margin:0;
@@ -27,8 +23,8 @@ body{
  color:white;
  font-family:Arial,sans-serif;
  background:
- linear-gradient(#0009,#000e),
- url("assets/images/login-student.png") center/cover fixed no-repeat,
+ linear-gradient(rgba(0,0,0,.42),rgba(0,0,0,.72)),
+ url("assets/images/login-home-students.png") center/cover fixed no-repeat,
  #080706;
 }
 
@@ -117,10 +113,7 @@ body{
  transform:translateY(-1px);
 }
 
-.field-icon{
- color:var(--gold);
- font-size:20px;
-}
+.field-icon{color:var(--gold);font-size:20px}
 
 .field input{
  flex:1;
@@ -201,10 +194,7 @@ button{cursor:pointer}
  background:#555;
 }
 
-button:disabled{
- opacity:.6;
- cursor:wait;
-}
+button:disabled{opacity:.6;cursor:wait}
 
 #message{
  min-height:22px;
@@ -783,7 +773,6 @@ async function finishLogin(user){
  verificationUser=null;
  resendButton.style.display="none";
 
- // Refresh Firebase account information.
  await reload(user);
 
  if(!user.emailVerified){
@@ -810,8 +799,6 @@ async function finishLogin(user){
 
  let data=profile.data();
 
- // Automatically approve verified student accounts.
- // Administrator accounts are never automatically modified.
  if(data.role==="member" && data.status==="pending"){
 
   showMessage("Your email is verified. Approving your student account...");
@@ -838,7 +825,6 @@ async function finishLogin(user){
    );
   }
 
-  // Read the updated profile from Firestore.
   profile=await getDoc(profileRef);
 
   if(!profile.exists()){
@@ -1025,4 +1011,5 @@ document.getElementById("forgotPassword").onclick=async event=>{
 </script>
 
 </body>
-</html>
+ </html>
+ 
