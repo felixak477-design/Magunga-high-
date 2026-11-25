@@ -9,648 +9,257 @@
 
 <style>
 *{box-sizing:border-box;font-family:Arial,sans-serif}
-
-html,body{
- margin:0;
- width:100%;
- max-width:100%;
- overflow-x:hidden;
-}
-
-html{
- min-height:100%;
- scroll-padding-top:125px;
-}
-
+html,body{margin:0;width:100%;max-width:100%;overflow-x:hidden}
+html{min-height:100%;scroll-padding-top:125px}
 body{
- background:#090d16;
- color:#f2f4f8;
- min-height:100vh;
- min-height:100dvh;
+ background:#090d16;color:#f2f4f8;min-height:100vh;min-height:100dvh;
  padding-top:calc(110px + env(safe-area-inset-top,0px));
- padding-bottom:calc(20px + env(safe-area-inset-bottom,0px));
- overflow-y:auto;
+ padding-bottom:calc(20px + env(safe-area-inset-bottom,0px));overflow-y:auto
 }
-
 a{color:inherit;text-decoration:none}
 button{cursor:pointer;touch-action:manipulation}
-
 .topbar{
- position:fixed;
- top:0;
- left:0;
- right:0;
- z-index:1000;
- padding-top:env(safe-area-inset-top,0px);
- background:#111827;
- border-bottom:1px solid #ffd36a55;
+ position:fixed;top:0;left:0;right:0;z-index:1000;
+ padding-top:env(safe-area-inset-top,0px);background:#111827;
+ border-bottom:1px solid #ffd36a55
 }
-
 .brand{
- height:47px;
- min-height:47px;
- display:flex;
- align-items:center;
- justify-content:space-between;
- padding:0 13px;
+ height:47px;min-height:47px;display:flex;align-items:center;
+ justify-content:space-between;padding:0 13px
 }
-
 .brand h2{color:#ffd36a;font-size:16px;margin:0}
 .brand small{color:#9ca9bb;font-size:10px}
-
 .navigation{
- height:63px;
- min-height:63px;
- display:flex;
- align-items:stretch;
- justify-content:space-around;
- width:100%;
- border-top:1px solid #ffffff0c;
+ height:63px;min-height:63px;display:flex;align-items:stretch;
+ justify-content:space-around;width:100%;border-top:1px solid #ffffff0c
 }
-
 .nav-item{
- min-width:0;
- min-height:48px;
- flex:1 1 0;
- display:flex;
- flex-direction:column;
- align-items:center;
- justify-content:center;
- gap:4px;
- color:#9da9bb;
- font-size:10px;
- text-align:center;
- white-space:nowrap;
- -webkit-tap-highlight-color:transparent;
+ min-width:0;min-height:48px;flex:1 1 0;display:flex;flex-direction:column;
+ align-items:center;justify-content:center;gap:4px;color:#9da9bb;
+ font-size:10px;text-align:center;white-space:nowrap;
+ -webkit-tap-highlight-color:transparent
 }
-
 .nav-item svg{
- width:23px;
- height:23px;
- stroke:currentColor;
- fill:none;
- stroke-width:2;
- stroke-linecap:round;
- stroke-linejoin:round;
+ width:23px;height:23px;stroke:currentColor;fill:none;stroke-width:2;
+ stroke-linecap:round;stroke-linejoin:round
 }
-
 .nav-item.active{color:#ffd36a}
-
-main{
- width:100%;
- max-width:720px;
- margin:auto;
- padding:14px;
- min-width:0;
+main{width:100%;max-width:720px;margin:auto;padding:14px;min-width:0}
+main section,.community-post,.library-card,.announcement-post{
+ min-width:0;overflow-wrap:anywhere
 }
-
-main section,
-.community-post,
-.library-card,
-.announcement-post{
- min-width:0;
- overflow-wrap:anywhere;
-}
-
 .welcome{
- display:flex;
- align-items:center;
- gap:12px;
- padding:12px 0;
- border-bottom:1px solid #283448;
+ display:flex;align-items:center;gap:12px;padding:12px 0;
+ border-bottom:1px solid #283448
 }
-
-.avatar,.initial{
- width:48px;
- height:48px;
- border-radius:50%;
- flex-shrink:0;
-}
-
-.avatar{
- object-fit:cover;
- border:2px solid #d6a83e;
-}
-
+.avatar,.initial{width:48px;height:48px;border-radius:50%;flex-shrink:0}
+.avatar{object-fit:cover;border:2px solid #d6a83e}
 .initial{
- display:flex;
- align-items:center;
- justify-content:center;
- background:#755019;
- color:white;
- font-weight:bold;
- font-size:20px;
+ display:flex;align-items:center;justify-content:center;
+ background:#755019;color:white;font-weight:bold;font-size:20px
 }
-
 .welcome-info{min-width:0}
-
 .welcome h1{
- font-size:17px;
- color:#ffdc87;
- margin:0 0 5px;
- overflow-wrap:anywhere;
+ font-size:17px;color:#ffdc87;margin:0 0 5px;overflow-wrap:anywhere
 }
-
-.welcome p,.stream{
- font-size:11px;
- color:#9eacc0;
- margin:4px 0;
-}
-
+.welcome p,.stream{font-size:11px;color:#9eacc0;margin:4px 0}
 .upload-card,.add-post-card{
- display:flex;
- align-items:center;
- gap:13px;
- width:100%;
- padding:13px;
- margin:14px 0;
- border-radius:17px;
+ display:flex;align-items:center;gap:13px;width:100%;padding:13px;
+ margin:14px 0;border-radius:17px;
  background:linear-gradient(135deg,#293e5c,#111b2c);
- border:1px solid #ffd36a77;
+ border:1px solid #ffd36a77
 }
-
 .upload-logo,.add-post-logo{
- width:52px;
- height:52px;
- display:flex;
- align-items:center;
- justify-content:center;
- border-radius:16px;
- background:linear-gradient(145deg,#ffdf85,#c28b22);
- color:#17120a;
- font-size:29px;
- font-weight:bold;
- flex-shrink:0;
+ width:52px;height:52px;display:flex;align-items:center;justify-content:center;
+ border-radius:16px;background:linear-gradient(145deg,#ffdf85,#c28b22);
+ color:#17120a;font-size:29px;font-weight:bold;flex-shrink:0
 }
-
 .upload-card-content{flex:1;min-width:0}
-
 .upload-card h3,.add-post-card h3{
- margin:0 0 5px;
- color:#ffdc87;
- font-size:14px;
+ margin:0 0 5px;color:#ffdc87;font-size:14px
 }
-
 .upload-card p,.add-post-card p{
- margin:0;
- color:#b9c5d6;
- font-size:11px;
- line-height:1.5;
+ margin:0;color:#b9c5d6;font-size:11px;line-height:1.5
 }
-
-.arrow{
- margin-left:auto;
- color:#ffd36a;
- font-size:25px;
-}
-
-.add-post-card{
- cursor:pointer;
- text-align:left;
- color:inherit;
-}
-
+.arrow{margin-left:auto;color:#ffd36a;font-size:25px}
+.add-post-card{cursor:pointer;text-align:left;color:inherit}
 #composer{
- display:none;
- background:#111b2c;
- border:1px solid #34445f;
- border-radius:15px;
- padding:13px;
- margin:10px 0 18px;
+ display:none;background:#111b2c;border:1px solid #34445f;
+ border-radius:15px;padding:13px;margin:10px 0 18px
 }
-
 #composer.open{display:block}
-
-.composer-top{
- display:flex;
- align-items:center;
- gap:9px;
- margin-bottom:10px;
-}
-
+.composer-top{display:flex;align-items:center;gap:9px;margin-bottom:10px}
 .composer-top img,.mini-initial{
- width:38px;
- height:38px;
- border-radius:50%;
- object-fit:cover;
+ width:38px;height:38px;border-radius:50%;object-fit:cover
 }
-
 .mini-initial{
- display:flex;
- align-items:center;
- justify-content:center;
- background:#755019;
+ display:flex;align-items:center;justify-content:center;background:#755019
 }
-
 #composerName{font-size:13px;color:#f5d98b}
-
 textarea,select{
- width:100%;
- background:#0b1422;
- color:white;
- border:1px solid #34445f;
- border-radius:10px;
- padding:11px;
- font-size:13px;
+ width:100%;background:#0b1422;color:white;border:1px solid #34445f;
+ border-radius:10px;padding:11px;font-size:13px
 }
-
-textarea{
- min-height:75px;
- resize:vertical;
-}
-
-.field-label{
- display:block;
- font-size:11px;
- color:#c4cede;
- margin:12px 0 6px;
-}
-
-.privacy-help{
- font-size:10px;
- color:#93a1b5;
- margin:6px 0;
-}
-
+textarea{min-height:75px;resize:vertical}
+.field-label{display:block;font-size:11px;color:#c4cede;margin:12px 0 6px}
+.privacy-help{font-size:10px;color:#93a1b5;margin:6px 0}
 .composer-actions{
- display:flex;
- justify-content:space-between;
- align-items:center;
- gap:8px;
- flex-wrap:wrap;
- margin-top:12px;
+ display:flex;justify-content:space-between;align-items:center;
+ gap:8px;flex-wrap:wrap;margin-top:12px
 }
-
 .add-photos{
- background:#293b59;
- color:#e8c879;
- border:1px solid #536581;
- border-radius:9px;
- padding:10px;
- font-size:12px;
+ background:#293b59;color:#e8c879;border:1px solid #536581;
+ border-radius:9px;padding:10px;font-size:12px
 }
-
 .add-photos input{display:none}
-
 .post-button{
- min-height:40px;
- border:0;
- border-radius:9px;
- padding:11px 20px;
+ min-height:40px;border:0;border-radius:9px;padding:11px 20px;
  background:linear-gradient(120deg,#f5d078,#bd872a);
- color:#17120a;
- font-weight:bold;
+ color:#17120a;font-weight:bold
 }
-
 .post-button:disabled{opacity:.5}
-
 .selected-preview{
- display:grid;
- grid-template-columns:repeat(3,minmax(0,1fr));
- gap:6px;
- margin-top:10px;
+ display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
+ gap:6px;margin-top:10px
 }
-
 .selected-preview img{
- width:100%;
- height:90px;
- object-fit:cover;
- border-radius:8px;
+ width:100%;height:90px;object-fit:cover;border-radius:8px
 }
-
 #postStatus,#communityStatus,#announcementStatus,#libraryStatus{
- font-size:12px;
- color:#aebbd0;
- padding:7px 0;
- overflow-wrap:anywhere;
+ font-size:12px;color:#aebbd0;padding:7px 0;overflow-wrap:anywhere
 }
-
 .section-heading{
- display:flex;
- justify-content:space-between;
- align-items:center;
- margin:22px 0 10px;
+ display:flex;justify-content:space-between;align-items:center;margin:22px 0 10px
 }
-
-.section-heading h2{
- font-size:16px;
- color:#f5d98b;
- margin:0;
-}
-
+.section-heading h2{font-size:16px;color:#f5d98b;margin:0}
 .section-heading a{font-size:11px;color:#d6b35d}
-
-.community-post{
- padding:13px 0 16px;
- border-bottom:1px solid #283448;
- margin-bottom:10px;
-}
-
-.community-header{
- display:flex;
- align-items:center;
- gap:9px;
- margin-bottom:10px;
-}
-
+.community-post{padding:13px 0 16px;border-bottom:1px solid #283448;margin-bottom:10px}
+.community-header{display:flex;align-items:center;gap:9px;margin-bottom:10px}
 .community-avatar{
- width:40px;
- height:40px;
- border-radius:50%;
- object-fit:cover;
- background:#293b59;
- flex-shrink:0;
+ width:40px;height:40px;border-radius:50%;object-fit:cover;
+ background:#293b59;flex-shrink:0
 }
-
 .community-initial{
- display:flex;
- align-items:center;
- justify-content:center;
- color:#f5d98b;
- font-weight:bold;
+ display:flex;align-items:center;justify-content:center;
+ color:#f5d98b;font-weight:bold
 }
-
-.community-author{
- font-size:13px;
- color:#f2d58f;
- font-weight:bold;
-}
-
-.community-time{
- font-size:10px;
- color:#8795aa;
- margin-top:4px;
-}
-
+.community-author{font-size:13px;color:#f2d58f;font-weight:bold}
+.community-time{font-size:10px;color:#8795aa;margin-top:4px}
 .privacy-tag{
- margin-left:auto;
- color:#d8c18a;
- font-size:9px;
- background:#302511;
- padding:5px 7px;
- border-radius:12px;
+ margin-left:auto;color:#d8c18a;font-size:9px;
+ background:#302511;padding:5px 7px;border-radius:12px
 }
-
 .community-text{
- font-size:14px;
- line-height:1.6;
- white-space:pre-wrap;
- overflow-wrap:anywhere;
- margin:8px 0 12px;
+ font-size:14px;line-height:1.6;white-space:pre-wrap;
+ overflow-wrap:anywhere;margin:8px 0 12px
 }
-
-.post-images{
- display:grid;
- grid-template-columns:1fr;
- gap:3px;
-}
-
-.post-images.multi{
- grid-template-columns:repeat(2,minmax(0,1fr));
-}
-
+.post-images{display:grid;grid-template-columns:1fr;gap:3px}
+.post-images.multi{grid-template-columns:repeat(2,minmax(0,1fr))}
 .post-images img{
- width:100%;
- max-height:520px;
- object-fit:cover;
- display:block;
+ width:100%;max-height:520px;object-fit:cover;display:block
 }
-
 .post-images.multi img{height:190px}
-
-.post-images.multi img:first-child:last-child{
- grid-column:1/-1;
-}
-
+.post-images.multi img:first-child:last-child{grid-column:1/-1}
 .post-actions{
- display:flex;
- align-items:center;
- gap:16px;
- border-top:1px solid #283448;
- margin-top:12px;
- padding-top:10px;
+ display:flex;align-items:center;gap:16px;border-top:1px solid #283448;
+ margin-top:12px;padding-top:10px
 }
-
 .post-action{
- min-height:36px;
- border:0;
- background:none;
- color:#aebbd0;
- font-size:12px;
- padding:5px 0;
+ min-height:36px;border:0;background:none;color:#aebbd0;
+ font-size:12px;padding:5px 0
 }
-
 .post-action.liked{color:#6fb5ff}
-
-.post-counts{
- font-size:10px;
- color:#8795aa;
- margin-left:auto;
-}
-
+.post-counts{font-size:10px;color:#8795aa;margin-left:auto}
 .delete-post{color:#ff9b9b}
-
 .comments-area{
- display:none;
- margin-top:10px;
- border-top:1px solid #283448;
- padding-top:9px;
+ display:none;margin-top:10px;border-top:1px solid #283448;padding-top:9px
 }
-
 .comments-area.open{display:block}
-
-.comment-item{
- display:flex;
- gap:8px;
- margin:9px 0;
-}
-
-.comment-avatar{
- width:28px;
- height:28px;
- border-radius:50%;
- object-fit:cover;
-}
-
+.comment-item{display:flex;gap:8px;margin:9px 0}
+.comment-avatar{width:28px;height:28px;border-radius:50%;object-fit:cover}
 .comment-bubble{
- background:#202d42;
- border-radius:10px;
- padding:8px 10px;
- min-width:0;
+ background:#202d42;border-radius:10px;padding:8px 10px;min-width:0
 }
-
-.comment-name{
- font-size:11px;
- color:#f2d58f;
- font-weight:bold;
-}
-
+.comment-name{font-size:11px;color:#f2d58f;font-weight:bold}
 .comment-text{
- font-size:12px;
- color:#d9e0ea;
- white-space:pre-wrap;
- overflow-wrap:anywhere;
- margin-top:4px;
+ font-size:12px;color:#d9e0ea;white-space:pre-wrap;
+ overflow-wrap:anywhere;margin-top:4px
 }
-
-.comment-form{
- display:flex;
- gap:7px;
- margin-top:10px;
-}
-
+.comment-form{display:flex;gap:7px;margin-top:10px}
 .comment-form input{
- flex:1;
- min-width:0;
- background:#0b1422;
- border:1px solid #34445f;
- border-radius:20px;
- padding:10px;
- color:white;
+ flex:1;min-width:0;background:#0b1422;border:1px solid #34445f;
+ border-radius:20px;padding:10px;color:white
 }
-
 .comment-form button{
- min-height:40px;
- border:0;
- background:#293b59;
- color:#f5d98b;
- border-radius:20px;
- padding:0 13px;
+ min-height:40px;border:0;background:#293b59;color:#f5d98b;
+ border-radius:20px;padding:0 13px
 }
-
-.empty{
- font-size:12px;
- color:#9eacc0;
- padding:12px 0;
-}
-
-.announcement-post,.library-card{
- padding:13px 0;
- border-bottom:1px solid #283448;
-}
-
+.empty{font-size:12px;color:#9eacc0;padding:12px 0}
+.announcement-post,.library-card{padding:13px 0;border-bottom:1px solid #283448}
 .announcement-post h3,.library-card h3{
- font-size:14px;
- color:#f5d98b;
- margin:7px 0;
+ font-size:14px;color:#f5d98b;margin:7px 0
 }
-
 .announcement-post p,.library-card p{
- font-size:12px;
- color:#d0d8e5;
- line-height:1.6;
+ font-size:12px;color:#d0d8e5;line-height:1.6
 }
-
-.library-image{
- width:100%;
- max-height:360px;
- object-fit:contain;
- background:#1b2940;
-}
-
-.library-pdf{
- padding:25px;
- background:#1b2940;
- color:#f5d98b;
- text-align:center;
-}
-
+.library-image{width:100%;max-height:360px;object-fit:contain;background:#1b2940}
+.library-pdf{padding:25px;background:#1b2940;color:#f5d98b;text-align:center}
 .library-view{font-size:12px;color:#e8c879}
-
 .viewer{
- display:none;
- position:fixed;
- inset:0;
- z-index:3000;
- background:#000e;
- align-items:center;
- justify-content:center;
- padding:45px 12px;
+ display:none;position:fixed;inset:0;z-index:3000;background:#000e;
+ align-items:center;justify-content:center;padding:45px 12px
 }
-
 .viewer.active{display:flex}
-
-.viewer img{
- max-width:100%;
- max-height:90%;
- object-fit:contain;
-}
-
+.viewer img{max-width:100%;max-height:90%;object-fit:contain}
 .viewer button{
- position:absolute;
- top:12px;
- right:12px;
- padding:10px;
- border:0;
- border-radius:8px;
+ position:absolute;top:12px;right:12px;padding:10px;
+ border:0;border-radius:8px
 }
-
 footer{
- text-align:center;
- color:#758399;
- padding:25px;
- padding-bottom:calc(25px + env(safe-area-inset-bottom,0px));
- font-size:10px;
+ text-align:center;color:#758399;padding:25px;
+ padding-bottom:calc(25px + env(safe-area-inset-bottom,0px));font-size:10px
 }
-
-/* Smaller phones */
 @media(max-width:480px){
- main{padding:11px}
- .brand h2{font-size:14px}
- .nav-item{font-size:9px}
- .nav-item svg{width:21px;height:21px}
+ main{padding:11px}.brand h2{font-size:14px}
+ .nav-item{font-size:9px}.nav-item svg{width:21px;height:21px}
  .post-images.multi img{height:155px}
 }
-
-/* Very narrow phones */
 @media(max-width:380px){
- main{padding:10px}
- .brand h2{font-size:13px}
- .brand small{font-size:9px}
- .nav-item{font-size:8px;gap:3px}
+ main{padding:10px}.brand h2{font-size:13px}
+ .brand small{font-size:9px}.nav-item{font-size:8px;gap:3px}
  .nav-item svg{width:19px;height:19px}
 }
-
-/* Short phone screens */
 @media(max-height:650px){
  .brand{height:43px;min-height:43px}
  .navigation{height:58px;min-height:58px}
- body{
-  padding-top:calc(101px + env(safe-area-inset-top,0px));
- }
+ body{padding-top:calc(101px + env(safe-area-inset-top,0px))}
 }
 </style>
 </head>
 
 <body>
-
 <header class="topbar">
  <div class="brand">
   <h2>THE MAGUNGA HIGH</h2>
   <small id="headerStream">Loading...</small>
  </div>
-
  <nav class="navigation">
   <a href="dashboard.html" class="nav-item active">
    <svg viewBox="0 0 24 24"><path d="m3 10 9-7 9 7M5 9v12h14V9M9 21v-7h6v7"/></svg>
    <span>Home</span>
   </a>
-
   <a href="community.html" class="nav-item">
    <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M8 2v4M16 2v4M7 10h10M8 14h.01M12 14h.01M16 14h.01"/></svg>
    <span>Friends</span>
   </a>
-
   <a href="chat.html" class="nav-item">
    <svg viewBox="0 0 24 24"><path d="M21 11.5a8.5 8.5 0 0 1-8.5 8.5 9 9 0 0 1-4-.9L3 21l1.9-5.1a9 9 0 0 1-.9-4A8.5 8.5 0 0 1 12.5 3h.5a8.5 8.5 0 0 1 8 8z"/><path d="m13 7-5 6h4l-1 4 5-6h-4z" fill="currentColor" stroke="none"/></svg>
    <span>Messages</span>
   </a>
-
   <a href="notifications.html" class="nav-item">
    <svg viewBox="0 0 24 24"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"/></svg>
    <span>Alerts</span>
   </a>
-
   <a href="profile.html" class="nav-item">
    <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>
    <span>Account</span>
@@ -659,11 +268,9 @@ footer{
 </header>
 
 <main>
-
 <section class="welcome">
  <img id="dashboardPhoto" class="avatar" alt="Profile" hidden>
  <div id="profileInitial" class="initial">?</div>
-
  <div class="welcome-info">
   <h1 id="welcomeName">Welcome, Student</h1>
   <p id="profileNickname"></p>
@@ -697,36 +304,26 @@ footer{
   <div id="composerInitial" class="mini-initial">?</div>
   <strong id="composerName">Create a post</strong>
  </div>
-
  <textarea id="postText" maxlength="2000" placeholder="What's happening at school?"></textarea>
-
  <label class="field-label" for="postAudience">Who can see this post?</label>
-
  <select id="postAudience">
   <option value="all">All school · All approved students</option>
   <option value="stream">My stream · Students in my stream</option>
   <option value="private">Only me · Just you</option>
  </select>
-
  <p class="privacy-help" id="privacyHelp">All approved students can see this post.</p>
-
  <div id="selectedPreview" class="selected-preview"></div>
-
  <div class="composer-actions">
   <label class="add-photos">▧ Add photos
    <input id="postImages" type="file" accept="image/jpeg,image/png,image/webp" multiple>
   </label>
-
   <button id="publishPost" class="post-button">Post</button>
  </div>
-
  <div id="postStatus"></div>
 </section>
 
 <section>
- <div class="section-heading">
-  <h2>📰 Student posts</h2>
- </div>
+ <div class="section-heading"><h2>📰 Student posts</h2></div>
  <p id="communityStatus">Loading posts...</p>
  <div id="communityFeed"></div>
 </section>
@@ -748,7 +345,6 @@ footer{
  <p id="libraryStatus">Loading learning materials...</p>
  <div id="libraryFeed"></div>
 </section>
-
 </main>
 
 <div id="imageViewer" class="viewer">
@@ -769,96 +365,56 @@ import {
 } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
 
 const $=id=>document.getElementById(id);
-
 let currentUser=null,profile=null,selectedFiles=[],postsCache=[];
 
 const safe=v=>typeof v==="string"?v:"";
-
-const displayName=p=>
- safe(p.nickname).trim()||safe(p.name).trim()||"Student";
-
-const initial=n=>
- (n||"S").trim().charAt(0).toUpperCase()||"S";
+const displayName=p=>safe(p.nickname).trim()||safe(p.name).trim()||"Student";
+const initial=n=>(n||"S").trim().charAt(0).toUpperCase()||"S";
 
 function timeAgo(ts){
  if(!ts?.toDate)return "Just now";
-
- const s=Math.max(
-  0,
-  Math.floor((Date.now()-ts.toDate().getTime())/1000)
- );
-
+ const s=Math.max(0,Math.floor((Date.now()-ts.toDate().getTime())/1000));
  if(s<60)return "Just now";
  if(s<3600)return Math.floor(s/60)+" minutes ago";
  if(s<86400)return Math.floor(s/3600)+" hours ago";
  if(s<604800)return Math.floor(s/86400)+" days ago";
-
  return ts.toDate().toLocaleDateString();
 }
 
 function avatar(url,name,cls="community-avatar"){
  if(url&&/^https:\/\//i.test(url)){
   const img=document.createElement("img");
-  img.className=cls;
-  img.src=url;
-  img.alt="Profile";
-
+  img.className=cls;img.src=url;img.alt="Profile";
   img.onerror=()=>{
    const d=document.createElement("div");
-   d.className=cls+" community-initial";
-   d.textContent=initial(name);
+   d.className=cls+" community-initial";d.textContent=initial(name);
    img.replaceWith(d);
   };
-
   return img;
  }
-
  const d=document.createElement("div");
- d.className=cls+" community-initial";
- d.textContent=initial(name);
-
+ d.className=cls+" community-initial";d.textContent=initial(name);
  return d;
 }
 
 function showProfilePhoto(url,name){
- const img=$("dashboardPhoto");
- const composer=$("composerPhoto");
-
+ const img=$("dashboardPhoto"),composer=$("composerPhoto");
  $("profileInitial").textContent=initial(name);
  $("composerInitial").textContent=initial(name);
-
  if(url&&/^https:\/\//i.test(url)){
-  img.src=url;
-  img.hidden=false;
-  $("profileInitial").hidden=true;
-
-  composer.src=url;
-  composer.hidden=false;
-  $("composerInitial").hidden=true;
-
-  img.onerror=()=>{
-   img.hidden=true;
-   $("profileInitial").hidden=false;
-  };
-
-  composer.onerror=()=>{
-   composer.hidden=true;
-   $("composerInitial").hidden=false;
-  };
+  img.src=url;img.hidden=false;$("profileInitial").hidden=true;
+  composer.src=url;composer.hidden=false;$("composerInitial").hidden=true;
+  img.onerror=()=>{img.hidden=true;$("profileInitial").hidden=false};
+  composer.onerror=()=>{composer.hidden=true;$("composerInitial").hidden=false};
  }else{
-  img.hidden=true;
-  composer.hidden=true;
-  $("profileInitial").hidden=false;
-  $("composerInitial").hidden=false;
+  img.hidden=true;composer.hidden=true;
+  $("profileInitial").hidden=false;$("composerInitial").hidden=false;
  }
 }
 
 $("openComposer").addEventListener("click",()=>{
  $("composer").classList.toggle("open");
-
- if($("composer").classList.contains("open")){
-  $("postText").focus();
- }
+ if($("composer").classList.contains("open"))$("postText").focus();
 });
 
 $("postAudience").addEventListener("change",()=>{
@@ -867,80 +423,51 @@ $("postAudience").addEventListener("change",()=>{
   stream:"Only approved students in your stream can see this post.",
   private:"Only you can see this post."
  };
-
  $("privacyHelp").textContent=messages[$("postAudience").value];
 });
 
 $("closeViewer").onclick=()=>{
- $("imageViewer").classList.remove("active");
- $("largeImage").src="";
+ $("imageViewer").classList.remove("active");$("largeImage").src="";
 };
 
 function viewImage(url){
- $("largeImage").src=url;
- $("imageViewer").classList.add("active");
+ $("largeImage").src=url;$("imageViewer").classList.add("active");
 }
 
 $("imageViewer").addEventListener("click",e=>{
- if(e.target===$("imageViewer")){
-  $("closeViewer").click();
- }
+ if(e.target===$("imageViewer"))$("closeViewer").click();
 });
 
 /* IMAGE SELECTION */
-
 $("postImages").addEventListener("change",()=>{
  const files=Array.from($("postImages").files||[]);
  const allowed=["image/jpeg","image/png","image/webp"];
-
- if(
-  files.length>5||
-  files.some(f=>!allowed.includes(f.type)||f.size>5*1024*1024)
- ){
-  $("postStatus").textContent=
-   "Choose up to 5 JPG, PNG or WebP images. Each must be 5 MB or smaller.";
-
-  $("postImages").value="";
-  selectedFiles=[];
-  $("selectedPreview").replaceChildren();
+ if(files.length>5||files.some(f=>!allowed.includes(f.type)||f.size>5*1024*1024)){
+  $("postStatus").textContent="Choose up to 5 JPG, PNG or WebP images. Each must be 5 MB or smaller.";
+  $("postImages").value="";selectedFiles=[];$("selectedPreview").replaceChildren();
   return;
  }
-
- selectedFiles=files;
- $("selectedPreview").replaceChildren();
-
+ selectedFiles=files;$("selectedPreview").replaceChildren();
  files.forEach(file=>{
   const img=document.createElement("img");
-  img.src=URL.createObjectURL(file);
-  img.alt="Selected image";
+  img.src=URL.createObjectURL(file);img.alt="Selected image";
   $("selectedPreview").append(img);
  });
-
- $("postStatus").textContent=
-  files.length?files.length+" image(s) selected.":"";
+ $("postStatus").textContent=files.length?files.length+" image(s) selected.":"";
 });
 
-/* PUBLISH WITH SELECTED PRIVACY */
-
+/* PUBLISH POST: USES visibility TO MATCH FIRESTORE RULES */
 $("publishPost").addEventListener("click",async()=>{
  const button=$("publishPost");
  const text=$("postText").value.trim();
- const audience=$("postAudience").value;
-
+ const visibility=$("postAudience").value;
  if(!text&&!selectedFiles.length){
-  $("postStatus").textContent="Write something or add an image.";
-  return;
+  $("postStatus").textContent="Write something or add an image.";return;
  }
-
- button.disabled=true;
- $("postStatus").textContent="Uploading your post...";
-
+ button.disabled=true;$("postStatus").textContent="Uploading your post...";
  try{
   const imageUrls=[];
-
-  for(const file of selectedFiles){
-   imageUrls.push(await uploadCommunityImage(file));
-  }
+  for(const file of selectedFiles)imageUrls.push(await uploadCommunityImage(file));
 
   await addDoc(collection(db,"communityPosts"),{
    authorId:currentUser.uid,
@@ -950,534 +477,69 @@ $("publishPost").addEventListener("click",async()=>{
    authorPhotoURL:safe(profile.photoURL),
    text,
    imageUrls,
-   audience,
+   visibility,
    stream:safe(profile.stream),
    createdAt:serverTimestamp()
   });
 
-  $("postText").value="";
-  $("postImages").value="";
-  $("selectedPreview").replaceChildren();
-
-  selectedFiles=[];
-
+  $("postText").value="";$("postImages").value="";
+  $("selectedPreview").replaceChildren();selectedFiles=[];
   $("postAudience").value="all";
-  $("privacyHelp").textContent=
-   "All approved students can see this post.";
-
+  $("privacyHelp").textContent="All approved students can see this post.";
   $("postStatus").textContent="Your post has been published.";
   $("composer").classList.remove("open");
-
   await loadCommunityPosts();
-
  }catch(error){
   console.error("Publish error:",error);
-
-  $("postStatus").textContent=
-   error.message||"Unable to publish. Check your connection and permissions.";
-
- }finally{
-  button.disabled=false;
- }
+  $("postStatus").textContent=error.message||"Unable to publish. Check your connection and permissions.";
+ }finally{button.disabled=false}
 });
 
 /* PRIVACY-AWARE FEED QUERIES */
-
 async function loadCommunityPosts(){
- const feed=$("communityFeed");
- const status=$("communityStatus");
-
- feed.replaceChildren();
- status.textContent="Loading posts...";
-
+ const feed=$("communityFeed"),status=$("communityStatus");
+ feed.replaceChildren();status.textContent="Loading posts...";
  try{
   const base=collection(db,"communityPosts");
-
   const tasks=[
-   getDocs(query(base,where("audience","==","all"))),
-
-   getDocs(query(
-    base,
-    where("audience","==","stream"),
-    where("stream","==",profile.stream)
-   )),
-
-   getDocs(query(
-    base,
-    where("audience","==","private"),
-    where("authorId","==",currentUser.uid)
-   )),
-
-   getDocs(query(
-    base,
-    where("authorId","==",currentUser.uid)
-   ))
+   getDocs(query(base,where("visibility","==","all"))),
+   getDocs(query(base,where("visibility","==","stream"),where("stream","==",profile.stream))),
+   getDocs(query(base,where("visibility","==","private"),where("authorId","==",currentUser.uid))),
+   getDocs(query(base,where("authorId","==",currentUser.uid)))
   ];
-
   const snapshots=await Promise.all(tasks);
   const unique=new Map();
-
-  snapshots.forEach(s=>{
-   s.docs.forEach(d=>{
-    unique.set(d.id,{id:d.id,...d.data()});
-   });
-  });
-
+  snapshots.forEach(s=>s.docs.forEach(d=>unique.set(d.id,{id:d.id,...d.data()})));
   postsCache=Array.from(unique.values());
-
-  postsCache.sort((a,b)=>
-   (b.createdAt?.toMillis?.()||0)-
-   (a.createdAt?.toMillis?.()||0)
-  );
-
+  postsCache.sort((a,b)=>(b.createdAt?.toMillis?.()||0)-(a.createdAt?.toMillis?.()||0));
   if(!postsCache.length){
-   status.textContent=
-    "No student posts yet. Be the first to share something.";
-   return;
+   status.textContent="No student posts yet. Be the first to share something.";return;
   }
-
   status.textContent=postsCache.length+" post(s) visible to you";
-
   postsCache.forEach(renderPost);
-
  }catch(error){
   console.error("Feed error:",error);
-
-  status.textContent=
-   "Unable to load posts. Check Firestore permissions and indexes.";
+  status.textContent="Unable to load posts. Check Firestore permissions and indexes.";
  }
 }
 
 function renderPost(p){
- const card=document.createElement("article");
- card.className="community-post";
-
- const header=document.createElement("div");
- header.className="community-header";
-
- const name=
-  p.authorDisplayName||p.authorNickname||p.authorName||"Student";
-
+ const card=document.createElement("article");card.className="community-post";
+ const header=document.createElement("div");header.className="community-header";
+ const name=p.authorDisplayName||p.authorNickname||p.authorName||"Student";
  header.append(avatar(p.authorPhotoURL,name));
-
  const details=document.createElement("div");
-
  const author=document.createElement("div");
- author.className="community-author";
- author.textContent=name;
-
+ author.className="community-author";author.textContent=name;
  const time=document.createElement("div");
- time.className="community-time";
- time.textContent=timeAgo(p.createdAt);
+ time.className="community-time";time.textContent=timeAgo(p.createdAt);
+ details.append(author,time);header.append(details);
 
- details.append(author,time);
- header.append(details);
-
- const tag=document.createElement("span");
- tag.className="privacy-tag";
-
- tag.textContent=
-  p.audience==="private"?"ONLY ME":
-  p.audience==="stream"?"MY STREAM":
-  "ALL SCHOOL";
-
- header.append(tag);
- card.append(header);
+ const tag=document.createElement("span");tag.className="privacy-tag";
+ tag.textContent=p.visibility==="private"?"ONLY ME":p.visibility==="stream"?"MY STREAM":"ALL SCHOOL";
+ header.append(tag);card.append(header);
 
  const profileLink=document.createElement("a");
  profileLink.href="profile.html?uid="+encodeURIComponent(p.authorId);
  profileLink.textContent="View profile";
- profileLink.style.cssText="font-size:10px;color:#d6b35d";
-
- details.append(profileLink);
-
- if(p.text){
-  const body=document.createElement("div");
-  body.className="community-text";
-  body.textContent=p.text;
-  card.append(body);
- }
-
- if(Array.isArray(p.imageUrls)&&p.imageUrls.length){
-  const images=document.createElement("div");
-
-  images.className=
-   "post-images"+(p.imageUrls.length>1?" multi":"");
-
-  p.imageUrls.slice(0,5).forEach(url=>{
-   if(typeof url!=="string"||!/^https:\/\//i.test(url))return;
-
-   const img=document.createElement("img");
-   img.src=url;
-   img.alt="Post image";
-   img.loading="lazy";
-
-   img.addEventListener("click",()=>viewImage(url));
-
-   images.append(img);
-  });
-
-  card.append(images);
- }
-
- const actions=document.createElement("div");
- actions.className="post-actions";
-
- const like=document.createElement("button");
- like.className="post-action";
- like.textContent="♡ Like";
-
- const comment=document.createElement("button");
- comment.className="post-action";
- comment.textContent="💬 Comment";
-
- const counts=document.createElement("span");
- counts.className="post-counts";
- counts.textContent="Loading...";
-
- actions.append(like,comment,counts);
-
- if(p.authorId===currentUser.uid){
-  const del=document.createElement("button");
-  del.className="post-action delete-post";
-  del.textContent="Delete";
-
-  del.onclick=async()=>{
-   if(!confirm("Delete this post permanently?"))return;
-
-   del.disabled=true;
-
-   try{
-    await deleteDoc(doc(db,"communityPosts",p.id));
-    await loadCommunityPosts();
-   }catch(e){
-    console.error(e);
-    alert("Unable to delete this post.");
-   }finally{
-    del.disabled=false;
-   }
-  };
-
-  actions.append(del);
- }
-
- card.append(actions);
-
- const area=document.createElement("div");
- area.className="comments-area";
-
- const list=document.createElement("div");
- list.className="comments-list";
-
- const form=document.createElement("form");
- form.className="comment-form";
-
- const input=document.createElement("input");
- input.maxLength=1000;
- input.placeholder="Write a comment...";
-
- const send=document.createElement("button");
- send.type="submit";
- send.textContent="Send";
-
- form.append(input,send);
- area.append(list,form);
- card.append(area);
-
- comment.onclick=()=>area.classList.toggle("open");
-
- $("communityFeed").append(card);
-
- loadEngagement(p,like,counts,list,form);
-}
-
-async function loadEngagement(p,like,counts,list,form){
- try{
-  const likesRef=collection(db,"communityPosts",p.id,"likes");
-  const commentsRef=collection(db,"communityPosts",p.id,"comments");
-
-  const [likes,comments]=await Promise.all([
-   getDocs(likesRef),
-   getDocs(commentsRef)
-  ]);
-
-  counts.textContent=
-   likes.size+" likes · "+comments.size+" comments";
-
-  const liked=likes.docs.some(d=>d.id===currentUser.uid);
-
-  like.textContent=liked?"♥ Liked":"♡ Like";
-  like.classList.toggle("liked",liked);
-
-  like.onclick=async()=>{
-   like.disabled=true;
-
-   try{
-    const ref=doc(
-     db,
-     "communityPosts",
-     p.id,
-     "likes",
-     currentUser.uid
-    );
-
-    if(liked){
-     await deleteDoc(ref);
-    }else{
-     await setDoc(ref,{
-      uid:currentUser.uid,
-      createdAt:serverTimestamp()
-     });
-    }
-
-    await loadCommunityPosts();
-
-   }catch(e){
-    console.error(e);
-    alert("Unable to update like.");
-   }finally{
-    like.disabled=false;
-   }
-  };
-
-  list.replaceChildren();
-
-  comments.docs.forEach(d=>{
-   const c=d.data();
-
-   const item=document.createElement("div");
-   item.className="comment-item";
-
-   item.append(
-    avatar(
-     c.authorPhotoURL,
-     c.authorDisplayName||c.authorName,
-     "comment-avatar"
-    )
-   );
-
-   const bubble=document.createElement("div");
-   bubble.className="comment-bubble";
-
-   const n=document.createElement("div");
-   n.className="comment-name";
-   n.textContent=
-    c.authorDisplayName||c.authorNickname||c.authorName||"Student";
-
-   const t=document.createElement("div");
-   t.className="comment-text";
-   t.textContent=c.text||"";
-
-   bubble.append(n,t);
-   item.append(bubble);
-   list.append(item);
-  });
-
-  if(!comments.size){
-   const empty=document.createElement("p");
-   empty.className="empty";
-   empty.textContent="No comments yet.";
-   list.append(empty);
-  }
-
-  form.onsubmit=async e=>{
-   e.preventDefault();
-
-   const text=input.value.trim();
-   if(!text)return;
-
-   const btn=form.querySelector("button");
-   btn.disabled=true;
-
-   try{
-    await addDoc(commentsRef,{
-     authorId:currentUser.uid,
-     authorName:safe(profile.name)||"Student",
-     authorNickname:safe(profile.nickname),
-     authorDisplayName:displayName(profile),
-     authorPhotoURL:safe(profile.photoURL),
-     text,
-     createdAt:serverTimestamp()
-    });
-
-    input.value="";
-    await loadCommunityPosts();
-
-   }catch(err){
-    console.error(err);
-    alert("Unable to send comment.");
-   }finally{
-    btn.disabled=false;
-   }
-  };
-
- }catch(error){
-  console.error("Engagement error:",error);
-  counts.textContent="Engagement unavailable";
- }
-}
-
-/* ANNOUNCEMENTS */
-
-async function loadAnnouncements(){
- const status=$("announcementStatus");
- const feed=$("announcementFeed");
-
- try{
-  const snap=await getDocs(
-   query(
-    collection(db,"announcements"),
-    where("stream","in",[profile.stream||"","All"])
-   )
-  );
-
-  const items=snap.docs
-   .map(d=>d.data())
-   .sort((a,b)=>
-    (b.createdAt?.toMillis?.()||0)-
-    (a.createdAt?.toMillis?.()||0)
-   );
-
-  feed.replaceChildren();
-
-  if(!items.length){
-   status.textContent="No announcements yet.";
-   return;
-  }
-
-  status.textContent="Latest announcements";
-
-  items.slice(0,5).forEach(item=>{
-   const card=document.createElement("article");
-   card.className="announcement-post";
-
-   const h=document.createElement("h3");
-   h.textContent=item.title||"School announcement";
-
-   const p=document.createElement("p");
-   p.textContent=item.message||item.body||"";
-
-   const meta=document.createElement("small");
-   meta.style.color="#8795aa";
-   meta.textContent=item.authorName||"School Administration";
-
-   card.append(meta,h,p);
-   feed.append(card);
-  });
-
- }catch(e){
-  console.error(e);
-  status.textContent="Unable to load announcements.";
- }
-}
-
-/* DIGITAL LIBRARY PREVIEW */
-
-async function loadLibrary(){
- const status=$("libraryStatus");
- const feed=$("libraryFeed");
-
- try{
-  const snap=await getDocs(
-   query(
-    collection(db,"libraryResources"),
-    where("status","==","approved")
-   )
-  );
-
-  const items=snap.docs
-   .map(d=>({id:d.id,...d.data()}))
-   .sort((a,b)=>
-    (b.createdAt?.toMillis?.()||0)-
-    (a.createdAt?.toMillis?.()||0)
-   );
-
-  feed.replaceChildren();
-
-  if(!items.length){
-   status.textContent="No learning materials yet.";
-   return;
-  }
-
-  status.textContent="Latest learning materials";
-
-  items.slice(0,5).forEach(item=>{
-   const card=document.createElement("article");
-   card.className="library-card";
-
-   const h=document.createElement("h3");
-   h.textContent=item.title||item.fileName||"Learning material";
-
-   const p=document.createElement("p");
-   p.textContent=
-    (item.subject||"General")+
-    (item.classLevel?" · "+item.classLevel:"");
-
-   const a=document.createElement("a");
-   a.className="library-view";
-   a.href="library.html";
-   a.textContent="Open Digital Library";
-
-   card.append(h,p,a);
-   feed.append(card);
-  });
-
- }catch(e){
-  console.error(e);
-  status.textContent="Unable to load learning materials.";
- }
-}
-
-/* SIGN IN AND LOAD */
-
-onAuthStateChanged(auth,async user=>{
- if(!user){
-  location.href="login.html";
-  return;
- }
-
- currentUser=user;
-
- try{
-  const snap=await getDoc(doc(db,"users",user.uid));
-
-  if(!snap.exists()||snap.data().status!=="approved"){
-   location.href="login.html";
-   return;
-  }
-
-  profile=snap.data();
-
-  const name=profile.name||"Student";
-
-  $("welcomeName").textContent="Welcome, "+name;
-  $("profileNickname").textContent=
-   profile.nickname?"@"+profile.nickname:"";
-
-  $("streamName").textContent=
-   profile.stream||"Not assigned";
-
-  $("headerStream").textContent=
-   profile.stream||"Student";
-
-  $("composerName").textContent=displayName(profile);
-
-  showProfilePhoto(profile.photoURL,displayName(profile));
-
-  await Promise.all([
-   loadCommunityPosts(),
-   loadAnnouncements(),
-   loadLibrary()
-  ]);
-
- }catch(error){
-  console.error("Dashboard loading error:",error);
-
-  $("statusMessage").textContent=
-   "Unable to load your profile. Please check your connection and Firestore rules.";
- }
-});
-</script>
-
-</body>
-</html>
+ profileLink.style.cssText="
