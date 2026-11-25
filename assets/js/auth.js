@@ -4,6 +4,7 @@ import { auth, db } from "./firebase.js";
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
+  sendEmailVerification,
   signOut
 } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
 
@@ -50,7 +51,7 @@ export async function registerStudent(
 
   const batch = writeBatch(db);
 
-  // Private account information
+  // Private student account
   batch.set(doc(db, "users", uid), {
     name,
     email,
@@ -61,7 +62,7 @@ export async function registerStudent(
     createdAt: serverTimestamp()
   });
 
-  // Public profile for the school directory and private chat list
+  // Public student profile
   batch.set(doc(db, "publicProfiles", uid), {
     name,
     stream,
@@ -72,7 +73,19 @@ export async function registerStudent(
 
   await batch.commit();
 
-  return credential.user;
+  // Send Firebase email verification.
+  await sendEmailVerification(credential.user, {
+    url: "https://magunga-high.vercel.app/verify-email.html",
+    handleCodeInApp: false
+  });
+
+  // Prevent access to the student portal before verification.
+  await signOut(auth);
+
+  return {
+    success: true,
+    email
+  };
 }
 
 export async function loginStudent(email, password) {
