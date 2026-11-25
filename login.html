@@ -23,7 +23,7 @@ body{
  color:white;
  font-family:Arial,sans-serif;
  background:
- linear-gradient(rgba(0,0,0,.42),rgba(0,0,0,.72)),
+ linear-gradient(rgba(0,0,0,.16),rgba(0,0,0,.30)),
  url("assets/images/login-home-students.png") center/cover fixed no-repeat,
  #080706;
 }
@@ -51,7 +51,7 @@ body{
  display:grid;
  place-items:center;
  border-radius:12px;
- background:#111a2b;
+ background:rgba(17,26,43,.45);
  color:var(--light);
  font-size:28px;
 }
@@ -61,13 +61,15 @@ body{
  color:var(--gold);
  font-family:Georgia,serif;
  font-size:clamp(20px,4vw,28px);
+ text-shadow:0 1px 5px #000;
 }
 
 .brand p{
  margin:5px 0 0;
- color:#ddd;
+ color:#fff;
  font-style:italic;
  font-size:12px;
+ text-shadow:0 1px 5px #000;
 }
 
 .card{
@@ -75,8 +77,10 @@ body{
  padding:27px 24px;
  border:0;
  border-radius:17px;
- background:rgba(12,11,10,.94);
- box-shadow:0 12px 40px #0008;
+ background:rgba(12,11,10,.30);
+ box-shadow:0 12px 40px rgba(0,0,0,.22);
+ backdrop-filter:blur(4px);
+ -webkit-backdrop-filter:blur(4px);
  animation:fadeUp .8s ease both;
 }
 
@@ -85,13 +89,15 @@ body{
  text-align:center;
  color:white;
  font:bold 31px Georgia,serif;
+ text-shadow:0 1px 5px #000;
 }
 
 .intro{
  text-align:center;
- color:#bbb;
+ color:#fff;
  font-size:13px;
  margin:11px 0 23px;
+ text-shadow:0 1px 5px #000;
 }
 
 .field{
@@ -101,19 +107,23 @@ body{
  height:56px;
  margin:15px 0;
  padding:0 14px;
- border:1px solid #555;
+ border:1px solid rgba(255,255,255,.55);
  border-radius:10px;
- background:#211f1c;
+ background:rgba(20,20,20,.48);
  transition:.25s;
 }
 
 .field:focus-within{
- border-color:#ddd;
- background:#292621;
+ border-color:#ffe18a;
+ background:rgba(20,20,20,.65);
  transform:translateY(-1px);
+ box-shadow:0 0 8px rgba(255,225,138,.22);
 }
 
-.field-icon{color:var(--gold);font-size:20px}
+.field-icon{
+ color:var(--gold);
+ font-size:20px;
+}
 
 .field input{
  flex:1;
@@ -125,7 +135,7 @@ body{
  font-size:16px;
 }
 
-.field input::placeholder{color:#aaa}
+.field input::placeholder{color:#eee}
 
 .show-password{
  border:0;
@@ -158,16 +168,16 @@ button{cursor:pointer}
 .google-btn{
  width:100%;
  min-height:53px;
- border:1px solid #555;
+ border:1px solid rgba(255,255,255,.45);
  border-radius:30px;
- background:#15120e;
+ background:rgba(21,18,14,.42);
  color:white;
  font-size:16px;
  transition:.25s;
 }
 
 .google-btn:hover{
- background:#302515;
+ background:rgba(48,37,21,.65);
  transform:translateY(-2px);
 }
 
@@ -183,15 +193,15 @@ button{cursor:pointer}
  align-items:center;
  gap:15px;
  margin:20px 0;
- color:#bbb;
- font-size:13px;
+ color:#fff;
+ text-shadow:0 1px 4px #000;
 }
 
 .or:before,.or:after{
  content:"";
  flex:1;
  height:1px;
- background:#555;
+ background:rgba(255,255,255,.55);
 }
 
 button:disabled{opacity:.6;cursor:wait}
@@ -204,6 +214,7 @@ button:disabled{opacity:.6;cursor:wait}
  font-size:13px;
  line-height:1.5;
  overflow-wrap:anywhere;
+ text-shadow:0 1px 4px #000;
 }
 
 #resendVerification{
@@ -213,7 +224,7 @@ button:disabled{opacity:.6;cursor:wait}
  margin-top:12px;
  border:1px solid var(--gold);
  border-radius:9px;
- background:#211f1c;
+ background:rgba(33,31,28,.55);
  color:var(--light);
  font-size:14px;
 }
@@ -230,6 +241,7 @@ button:disabled{opacity:.6;cursor:wait}
 .links a{
  color:var(--gold);
  text-decoration:none;
+ text-shadow:0 1px 4px #000;
 }
 
 .links a:hover{
@@ -264,6 +276,7 @@ button:disabled{opacity:.6;cursor:wait}
  margin:0 0 13px;
  color:var(--light);
  font:20px Georgia,serif;
+ text-shadow:0 1px 5px #000;
 }
 
 .benefit-list{
@@ -271,9 +284,10 @@ button:disabled{opacity:.6;cursor:wait}
  justify-content:center;
  flex-wrap:wrap;
  gap:10px 17px;
- color:#eee;
+ color:#fff;
  font-size:12px;
  line-height:1.6;
+ text-shadow:0 1px 5px #000;
 }
 
 .benefit-list span{white-space:nowrap}
@@ -288,12 +302,14 @@ button:disabled{opacity:.6;cursor:wait}
  margin:0;
  color:var(--light);
  font:clamp(20px,5vw,25px) Georgia,serif;
+ text-shadow:0 1px 5px #000;
 }
 
 .greeting p{
  margin:9px 0 0;
- color:#ddd;
+ color:#fff;
  font-size:13px;
+ text-shadow:0 1px 5px #000;
 }
 
 .switch-panel.engaged .benefits{
@@ -319,8 +335,9 @@ button:disabled{opacity:.6;cursor:wait}
 .footer{
  margin-top:20px;
  text-align:center;
- color:#ccc;
+ color:#fff;
  font:italic 13px Georgia,serif;
+ text-shadow:0 1px 5px #000;
 }
 
 .book-screen{
