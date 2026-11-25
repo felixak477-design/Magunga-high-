@@ -8,38 +8,54 @@
 
 <style>
 *{box-sizing:border-box;font-family:Arial,sans-serif}
+
 body{
  margin:0;min-height:100vh;display:grid;
  place-items:center;padding:20px;
  background:#101522;color:white
 }
+
 .register-box{
  width:100%;max-width:430px;padding:30px;
  background:#1b2435;border:1px solid #5b4820;
  border-radius:16px;box-shadow:0 0 24px #d6a52b25
 }
+
 h1,.subtitle{text-align:center}
 .subtitle{color:#aebbd0}
+
 label{display:block;margin:15px 0 7px}
+
 input,select{
  width:100%;padding:13px;border:1px solid #39465e;
  border-radius:8px;background:#111a2a;
  color:white;font-size:16px
 }
+
 button{
  width:100%;padding:14px;margin-top:22px;
  border:0;border-radius:8px;background:#d5a52b;
  color:#171717;font-size:16px;font-weight:bold
 }
+
 button:disabled{opacity:.6}
-#message{text-align:center;color:#ffbd75}
+
+#message{
+ text-align:center;
+ color:#ffbd75;
+ line-height:1.6;
+ overflow-wrap:anywhere;
+}
+
 a{color:#e8c45e}
 .login-link{text-align:center}
+
 .preview{
  display:none;width:90px;height:90px;
  object-fit:cover;border-radius:50%;
  margin:12px auto;border:2px solid #d5a52b
 }
+
 .hint{font-size:12px;color:#aebbd0}
 </style>
 </head>
@@ -89,7 +105,7 @@ Create Account
 
 </form>
 
-<p id="message"></p>
+<p id="message" role="status" aria-live="polite"></p>
 
 <p class="login-link">
 Already registered?
@@ -109,6 +125,7 @@ const photoInput = document.getElementById("profilePhoto");
 const preview = document.getElementById("preview");
 
 photoInput.addEventListener("change", () => {
+
  const file = photoInput.files[0];
 
  if (!file) {
@@ -118,6 +135,7 @@ photoInput.addEventListener("change", () => {
 
  preview.src = URL.createObjectURL(file);
  preview.style.display = "block";
+
 });
 
 form.addEventListener("submit", async event => {
@@ -127,7 +145,7 @@ form.addEventListener("submit", async event => {
 
  try {
 
-  message.textContent = "Creating account...";
+  message.textContent = "Creating your account and sending verification email...";
 
   await registerStudent(
    document.getElementById("name").value.trim(),
@@ -138,18 +156,26 @@ form.addEventListener("submit", async event => {
   );
 
   message.textContent =
-   "Account created! Awaiting admin approval.";
+   "Account created! A verification email has been sent. Open your inbox, click the verification link, then return here to log in. Check your spam folder if necessary.";
+
+  message.style.color = "#b8efbd";
 
   form.reset();
   preview.style.display = "none";
 
  } catch(error) {
 
+  console.error("Registration error:", error);
+
+  message.style.color = "#ffbd75";
+
   message.textContent =
-   "Registration failed: " + error.message;
+   "Registration failed: " + (error.code || error.message);
 
  } finally {
+
   button.disabled = false;
+
  }
 
 });
