@@ -6,301 +6,263 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#101827">
 <meta name="description" content="The Magunga High student portal. Access student accounts, school announcements, discussions and Form 4 learning materials.">
-
 <title>The Magunga High | Student Portal</title>
 
 <style>
-* {
-  box-sizing: border-box;
+*{box-sizing:border-box}
+
+html{
+ width:100%;
+ min-height:100%;
+ overflow-x:hidden;
 }
 
-html {
-  width: 100%;
-  min-height: 100%;
-  overflow-x: hidden;
+body{
+ margin:0;
+ width:100%;
+ min-height:100vh;
+ min-height:100dvh;
+ font-family:Arial,sans-serif;
+ background:
+ linear-gradient(rgba(5,10,20,.22),rgba(5,10,20,.38)),
+ url("assets/images/login-home-students.png") center center/cover fixed no-repeat,
+ #101827;
+ color:white;
+ display:flex;
+ flex-direction:column;
+ overflow-x:hidden;
 }
 
-body {
-  margin: 0;
-  width: 100%;
-  min-height: 100vh;
-  min-height: 100dvh;
-  font-family: Arial, sans-serif;
-  background:
-    linear-gradient(rgba(5,10,20,.70),rgba(5,10,20,.86)),
-    url("assets/images/login-home-students.png") center center / cover fixed no-repeat,
-    #101827;
-  color: white;
-  display: flex;
-  flex-direction: column;
-  overflow-x: hidden;
+header{
+ flex-shrink:0;
+ padding:13px 5%;
+ padding-top:calc(13px + env(safe-area-inset-top,0px));
+ background:rgba(18,28,48,.35);
+ backdrop-filter:blur(5px);
+ font-weight:bold;
+ color:#f4d58a;
+ letter-spacing:1px;
+ text-shadow:0 0 8px rgba(230,190,95,.4);
 }
 
-header {
-  flex-shrink: 0;
-  padding: 13px 5%;
-  padding-top: calc(13px + env(safe-area-inset-top, 0px));
-  background: rgba(18,28,48,.88);
-  backdrop-filter: blur(8px);
-  border-bottom: 1px solid rgba(230,190,95,.4);
-  font-weight: bold;
-  color: #f4d58a;
-  letter-spacing: 1px;
-  text-shadow: 0 0 8px rgba(230,190,95,.4);
+main{
+ width:min(950px,92%);
+ margin:0 auto;
+ padding:clamp(18px,4vh,35px) 0;
+ text-align:center;
+ flex:1 0 auto;
 }
 
-main {
-  width: min(950px, 92%);
-  margin: 0 auto;
-  padding: clamp(18px, 4vh, 35px) 0;
-  text-align: center;
-  flex: 1 0 auto;
+.tag{
+ color:#e6c477;
+ letter-spacing:1.5px;
+ font-size:10px;
+ font-weight:bold;
 }
 
-.tag {
-  color: #e6c477;
-  letter-spacing: 1.5px;
-  font-size: 10px;
-  font-weight: bold;
+h1{
+ font-size:clamp(25px,5vw,42px);
+ line-height:1.15;
+ margin:12px 0;
 }
 
-h1 {
-  font-size: clamp(25px, 5vw, 42px);
-  line-height: 1.15;
-  margin: 12px 0;
+h1 span{
+ color:#f4d58a;
+ text-shadow:0 0 8px rgba(230,190,95,.4),0 0 18px rgba(230,190,95,.2);
 }
 
-h1 span {
-  color: #f4d58a;
-  text-shadow: 0 0 8px rgba(230,190,95,.4),
-               0 0 18px rgba(230,190,95,.2);
+.intro{
+ color:#fff;
+ max-width:600px;
+ margin:0 auto 20px;
+ line-height:1.55;
+ font-size:13px;
+ text-shadow:0 1px 5px #000;
 }
 
-.intro {
-  color: #e0e7f1;
-  max-width: 600px;
-  margin: 0 auto 20px;
-  line-height: 1.55;
-  font-size: 13px;
+.actions{
+ display:flex;
+ justify-content:center;
+ gap:9px;
+ flex-wrap:wrap;
 }
 
-.actions {
-  display: flex;
-  justify-content: center;
-  gap: 9px;
-  flex-wrap: wrap;
+.btn{
+ display:inline-block;
+ min-width:125px;
+ padding:11px 14px;
+ border-radius:8px;
+ text-decoration:none;
+ font-weight:bold;
+ font-size:12px;
+ transition:.2s;
+ border:0;
 }
 
-.btn {
-  display: inline-block;
-  min-width: 125px;
-  padding: 11px 14px;
-  border-radius: 8px;
-  text-decoration: none;
-  font-weight: bold;
-  font-size: 12px;
-  transition: .2s;
+.btn:hover{
+ transform:translateY(-2px);
+ filter:brightness(1.15);
 }
 
-.btn:hover {
-  transform: translateY(-2px);
-  filter: brightness(1.15);
+.login{
+ background:#2878ff;
+ color:white;
 }
 
-.login {
-  background: #2878ff;
-  color: white;
+.register{
+ background:rgba(27,43,69,.72);
+ color:white;
 }
 
-.register {
-  background: rgba(27,43,69,.94);
-  color: white;
-  border: 1px solid #6384b5;
+.notes{
+ background:rgba(23,107,84,.78);
+ color:white;
 }
 
-.notes {
-  background: #176b54;
-  color: white;
-  border: 1px solid #36a987;
+/* TRANSPARENT STUDENT STREAM CARDS */
+
+.streams{
+ margin-top:25px;
+ display:grid;
+ grid-template-columns:repeat(5,minmax(0,1fr));
+ gap:8px;
 }
 
-/* STREAM CARDS */
-
-.streams {
-  margin-top: 25px;
-  display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
-  gap: 8px;
+.stream{
+ --stream-color:#e6be5f;
+ min-width:0;
+ padding:10px 5px;
+ border-radius:9px;
+ background:rgba(15,25,40,.20);
+ border:1px solid var(--stream-color);
+ box-shadow:
+  0 0 7px color-mix(in srgb,var(--stream-color) 65%,transparent),
+  inset 0 0 7px color-mix(in srgb,var(--stream-color) 18%,transparent);
+ backdrop-filter:blur(3px);
+ -webkit-backdrop-filter:blur(3px);
+ transition:transform .2s,box-shadow .2s;
 }
 
-.stream {
-  min-width: 0;
-  padding: 10px 5px;
-  border-radius: 9px;
-  background: rgba(18,29,48,.91);
-  border: 1px solid rgba(230,190,95,.65);
-  box-shadow:
-    0 0 8px rgba(212,170,75,.16),
-    inset 0 0 8px rgba(212,170,75,.06);
-  transition: transform .2s, box-shadow .2s;
+.stream:hover{
+ transform:translateY(-2px);
+ box-shadow:
+  0 0 13px color-mix(in srgb,var(--stream-color) 75%,transparent),
+  inset 0 0 9px color-mix(in srgb,var(--stream-color) 22%,transparent);
 }
 
-.stream:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 0 13px rgba(230,190,95,.38);
+.stream:nth-child(1){--stream-color:#2878ff}
+.stream:nth-child(2){--stream-color:#20d982}
+.stream:nth-child(3){--stream-color:#e8b83e}
+.stream:nth-child(4){--stream-color:#b17aff}
+.stream:nth-child(5){--stream-color:#ff6262}
+
+.stream strong{
+ font-size:12px;
+ color:white;
+ text-shadow:0 1px 5px #000;
+ overflow-wrap:anywhere;
 }
 
-.stream strong {
-  font-size: 12px;
-  color: #f4d58a;
-  text-shadow: 0 0 7px rgba(230,190,95,.3);
-  overflow-wrap: anywhere;
-}
-
-.stream p {
-  margin: 5px 0 0;
-  color: #d0d9e8;
-  font-size: 10px;
-}
-
-/* STREAM COLORS */
-
-.stream:nth-child(1) {
-  border-top: 3px solid #2878ff;
-}
-
-.stream:nth-child(2) {
-  border-top: 3px solid #20b66b;
-}
-
-.stream:nth-child(3) {
-  border-top: 3px solid #e8b83e;
-}
-
-.stream:nth-child(4) {
-  border-top: 3px solid #9a65e8;
-}
-
-.stream:nth-child(5) {
-  border-top: 3px solid #e34d4d;
+.stream p{
+ margin:5px 0 0;
+ color:#fff;
+ font-size:10px;
+ text-shadow:0 1px 4px #000;
 }
 
 /* LEARNING RESOURCES */
 
-.resource {
-  margin: 24px auto 0;
-  max-width: 650px;
-  padding: 14px;
-  background: rgba(18,29,48,.93);
-  border: 1px solid rgba(230,190,95,.65);
-  border-radius: 12px;
-  box-shadow:
-    0 0 10px rgba(212,170,75,.18),
-    inset 0 0 9px rgba(212,170,75,.05);
+.resource{
+ margin:24px auto 0;
+ max-width:650px;
+ padding:14px;
+ background:rgba(18,29,48,.25);
+ border:0;
+ border-radius:12px;
+ box-shadow:none;
+ backdrop-filter:blur(3px);
+ -webkit-backdrop-filter:blur(3px);
 }
 
-.resource h2 {
-  margin: 0 0 9px;
-  font-size: 17px;
-  color: #f4d58a;
-  text-shadow: 0 0 7px rgba(230,190,95,.3);
+.resource h2{
+ margin:0 0 9px;
+ font-size:17px;
+ color:#f4d58a;
+ text-shadow:0 0 7px rgba(230,190,95,.3);
 }
 
-.resource p {
-  color: #d0d9e8;
-  line-height: 1.5;
-  font-size: 12px;
-  margin: 8px 0;
+.resource p{
+ color:#fff;
+ line-height:1.5;
+ font-size:12px;
+ margin:8px 0;
+ text-shadow:0 1px 4px #000;
 }
 
-.resource a {
-  color: #f4d58a;
-  text-decoration: none;
-  font-weight: bold;
-  font-size: 12px;
+.resource a{
+ color:#f4d58a;
+ text-decoration:none;
+ font-weight:bold;
+ font-size:12px;
 }
 
-.resource a:hover {
-  text-shadow: 0 0 9px #e6be5f;
+.resource a:hover{
+ text-shadow:0 0 9px #e6be5f;
 }
 
-footer {
-  flex-shrink: 0;
-  text-align: center;
-  padding: 12px 10px;
-  padding-bottom: calc(12px + env(safe-area-inset-bottom, 0px));
-  color: #d0d9e8;
-  font-size: 11px;
-  border-top: 1px solid rgba(230,190,95,.25);
-  background: rgba(10,17,30,.75);
+footer{
+ flex-shrink:0;
+ text-align:center;
+ padding:12px 10px;
+ padding-bottom:calc(12px + env(safe-area-inset-bottom,0px));
+ color:#fff;
+ font-size:11px;
+ background:rgba(10,17,30,.30);
 }
 
-/* SMALL PHONES */
+@media(max-width:480px){
+ main{
+  width:92%;
+  padding:20px 0;
+ }
 
-@media(max-width: 480px) {
-  main {
-    width: 92%;
-    padding: 20px 0;
-  }
+ .actions{gap:7px}
 
-  .actions {
-    gap: 7px;
-  }
+ .btn{
+  flex:1 1 30%;
+  min-width:0;
+  padding:11px 5px;
+  font-size:11px;
+ }
 
-  .btn {
-    flex: 1 1 30%;
-    min-width: 0;
-    padding: 11px 5px;
-    font-size: 11px;
-  }
+ .streams{
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:8px;
+ }
 
-  .streams {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 8px;
-  }
+ .stream:last-child{grid-column:span 2}
 
-  .stream:last-child {
-    grid-column: span 2;
-  }
-
-  .resource {
-    margin-top: 20px;
-  }
+ .resource{margin-top:20px}
 }
 
-/* SHORT SCREENS */
+@media(max-height:700px){
+ main{
+  padding-top:13px;
+  padding-bottom:13px;
+ }
 
-@media(max-height: 700px) {
-  main {
-    padding-top: 13px;
-    padding-bottom: 13px;
-  }
+ .intro{margin-bottom:13px}
+ .streams{margin-top:17px}
+ .resource{margin-top:17px;padding:11px}
 
-  .intro {
-    margin-bottom: 13px;
-  }
-
-  .streams {
-    margin-top: 17px;
-  }
-
-  .resource {
-    margin-top: 17px;
-    padding: 11px;
-  }
-
-  footer {
-    padding-top: 8px;
-    padding-bottom: calc(8px + env(safe-area-inset-bottom, 0px));
-  }
+ footer{
+  padding-top:8px;
+  padding-bottom:calc(8px + env(safe-area-inset-bottom,0px));
+ }
 }
 
-@media(prefers-reduced-motion:reduce) {
-  *,
-  *::before,
-  *::after {
-    transition: none !important;
-  }
+@media(prefers-reduced-motion:reduce){
+ *,*::before,*::after{transition:none!important}
 }
 </style>
 </head>
@@ -308,98 +270,82 @@ footer {
 <body>
 
 <header>
-  THE MAGUNGA HIGH
+ THE MAGUNGA HIGH
 </header>
 
 <main>
 
-  <div class="tag">
-    ONE SCHOOL · FIVE STREAMS · ONE COMMUNITY
+ <div class="tag">
+  ONE SCHOOL · FIVE STREAMS · ONE COMMUNITY
+ </div>
+
+ <h1>
+  Welcome to<br>
+  <span>The Magunga High</span>
+ </h1>
+
+ <p class="intro">
+  Your student community portal. Sign in to access your
+  stream, school announcements, learning materials and
+  student discussions. New here? Create your student
+  account to get started.
+ </p>
+
+ <div class="actions">
+  <a class="btn login" href="login.html">Student Login</a>
+  <a class="btn register" href="register.html">Create Account</a>
+  <a class="btn notes" href="notes.html">Form 4 Notes</a>
+ </div>
+
+ <div class="streams">
+
+  <div class="stream">
+   <strong>Victors</strong>
+   <p>Blue Stream</p>
   </div>
 
-  <h1>
-    Welcome to<br>
-    <span>The Magunga High</span>
-  </h1>
+  <div class="stream">
+   <strong>Heroes</strong>
+   <p>Green Stream</p>
+  </div>
 
-  <p class="intro">
-    Your student community portal. Sign in to access your
-    stream, school announcements, learning materials and
-    student discussions. New here? Create your student
-    account to get started.
+  <div class="stream">
+   <strong>Winners</strong>
+   <p>Gold Stream</p>
+  </div>
+
+  <div class="stream">
+   <strong>Champions</strong>
+   <p>Purple Stream</p>
+  </div>
+
+  <div class="stream">
+   <strong>Archivers</strong>
+   <p>Red Stream</p>
+  </div>
+
+ </div>
+
+ <section class="resource">
+  <h2>Form Four Learning Resources</h2>
+  <p>
+   Access subject-based notes and revision materials
+   selected for Form Four students.
   </p>
-
-  <div class="actions">
-
-    <a class="btn login" href="login.html">
-      Student Login
-    </a>
-
-    <a class="btn register" href="register.html">
-      Create Account
-    </a>
-
-    <a class="btn notes" href="notes.html">
-      Form 4 Notes
-    </a>
-
-  </div>
-
-  <div class="streams">
-
-    <div class="stream">
-      <strong>Victors</strong>
-      <p>Blue Stream</p>
-    </div>
-
-    <div class="stream">
-      <strong>Heroes</strong>
-      <p>Green Stream</p>
-    </div>
-
-    <div class="stream">
-      <strong>Winners</strong>
-      <p>Gold Stream</p>
-    </div>
-
-    <div class="stream">
-      <strong>Champions</strong>
-      <p>Purple Stream</p>
-    </div>
-
-    <div class="stream">
-      <strong>Archivers</strong>
-      <p>Red Stream</p>
-    </div>
-
-  </div>
-
-  <section class="resource">
-
-    <h2>Form Four Learning Resources</h2>
-
-    <p>
-      Access subject-based notes and revision materials
-      selected for Form Four students.
-    </p>
-
-    <a href="notes.html">
-      Explore Form 4 Notes →
-    </a>
-
-  </section>
+  <a href="notes.html">Explore Form 4 Notes →</a>
+ </section>
 
 </main>
 
 <footer>
-  © <span id="year"></span> The Magunga High
-  <br><br>
-  Learn Together. Rise Together.
+ © <span id="year"></span> The Magunga High
+ <br><br>
+ Learn Together. Rise Together.
 </footer>
 
 <script>
 document.getElementById("year").textContent =
-  new Date().getFullYear();
+ new Date().getFullYear();
 </script>
 
 </body>
