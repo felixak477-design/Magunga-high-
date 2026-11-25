@@ -1398,10 +1398,17 @@ $("privateForm").addEventListener("submit",async event => {
    message.fileSize = file.size;
   }
 
-  await addDoc(
-   collection(db,"privateChats",activeChatId,"messages"),
-   message
-  );
+ const savedMessage = await addDoc(
+  collection(db,"privateChats",activeChatId,"messages"),
+  message
+);
+
+void notifyChatMessage(
+  user,
+  "private",
+  savedMessage.id,
+  activeChatId
+);
 
   input.value = "";
   fileInput.value = "";
