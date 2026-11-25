@@ -10,256 +10,121 @@
 <style>
 *{box-sizing:border-box;font-family:Arial,sans-serif}
 html,body{margin:0;width:100%;max-width:100%;overflow-x:hidden}
-html{min-height:100%;scroll-padding-top:125px}
-body{
- background:#090d16;color:#f2f4f8;min-height:100vh;min-height:100dvh;
- padding-top:calc(110px + env(safe-area-inset-top,0px));
- padding-bottom:calc(20px + env(safe-area-inset-bottom,0px));overflow-y:auto
-}
+body{background:#090d16;color:#f2f4f8;min-height:100vh;padding:110px 0 25px}
 a{color:inherit;text-decoration:none}
 button{cursor:pointer;touch-action:manipulation}
-.topbar{
- position:fixed;top:0;left:0;right:0;z-index:1000;
- padding-top:env(safe-area-inset-top,0px);background:#111827;
- border-bottom:1px solid #ffd36a55
-}
-.brand{
- height:47px;min-height:47px;display:flex;align-items:center;
- justify-content:space-between;padding:0 13px
-}
+.topbar{position:fixed;top:0;left:0;right:0;z-index:1000;background:#111827;border-bottom:1px solid #ffd36a55;padding-top:env(safe-area-inset-top,0px)}
+.brand{height:47px;display:flex;align-items:center;justify-content:space-between;padding:0 13px}
 .brand h2{color:#ffd36a;font-size:16px;margin:0}
 .brand small{color:#9ca9bb;font-size:10px}
-.navigation{
- height:63px;min-height:63px;display:flex;align-items:stretch;
- justify-content:space-around;width:100%;border-top:1px solid #ffffff0c
-}
-.nav-item{
- min-width:0;min-height:48px;flex:1 1 0;display:flex;flex-direction:column;
- align-items:center;justify-content:center;gap:4px;color:#9da9bb;
- font-size:10px;text-align:center;white-space:nowrap;
- -webkit-tap-highlight-color:transparent
-}
-.nav-item svg{
- width:23px;height:23px;stroke:currentColor;fill:none;stroke-width:2;
- stroke-linecap:round;stroke-linejoin:round
-}
+.navigation{height:63px;display:flex;align-items:stretch;justify-content:space-around;border-top:1px solid #ffffff0c}
+.nav-item{min-width:0;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;color:#9da9bb;font-size:10px;white-space:nowrap}
+.nav-item svg{width:23px;height:23px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .nav-item.active{color:#ffd36a}
-main{width:100%;max-width:720px;margin:auto;padding:14px;min-width:0}
-main section,.community-post,.library-card,.announcement-post{
- min-width:0;overflow-wrap:anywhere
-}
-.welcome{
- display:flex;align-items:center;gap:12px;padding:12px 0;
- border-bottom:1px solid #283448
-}
+main{width:100%;max-width:720px;margin:auto;padding:14px}
+main section,.community-post,.announcement-post,.library-card{min-width:0;overflow-wrap:anywhere}
+.welcome{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid #283448}
 .avatar,.initial{width:48px;height:48px;border-radius:50%;flex-shrink:0}
 .avatar{object-fit:cover;border:2px solid #d6a83e}
-.initial{
- display:flex;align-items:center;justify-content:center;
- background:#755019;color:white;font-weight:bold;font-size:20px
-}
+.initial{display:flex;align-items:center;justify-content:center;background:#755019;color:white;font-weight:bold;font-size:20px}
 .welcome-info{min-width:0}
-.welcome h1{
- font-size:17px;color:#ffdc87;margin:0 0 5px;overflow-wrap:anywhere
-}
+.welcome h1{font-size:17px;color:#ffdc87;margin:0 0 5px;overflow-wrap:anywhere}
 .welcome p,.stream{font-size:11px;color:#9eacc0;margin:4px 0}
-.upload-card,.add-post-card{
- display:flex;align-items:center;gap:13px;width:100%;padding:13px;
- margin:14px 0;border-radius:17px;
- background:linear-gradient(135deg,#293e5c,#111b2c);
- border:1px solid #ffd36a77
-}
-.upload-logo,.add-post-logo{
- width:52px;height:52px;display:flex;align-items:center;justify-content:center;
- border-radius:16px;background:linear-gradient(145deg,#ffdf85,#c28b22);
- color:#17120a;font-size:29px;font-weight:bold;flex-shrink:0
-}
+.upload-card,.add-post-card{display:flex;align-items:center;gap:13px;width:100%;padding:13px;margin:14px 0;border-radius:17px;background:linear-gradient(135deg,#293e5c,#111b2c);border:1px solid #ffd36a77}
+.upload-logo,.add-post-logo{width:52px;height:52px;display:flex;align-items:center;justify-content:center;border-radius:16px;background:linear-gradient(145deg,#ffdf85,#c28b22);color:#17120a;font-size:29px;font-weight:bold;flex-shrink:0}
 .upload-card-content{flex:1;min-width:0}
-.upload-card h3,.add-post-card h3{
- margin:0 0 5px;color:#ffdc87;font-size:14px
-}
-.upload-card p,.add-post-card p{
- margin:0;color:#b9c5d6;font-size:11px;line-height:1.5
-}
+.upload-card h3,.add-post-card h3{margin:0 0 5px;color:#ffdc87;font-size:14px}
+.upload-card p,.add-post-card p{margin:0;color:#b9c5d6;font-size:11px;line-height:1.5}
 .arrow{margin-left:auto;color:#ffd36a;font-size:25px}
 .add-post-card{cursor:pointer;text-align:left;color:inherit}
-#composer{
- display:none;background:#111b2c;border:1px solid #34445f;
- border-radius:15px;padding:13px;margin:10px 0 18px
-}
+#composer{display:none;background:#111b2c;border:1px solid #34445f;border-radius:15px;padding:13px;margin:10px 0 18px}
 #composer.open{display:block}
 .composer-top{display:flex;align-items:center;gap:9px;margin-bottom:10px}
-.composer-top img,.mini-initial{
- width:38px;height:38px;border-radius:50%;object-fit:cover
-}
-.mini-initial{
- display:flex;align-items:center;justify-content:center;background:#755019
-}
+.composer-top img,.mini-initial{width:38px;height:38px;border-radius:50%;object-fit:cover}
+.mini-initial{display:flex;align-items:center;justify-content:center;background:#755019}
 #composerName{font-size:13px;color:#f5d98b}
-textarea,select{
- width:100%;background:#0b1422;color:white;border:1px solid #34445f;
- border-radius:10px;padding:11px;font-size:13px
-}
+textarea,select{width:100%;background:#0b1422;color:white;border:1px solid #34445f;border-radius:10px;padding:11px;font-size:13px}
 textarea{min-height:75px;resize:vertical}
 .field-label{display:block;font-size:11px;color:#c4cede;margin:12px 0 6px}
 .privacy-help{font-size:10px;color:#93a1b5;margin:6px 0}
-.composer-actions{
- display:flex;justify-content:space-between;align-items:center;
- gap:8px;flex-wrap:wrap;margin-top:12px
-}
-.add-photos{
- background:#293b59;color:#e8c879;border:1px solid #536581;
- border-radius:9px;padding:10px;font-size:12px
-}
+.composer-actions{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin-top:12px}
+.add-photos{background:#293b59;color:#e8c879;border:1px solid #536581;border-radius:9px;padding:10px;font-size:12px}
 .add-photos input{display:none}
-.post-button{
- min-height:40px;border:0;border-radius:9px;padding:11px 20px;
- background:linear-gradient(120deg,#f5d078,#bd872a);
- color:#17120a;font-weight:bold
-}
+.post-button{min-height:40px;border:0;border-radius:9px;padding:11px 20px;background:linear-gradient(120deg,#f5d078,#bd872a);color:#17120a;font-weight:bold}
 .post-button:disabled{opacity:.5}
-.selected-preview{
- display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
- gap:6px;margin-top:10px
-}
-.selected-preview img{
- width:100%;height:90px;object-fit:cover;border-radius:8px
-}
-#postStatus,#communityStatus,#announcementStatus,#libraryStatus{
- font-size:12px;color:#aebbd0;padding:7px 0;overflow-wrap:anywhere
-}
-.section-heading{
- display:flex;justify-content:space-between;align-items:center;margin:22px 0 10px
-}
+.selected-preview{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin-top:10px}
+.selected-preview img{width:100%;height:90px;object-fit:cover;border-radius:8px}
+#postStatus,#communityStatus,#announcementStatus,#libraryStatus{font-size:12px;color:#aebbd0;padding:7px 0;overflow-wrap:anywhere}
+.section-heading{display:flex;justify-content:space-between;align-items:center;margin:22px 0 10px}
 .section-heading h2{font-size:16px;color:#f5d98b;margin:0}
 .section-heading a{font-size:11px;color:#d6b35d}
 .community-post{padding:13px 0 16px;border-bottom:1px solid #283448;margin-bottom:10px}
 .community-header{display:flex;align-items:center;gap:9px;margin-bottom:10px}
-.community-avatar{
- width:40px;height:40px;border-radius:50%;object-fit:cover;
- background:#293b59;flex-shrink:0
-}
-.community-initial{
- display:flex;align-items:center;justify-content:center;
- color:#f5d98b;font-weight:bold
-}
+.community-avatar{width:40px;height:40px;border-radius:50%;object-fit:cover;background:#293b59;flex-shrink:0}
+.community-initial{display:flex;align-items:center;justify-content:center;color:#f5d98b;font-weight:bold}
 .community-author{font-size:13px;color:#f2d58f;font-weight:bold}
 .community-time{font-size:10px;color:#8795aa;margin-top:4px}
-.privacy-tag{
- margin-left:auto;color:#d8c18a;font-size:9px;
- background:#302511;padding:5px 7px;border-radius:12px
-}
-.community-text{
- font-size:14px;line-height:1.6;white-space:pre-wrap;
- overflow-wrap:anywhere;margin:8px 0 12px
-}
+.privacy-tag{margin-left:auto;color:#d8c18a;font-size:9px;background:#302511;padding:5px 7px;border-radius:12px}
+.community-text{font-size:14px;line-height:1.6;white-space:pre-wrap;overflow-wrap:anywhere;margin:8px 0 12px}
 .post-images{display:grid;grid-template-columns:1fr;gap:3px}
 .post-images.multi{grid-template-columns:repeat(2,minmax(0,1fr))}
-.post-images img{
- width:100%;max-height:520px;object-fit:cover;display:block
-}
+.post-images img{width:100%;max-height:520px;object-fit:cover;display:block}
 .post-images.multi img{height:190px}
-.post-images.multi img:first-child:last-child{grid-column:1/-1}
-.post-actions{
- display:flex;align-items:center;gap:16px;border-top:1px solid #283448;
- margin-top:12px;padding-top:10px
-}
-.post-action{
- min-height:36px;border:0;background:none;color:#aebbd0;
- font-size:12px;padding:5px 0
-}
-.post-action.liked{color:#6fb5ff}
-.post-counts{font-size:10px;color:#8795aa;margin-left:auto}
+.post-actions{display:flex;align-items:center;gap:16px;border-top:1px solid #283448;margin-top:12px;padding-top:10px}
+.post-action{min-height:36px;border:0;background:none;color:#aebbd0;font-size:12px;padding:5px 0}
 .delete-post{color:#ff9b9b}
-.comments-area{
- display:none;margin-top:10px;border-top:1px solid #283448;padding-top:9px
-}
-.comments-area.open{display:block}
-.comment-item{display:flex;gap:8px;margin:9px 0}
-.comment-avatar{width:28px;height:28px;border-radius:50%;object-fit:cover}
-.comment-bubble{
- background:#202d42;border-radius:10px;padding:8px 10px;min-width:0
-}
-.comment-name{font-size:11px;color:#f2d58f;font-weight:bold}
-.comment-text{
- font-size:12px;color:#d9e0ea;white-space:pre-wrap;
- overflow-wrap:anywhere;margin-top:4px
-}
-.comment-form{display:flex;gap:7px;margin-top:10px}
-.comment-form input{
- flex:1;min-width:0;background:#0b1422;border:1px solid #34445f;
- border-radius:20px;padding:10px;color:white
-}
-.comment-form button{
- min-height:40px;border:0;background:#293b59;color:#f5d98b;
- border-radius:20px;padding:0 13px
-}
 .empty{font-size:12px;color:#9eacc0;padding:12px 0}
 .announcement-post,.library-card{padding:13px 0;border-bottom:1px solid #283448}
-.announcement-post h3,.library-card h3{
- font-size:14px;color:#f5d98b;margin:7px 0
-}
-.announcement-post p,.library-card p{
- font-size:12px;color:#d0d8e5;line-height:1.6
-}
-.library-image{width:100%;max-height:360px;object-fit:contain;background:#1b2940}
-.library-pdf{padding:25px;background:#1b2940;color:#f5d98b;text-align:center}
+.announcement-post h3,.library-card h3{font-size:14px;color:#f5d98b;margin:7px 0}
+.announcement-post p,.library-card p{font-size:12px;color:#d0d8e5;line-height:1.6}
 .library-view{font-size:12px;color:#e8c879}
-.viewer{
- display:none;position:fixed;inset:0;z-index:3000;background:#000e;
- align-items:center;justify-content:center;padding:45px 12px
-}
-.viewer.active{display:flex}
-.viewer img{max-width:100%;max-height:90%;object-fit:contain}
-.viewer button{
- position:absolute;top:12px;right:12px;padding:10px;
- border:0;border-radius:8px
-}
-footer{
- text-align:center;color:#758399;padding:25px;
- padding-bottom:calc(25px + env(safe-area-inset-bottom,0px));font-size:10px
-}
+footer{text-align:center;color:#758399;padding:25px;padding-bottom:calc(25px + env(safe-area-inset-bottom,0px));font-size:10px}
 @media(max-width:480px){
- main{padding:11px}.brand h2{font-size:14px}
- .nav-item{font-size:9px}.nav-item svg{width:21px;height:21px}
+ main{padding:11px}
+ .brand h2{font-size:14px}
+ .nav-item{font-size:9px}
+ .nav-item svg{width:21px;height:21px}
  .post-images.multi img{height:155px}
 }
 @media(max-width:380px){
- main{padding:10px}.brand h2{font-size:13px}
- .brand small{font-size:9px}.nav-item{font-size:8px;gap:3px}
+ main{padding:10px}
+ .brand h2{font-size:13px}
+ .brand small{font-size:9px}
+ .nav-item{font-size:8px;gap:3px}
  .nav-item svg{width:19px;height:19px}
-}
-@media(max-height:650px){
- .brand{height:43px;min-height:43px}
- .navigation{height:58px;min-height:58px}
- body{padding-top:calc(101px + env(safe-area-inset-top,0px))}
 }
 </style>
 </head>
 
 <body>
+
 <header class="topbar">
  <div class="brand">
   <h2>THE MAGUNGA HIGH</h2>
   <small id="headerStream">Loading...</small>
  </div>
+
  <nav class="navigation">
   <a href="dashboard.html" class="nav-item active">
    <svg viewBox="0 0 24 24"><path d="m3 10 9-7 9 7M5 9v12h14V9M9 21v-7h6v7"/></svg>
    <span>Home</span>
   </a>
+
   <a href="community.html" class="nav-item">
-   <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M8 2v4M16 2v4M7 10h10M8 14h.01M12 14h.01M16 14h.01"/></svg>
+   <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M8 2v4M16 2v4M7 10h10"/></svg>
    <span>Friends</span>
   </a>
+
   <a href="chat.html" class="nav-item">
-   <svg viewBox="0 0 24 24"><path d="M21 11.5a8.5 8.5 0 0 1-8.5 8.5 9 9 0 0 1-4-.9L3 21l1.9-5.1a9 9 0 0 1-.9-4A8.5 8.5 0 0 1 12.5 3h.5a8.5 8.5 0 0 1 8 8z"/><path d="m13 7-5 6h4l-1 4 5-6h-4z" fill="currentColor" stroke="none"/></svg>
+   <svg viewBox="0 0 24 24"><path d="M21 11.5a8.5 8.5 0 0 1-8.5 8.5 9 9 0 0 1-4-.9L3 21l1.9-5.1a9 9 0 0 1-.9-4A8.5 8.5 0 0 1 12.5 3h.5a8.5 8.5 0 0 1 8 8z"/></svg>
    <span>Messages</span>
   </a>
+
   <a href="notifications.html" class="nav-item">
    <svg viewBox="0 0 24 24"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"/></svg>
    <span>Alerts</span>
   </a>
+
   <a href="profile.html" class="nav-item">
    <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>
    <span>Account</span>
@@ -268,9 +133,11 @@ footer{
 </header>
 
 <main>
+
 <section class="welcome">
  <img id="dashboardPhoto" class="avatar" alt="Profile" hidden>
  <div id="profileInitial" class="initial">?</div>
+
  <div class="welcome-info">
   <h1 id="welcomeName">Welcome, Student</h1>
   <p id="profileNickname"></p>
@@ -304,21 +171,29 @@ footer{
   <div id="composerInitial" class="mini-initial">?</div>
   <strong id="composerName">Create a post</strong>
  </div>
+
  <textarea id="postText" maxlength="2000" placeholder="What's happening at school?"></textarea>
+
  <label class="field-label" for="postAudience">Who can see this post?</label>
+
  <select id="postAudience">
   <option value="all">All school · All approved students</option>
   <option value="stream">My stream · Students in my stream</option>
   <option value="private">Only me · Just you</option>
  </select>
+
  <p class="privacy-help" id="privacyHelp">All approved students can see this post.</p>
+
  <div id="selectedPreview" class="selected-preview"></div>
+
  <div class="composer-actions">
-  <label class="add-photos">▧ Add photos
+  <label class="add-photos">
+   ▧ Add photos
    <input id="postImages" type="file" accept="image/jpeg,image/png,image/webp" multiple>
   </label>
   <button id="publishPost" class="post-button">Post</button>
  </div>
+
  <div id="postStatus"></div>
 </section>
 
@@ -345,12 +220,8 @@ footer{
  <p id="libraryStatus">Loading learning materials...</p>
  <div id="libraryFeed"></div>
 </section>
-</main>
 
-<div id="imageViewer" class="viewer">
- <button id="closeViewer">Close ✕</button>
- <img id="largeImage" alt="Preview">
-</div>
+</main>
 
 <footer>THE MAGUNGA HIGH · STUDENT COMMUNITY</footer>
 
@@ -360,62 +231,107 @@ import {uploadCommunityImage} from "./assets/js/cloudinary.js";
 import {onAuthStateChanged} from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
 
 import {
- doc,getDoc,collection,getDocs,query,where,addDoc,setDoc,deleteDoc,
- serverTimestamp
+ doc,getDoc,collection,getDocs,query,where,
+ addDoc,deleteDoc,serverTimestamp
 } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
 
 const $=id=>document.getElementById(id);
-let currentUser=null,profile=null,selectedFiles=[],postsCache=[];
 
-const safe=v=>typeof v==="string"?v:"";
-const displayName=p=>safe(p.nickname).trim()||safe(p.name).trim()||"Student";
-const initial=n=>(n||"S").trim().charAt(0).toUpperCase()||"S";
+let currentUser=null;
+let profile=null;
+let selectedFiles=[];
 
-function timeAgo(ts){
- if(!ts?.toDate)return "Just now";
- const s=Math.max(0,Math.floor((Date.now()-ts.toDate().getTime())/1000));
- if(s<60)return "Just now";
- if(s<3600)return Math.floor(s/60)+" minutes ago";
- if(s<86400)return Math.floor(s/3600)+" hours ago";
- if(s<604800)return Math.floor(s/86400)+" days ago";
- return ts.toDate().toLocaleDateString();
+const safe=value=>typeof value==="string"?value:"";
+
+const displayName=p=>
+ safe(p.nickname).trim()||
+ safe(p.name).trim()||
+ "Student";
+
+const initial=name=>
+ (name||"S").trim().charAt(0).toUpperCase()||"S";
+
+function timeAgo(timestamp){
+ if(!timestamp?.toDate)return "Recently";
+
+ const seconds=Math.max(
+  0,
+  Math.floor((Date.now()-timestamp.toDate().getTime())/1000)
+ );
+
+ if(seconds<60)return "Just now";
+ if(seconds<3600)return Math.floor(seconds/60)+" minutes ago";
+ if(seconds<86400)return Math.floor(seconds/3600)+" hours ago";
+ if(seconds<604800)return Math.floor(seconds/86400)+" days ago";
+
+ return timestamp.toDate().toLocaleDateString();
 }
 
-function avatar(url,name,cls="community-avatar"){
+function makeAvatar(url,name){
  if(url&&/^https:\/\//i.test(url)){
   const img=document.createElement("img");
-  img.className=cls;img.src=url;img.alt="Profile";
+  img.className="community-avatar";
+  img.src=url;
+  img.alt="Profile";
+
   img.onerror=()=>{
-   const d=document.createElement("div");
-   d.className=cls+" community-initial";d.textContent=initial(name);
-   img.replaceWith(d);
+   const fallback=document.createElement("div");
+   fallback.className="community-avatar community-initial";
+   fallback.textContent=initial(name);
+   img.replaceWith(fallback);
   };
+
   return img;
  }
- const d=document.createElement("div");
- d.className=cls+" community-initial";d.textContent=initial(name);
- return d;
+
+ const fallback=document.createElement("div");
+ fallback.className="community-avatar community-initial";
+ fallback.textContent=initial(name);
+
+ return fallback;
 }
 
-function showProfilePhoto(url,name){
- const img=$("dashboardPhoto"),composer=$("composerPhoto");
+function setProfilePhoto(url,name){
  $("profileInitial").textContent=initial(name);
  $("composerInitial").textContent=initial(name);
+
  if(url&&/^https:\/\//i.test(url)){
-  img.src=url;img.hidden=false;$("profileInitial").hidden=true;
-  composer.src=url;composer.hidden=false;$("composerInitial").hidden=true;
-  img.onerror=()=>{img.hidden=true;$("profileInitial").hidden=false};
-  composer.onerror=()=>{composer.hidden=true;$("composerInitial").hidden=false};
+  $("dashboardPhoto").src=url;
+  $("dashboardPhoto").hidden=false;
+  $("profileInitial").hidden=true;
+
+  $("composerPhoto").src=url;
+  $("composerPhoto").hidden=false;
+  $("composerInitial").hidden=true;
+
+  $("dashboardPhoto").onerror=()=>{
+   $("dashboardPhoto").hidden=true;
+   $("profileInitial").hidden=false;
+  };
+
+  $("composerPhoto").onerror=()=>{
+   $("composerPhoto").hidden=true;
+   $("composerInitial").hidden=false;
+  };
  }else{
-  img.hidden=true;composer.hidden=true;
-  $("profileInitial").hidden=false;$("composerInitial").hidden=false;
+  $("dashboardPhoto").hidden=true;
+  $("composerPhoto").hidden=true;
+  $("profileInitial").hidden=false;
+  $("composerInitial").hidden=false;
  }
 }
+
+/* OPEN COMPOSER */
 
 $("openComposer").addEventListener("click",()=>{
  $("composer").classList.toggle("open");
- if($("composer").classList.contains("open"))$("postText").focus();
+
+ if($("composer").classList.contains("open")){
+  $("postText").focus();
+ }
 });
+
+/* POST PRIVACY */
 
 $("postAudience").addEventListener("change",()=>{
  const messages={
@@ -423,51 +339,251 @@ $("postAudience").addEventListener("change",()=>{
   stream:"Only approved students in your stream can see this post.",
   private:"Only you can see this post."
  };
- $("privacyHelp").textContent=messages[$("postAudience").value];
+
+ $("privacyHelp").textContent=
+  messages[$("postAudience").value]||messages.all;
 });
 
-$("closeViewer").onclick=()=>{
- $("imageViewer").classList.remove("active");$("largeImage").src="";
-};
+/* SELECT IMAGES */
 
-function viewImage(url){
- $("largeImage").src=url;$("imageViewer").classList.add("active");
-}
-
-$("imageViewer").addEventListener("click",e=>{
- if(e.target===$("imageViewer"))$("closeViewer").click();
-});
-
-/* IMAGE SELECTION */
 $("postImages").addEventListener("change",()=>{
  const files=Array.from($("postImages").files||[]);
  const allowed=["image/jpeg","image/png","image/webp"];
- if(files.length>5||files.some(f=>!allowed.includes(f.type)||f.size>5*1024*1024)){
-  $("postStatus").textContent="Choose up to 5 JPG, PNG or WebP images. Each must be 5 MB or smaller.";
-  $("postImages").value="";selectedFiles=[];$("selectedPreview").replaceChildren();
+
+ if(
+  files.length>5||
+  files.some(file=>
+   !allowed.includes(file.type)||
+   file.size>5*1024*1024
+  )
+ ){
+  $("postStatus").textContent=
+   "Choose up to 5 JPG, PNG or WebP images. Each must be 5 MB or smaller.";
+
+  $("postImages").value="";
+  selectedFiles=[];
+  $("selectedPreview").replaceChildren();
   return;
  }
- selectedFiles=files;$("selectedPreview").replaceChildren();
+
+ selectedFiles=files;
+ $("selectedPreview").replaceChildren();
+
  files.forEach(file=>{
   const img=document.createElement("img");
-  img.src=URL.createObjectURL(file);img.alt="Selected image";
+  img.src=URL.createObjectURL(file);
+  img.alt="Selected image";
   $("selectedPreview").append(img);
  });
- $("postStatus").textContent=files.length?files.length+" image(s) selected.":"";
+
+ $("postStatus").textContent=
+  files.length?files.length+" image(s) selected.":"";
 });
 
-/* PUBLISH POST: USES visibility TO MATCH FIRESTORE RULES */
+/* LOAD POSTS */
+
+async function loadCommunityPosts(){
+ const feed=$("communityFeed");
+ const status=$("communityStatus");
+
+ feed.replaceChildren();
+ status.textContent="Loading posts...";
+
+ try{
+  const base=collection(db,"communityPosts");
+
+  const snapshots=await Promise.all([
+   getDocs(query(base,where("visibility","==","all"))),
+
+   getDocs(query(
+    base,
+    where("visibility","==","stream"),
+    where("stream","==",profile.stream)
+   )),
+
+   getDocs(query(
+    base,
+    where("visibility","==","private"),
+    where("authorId","==",currentUser.uid)
+   )),
+
+   getDocs(query(
+    base,
+    where("authorId","==",currentUser.uid)
+   ))
+  ]);
+
+  const unique=new Map();
+
+  snapshots.forEach(snapshot=>{
+   snapshot.docs.forEach(item=>{
+    unique.set(item.id,{
+     id:item.id,
+     ...item.data()
+    });
+   });
+  });
+
+  const posts=Array.from(unique.values());
+
+  posts.sort((a,b)=>
+   (b.createdAt?.toMillis?.()||0)-
+   (a.createdAt?.toMillis?.()||0)
+  );
+
+  if(!posts.length){
+   status.textContent=
+    "No student posts yet. Be the first to share something.";
+   return;
+  }
+
+  status.textContent=
+   posts.length+" post(s) visible to you";
+
+  posts.forEach(renderPost);
+
+ }catch(error){
+  console.error("Feed error:",error);
+
+  status.textContent=
+   "Unable to load posts: "+error.message;
+ }
+}
+
+/* DISPLAY POST */
+
+function renderPost(post){
+ const card=document.createElement("article");
+ card.className="community-post";
+
+ const header=document.createElement("div");
+ header.className="community-header";
+
+ const name=
+  post.authorDisplayName||
+  post.authorNickname||
+  post.authorName||
+  "Student";
+
+ header.append(makeAvatar(post.authorPhotoURL,name));
+
+ const details=document.createElement("div");
+
+ const author=document.createElement("div");
+ author.className="community-author";
+ author.textContent=name;
+
+ const time=document.createElement("div");
+ time.className="community-time";
+ time.textContent=timeAgo(post.createdAt);
+
+ details.append(author,time);
+ header.append(details);
+
+ const tag=document.createElement("span");
+ tag.className="privacy-tag";
+
+ tag.textContent=
+  post.visibility==="private"?"ONLY ME":
+  post.visibility==="stream"?"MY STREAM":
+  "ALL SCHOOL";
+
+ header.append(tag);
+ card.append(header);
+
+ const profileLink=document.createElement("a");
+
+ profileLink.href=
+  "profile.html?uid="+encodeURIComponent(post.authorId||"");
+
+ profileLink.textContent="View profile";
+
+ profileLink.style.cssText=
+  "display:inline-block;color:#d6b35d;font-size:11px;margin:0 0 8px";
+
+ card.append(profileLink);
+
+ if(post.text){
+  const body=document.createElement("p");
+  body.className="community-text";
+  body.textContent=post.text;
+  card.append(body);
+ }
+
+ const urls=Array.isArray(post.imageUrls)
+  ?post.imageUrls:[];
+
+ if(urls.length){
+  const images=document.createElement("div");
+
+  images.className=
+   "post-images"+(urls.length>1?" multi":"");
+
+  urls.slice(0,5).forEach(url=>{
+   if(typeof url==="string"&&/^https:\/\//i.test(url)){
+    const img=document.createElement("img");
+    img.src=url;
+    img.alt="Post image";
+    img.loading="lazy";
+    images.append(img);
+   }
+  });
+
+  card.append(images);
+ }
+
+ if(post.authorId===currentUser.uid){
+  const actions=document.createElement("div");
+  actions.className="post-actions";
+
+  const remove=document.createElement("button");
+  remove.className="post-action delete-post";
+  remove.textContent="Delete post";
+
+  remove.addEventListener("click",async()=>{
+   if(!confirm("Delete this post?"))return;
+
+   remove.disabled=true;
+
+   try{
+    await deleteDoc(doc(db,"communityPosts",post.id));
+    await loadCommunityPosts();
+   }catch(error){
+    console.error(error);
+    alert("Could not delete post: "+error.message);
+    remove.disabled=false;
+   }
+  });
+
+  actions.append(remove);
+  card.append(actions);
+ }
+
+ $("communityFeed").append(card);
+}
+
+/* PUBLISH POST */
+
 $("publishPost").addEventListener("click",async()=>{
  const button=$("publishPost");
  const text=$("postText").value.trim();
  const visibility=$("postAudience").value;
+
  if(!text&&!selectedFiles.length){
-  $("postStatus").textContent="Write something or add an image.";return;
+  $("postStatus").textContent=
+   "Write something or add an image.";
+  return;
  }
- button.disabled=true;$("postStatus").textContent="Uploading your post...";
+
+ button.disabled=true;
+ $("postStatus").textContent="Uploading your post...";
+
  try{
   const imageUrls=[];
-  for(const file of selectedFiles)imageUrls.push(await uploadCommunityImage(file));
+
+  for(const file of selectedFiles){
+   imageUrls.push(await uploadCommunityImage(file));
+  }
 
   await addDoc(collection(db,"communityPosts"),{
    authorId:currentUser.uid,
@@ -482,64 +598,243 @@ $("publishPost").addEventListener("click",async()=>{
    createdAt:serverTimestamp()
   });
 
-  $("postText").value="";$("postImages").value="";
-  $("selectedPreview").replaceChildren();selectedFiles=[];
+  $("postText").value="";
+  $("postImages").value="";
+  $("selectedPreview").replaceChildren();
+
+  selectedFiles=[];
+
   $("postAudience").value="all";
-  $("privacyHelp").textContent="All approved students can see this post.";
-  $("postStatus").textContent="Your post has been published.";
+  $("privacyHelp").textContent=
+   "All approved students can see this post.";
+
+  $("postStatus").textContent=
+   "Your post has been published.";
+
   $("composer").classList.remove("open");
+
   await loadCommunityPosts();
+
  }catch(error){
   console.error("Publish error:",error);
-  $("postStatus").textContent=error.message||"Unable to publish. Check your connection and permissions.";
- }finally{button.disabled=false}
+
+  $("postStatus").textContent=
+   error.message||"Unable to publish. Check permissions.";
+
+ }finally{
+  button.disabled=false;
+ }
 });
 
-/* PRIVACY-AWARE FEED QUERIES */
-async function loadCommunityPosts(){
- const feed=$("communityFeed"),status=$("communityStatus");
- feed.replaceChildren();status.textContent="Loading posts...";
+/* LOAD ANNOUNCEMENTS */
+
+async function loadAnnouncements(){
+ const status=$("announcementStatus");
+ const feed=$("announcementFeed");
+
+ status.textContent="Loading announcements...";
+ feed.replaceChildren();
+
  try{
-  const base=collection(db,"communityPosts");
-  const tasks=[
-   getDocs(query(base,where("visibility","==","all"))),
-   getDocs(query(base,where("visibility","==","stream"),where("stream","==",profile.stream))),
-   getDocs(query(base,where("visibility","==","private"),where("authorId","==",currentUser.uid))),
-   getDocs(query(base,where("authorId","==",currentUser.uid)))
-  ];
-  const snapshots=await Promise.all(tasks);
-  const unique=new Map();
-  snapshots.forEach(s=>s.docs.forEach(d=>unique.set(d.id,{id:d.id,...d.data()})));
-  postsCache=Array.from(unique.values());
-  postsCache.sort((a,b)=>(b.createdAt?.toMillis?.()||0)-(a.createdAt?.toMillis?.()||0));
-  if(!postsCache.length){
-   status.textContent="No student posts yet. Be the first to share something.";return;
+  const snapshot=await getDocs(
+   collection(db,"announcements")
+  );
+
+  const items=snapshot.docs
+   .map(item=>({
+    id:item.id,
+    ...item.data()
+   }))
+   .filter(item=>
+    item.stream==="All"||
+    item.stream===profile.stream
+   );
+
+  items.sort((a,b)=>
+   (b.createdAt?.toMillis?.()||0)-
+   (a.createdAt?.toMillis?.()||0)
+  );
+
+  if(!items.length){
+   status.textContent="No announcements available.";
+   return;
   }
-  status.textContent=postsCache.length+" post(s) visible to you";
-  postsCache.forEach(renderPost);
+
+  status.textContent=
+   items.length+" announcement(s)";
+
+  items.slice(0,5).forEach(item=>{
+   const card=document.createElement("article");
+   card.className="announcement-post";
+
+   const tag=document.createElement("small");
+   tag.style.color="#d6b35d";
+   tag.textContent=
+    item.stream==="All"
+     ?"ALL STUDENTS"
+     :safe(item.stream).toUpperCase();
+
+   const heading=document.createElement("h3");
+   heading.textContent=item.title||"Announcement";
+
+   const message=document.createElement("p");
+   message.textContent=item.message||item.body||"";
+
+   const meta=document.createElement("p");
+   meta.style.color="#8795aa";
+   meta.textContent=
+    "By "+(item.authorName||"Administrator")+
+    " · "+timeAgo(item.createdAt);
+
+   card.append(tag,heading,message,meta);
+   feed.append(card);
+  });
+
  }catch(error){
-  console.error("Feed error:",error);
-  status.textContent="Unable to load posts. Check Firestore permissions and indexes.";
+  console.error("Announcement error:",error);
+
+  status.textContent=
+   "Unable to load announcements: "+error.message;
  }
 }
 
-function renderPost(p){
- const card=document.createElement("article");card.className="community-post";
- const header=document.createElement("div");header.className="community-header";
- const name=p.authorDisplayName||p.authorNickname||p.authorName||"Student";
- header.append(avatar(p.authorPhotoURL,name));
- const details=document.createElement("div");
- const author=document.createElement("div");
- author.className="community-author";author.textContent=name;
- const time=document.createElement("div");
- time.className="community-time";time.textContent=timeAgo(p.createdAt);
- details.append(author,time);header.append(details);
+/* LOAD LIBRARY */
 
- const tag=document.createElement("span");tag.className="privacy-tag";
- tag.textContent=p.visibility==="private"?"ONLY ME":p.visibility==="stream"?"MY STREAM":"ALL SCHOOL";
- header.append(tag);card.append(header);
+async function loadLibrary(){
+ const status=$("libraryStatus");
+ const feed=$("libraryFeed");
 
- const profileLink=document.createElement("a");
- profileLink.href="profile.html?uid="+encodeURIComponent(p.authorId);
- profileLink.textContent="View profile";
- profileLink.style.cssText="
+ status.textContent="Loading learning materials...";
+ feed.replaceChildren();
+
+ try{
+  const snapshot=await getDocs(
+   query(
+    collection(db,"libraryResources"),
+    where("status","==","approved")
+   )
+  );
+
+  const items=snapshot.docs
+   .map(item=>({
+    id:item.id,
+    ...item.data()
+   }))
+   .sort((a,b)=>
+    (b.createdAt?.toMillis?.()||0)-
+    (a.createdAt?.toMillis?.()||0)
+   );
+
+  if(!items.length){
+   status.textContent=
+    "No approved learning materials yet.";
+   return;
+  }
+
+  status.textContent=
+   items.length+" learning material(s) available";
+
+  items.slice(0,4).forEach(item=>{
+   const card=document.createElement("article");
+   card.className="library-card";
+
+   const title=document.createElement("h3");
+   title.textContent=
+    item.title||item.fileName||"Learning material";
+
+   const detail=document.createElement("p");
+   detail.textContent=
+    (item.uploaderName||"Magunga High student")+
+    " · "+(item.fileName||"Resource");
+
+   const link=document.createElement("a");
+   link.className="library-view";
+   link.href="library.html";
+   link.textContent="Open in Digital Library →";
+
+   card.append(title,detail,link);
+   feed.append(card);
+  });
+
+ }catch(error){
+  console.error("Library error:",error);
+
+  status.textContent=
+   "Unable to load learning materials: "+error.message;
+ }
+}
+
+/* LOAD DASHBOARD */
+
+async function loadDashboard(user){
+ currentUser=user;
+
+ const snapshot=await getDoc(
+  doc(db,"users",user.uid)
+ );
+
+ if(!snapshot.exists()){
+  $("statusMessage").textContent=
+   "Your account profile was not found.";
+  return;
+ }
+
+ profile=snapshot.data();
+
+ if(profile.status!=="approved"){
+  $("statusMessage").textContent=
+   "Your account is not yet approved.";
+  return;
+ }
+
+ const name=displayName(profile);
+
+ $("welcomeName").textContent="Welcome, "+name;
+
+ $("profileNickname").textContent=
+  profile.nickname?"@"+profile.nickname:"";
+
+ $("streamName").textContent=
+  profile.stream
+   ?profile.stream+" Stream"
+   :"No stream assigned";
+
+ $("headerStream").textContent=
+  profile.stream||"Student";
+
+ $("composerName").textContent=name;
+
+ setProfilePhoto(
+  safe(profile.photoURL),
+  name
+ );
+
+ await Promise.allSettled([
+  loadCommunityPosts(),
+  loadAnnouncements(),
+  loadLibrary()
+ ]);
+}
+
+/* AUTHENTICATION */
+
+onAuthStateChanged(auth,user=>{
+ if(!user){
+  location.href="login.html";
+  return;
+ }
+
+ loadDashboard(user).catch(error=>{
+  console.error("Dashboard profile error:",error);
+
+  $("statusMessage").textContent=
+   "Could not load your profile: "+error.message;
+
+  $("streamName").textContent="Stream unavailable";
+  $("headerStream").textContent="Profile unavailable";
+ });
+});
+</script>
+
+</body>
+</html>
