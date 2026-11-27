@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#071426">
+  <title>School Registration | The Magunga High</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background: #071426;
+      color: #ffffff;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 650px;
+      margin: 25px auto;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 25px;
+    }
+
+    .header h1 {
+      color: #e8bd55;
+      font-size: 27px;
+      margin-bottom: 9px;
+    }
+
+    .header p {
+      color: #b8c4d5;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .form-card {
+      background: #10233b;
+      border: 1px solid rgba(232, 189, 85, 0.35);
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 0 25px rgba(0, 0, 0, 0.25);
+    }
+
+    .section-title {
+      color: #e8bd55;
+      font-size: 17px;
+      margin: 22px 0 15px;
+      padding-bottom: 9px;
+      border-bottom: 1px solid rgba(232, 189, 85, 0.2);
+    }
+
+    .section-title:first-child {
+      margin-top: 0;
+    }
+
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 7px;
+      color: #e3eaf4;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    input,
+    select,
+    textarea {
+      width: 100%;
+      padding: 13px;
+      border-radius: 9px;
+      border: 1px solid #354b66;
+      background: #09182b;
+      color: #ffffff;
+      font-size: 15px;
+      outline: none;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      border-color: #e8bd55;
+      box-shadow: 0 0 7px rgba(232, 189, 85, 0.2);
+    }
+
+    input::placeholder,
+    textarea::placeholder {
+      color: #8292a8;
+    }
+
+    select option {
+      background: #10233b;
+      color: white;
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 85px;
+    }
+
+    .notice {
+      background: rgba(232, 189, 85, 0.09);
+      border-left: 3px solid #e8bd55;
+      padding: 13px;
+      border-radius: 7px;
+      color: #d9e1ec;
+      font-size: 13px;
+      line-height: 1.6;
+      margin-top: 18px;
+    }
+
+    .confirmation {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      margin-top: 20px;
+      color: #d9e1ec;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .confirmation input {
+      width: 17px;
+      height: 17px;
+      margin-top: 2px;
+      accent-color: #e8bd55;
+    }
+
+    button {
+      width: 100%;
+      padding: 14px;
+      margin-top: 22px;
+      border: none;
+      border-radius: 9px;
+      background: #e8bd55;
+      color: #071426;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: not-allowed;
+      opacity: 0.65;
+    }
+
+    .back-link {
+      display: block;
+      text-align: center;
+      color: #e8bd55;
+      margin-top: 22px;
+      text-decoration: none;
+      font-size: 14px;
+    }
+
+    .back-link:hover {
+      text-decoration: underline;
+    }
+
+    .footer {
+      text-align: center;
+      margin-top: 25px;
+      color: #8292a8;
+      font-size: 12px;
+    }
+
+    @media (max-width: 480px) {
+      body {
+        padding: 12px;
+      }
+
+      .form-card {
+        padding: 18px;
+      }
+
+      .header h1 {
+        font-size: 23px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <main class="container">
+
+    <header class="header">
+      <h1>THE MAGUNGA HIGH</h1>
+      <p>School Administration Registration</p>
+      <p>Apply to register your school on The Magunga High platform.</p>
+    </header>
+
+    <section class="form-card">
+
+      <form id="schoolRegistrationForm">
+
+        <h2 class="section-title">School Information</h2>
+
+        <div class="form-group">
+          <label for="schoolName">Official School Name</label>
+          <input
+            type="text"
+            id="schoolName"
+            name="schoolName"
+            placeholder="Enter official school name"
+            required
+          >
+        </div>
+
+        <div class="form-group">
+          <label for="schoolType">School Type</label>
+          <select id="schoolType" name="schoolType" required>
+            <option value="">Select school type</option>
+            <option value="Primary">Primary School</option>
+            <option value="Junior">Junior School</option>
+            <option value="Secondary">Secondary School</option>
+            <option value="Combined">Combined School</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="county">County</label>
+          <input
+            type="text"
+            id="county"
+            name="county"
+            placeholder="Enter county"
+            required
+          >
+        </div>
+
+        <div class="form-group">
+          <label for="subCounty">Sub-County</label>
+          <input
+            type="text"
+            id="subCounty"
+            name="subCounty"
+            placeholder="Enter sub-county"
+            required
+          >
+        </div>
+
+        <div class="form-group">
+          <label for="location">School Location</label>
+          <textarea
+            id="location"
+            name="location"
+            placeholder="Describe the school's location"
+            required
+          ></textarea>
+        </div>
+
+        <h2 class="section-title">Applicant Information</h2>
+
+        <div class="form-group">
+          <label for="applicantName">Full Name</label>
+          <input
+            type="text"
+            id="applicantName"
+            name="applicantName"
+            placeholder="Enter your full name"
+            required
+          >
+        </div>
+
+        <div class="form-group">
+          <label for="email">Email Address</label>
+          <input
+            type="email"
+            id="email"
+            name="email"
+            placeholder="Enter your email address"
+            required
+          >
+        </div>
+
+        <div class="form-group">
+          <label for="phone">Phone Number</label>
+          <input
+            type="tel"
+            id="phone"
+            name="phone"
+            placeholder="Enter your phone number"
+            required
+          >
+        </div>
+
+        <div class="form-group">
+          <label for="position">Your Position in the School</label>
+          <select id="position" name="position" required>
+            <option value="">Select your position</option>
+            <option value="Headteacher">Headteacher</option>
+            <option value="Principal">Principal</option>
+            <option value="Deputy">Deputy Headteacher / Principal</option>
+            <option value="Director">School Director</option>
+            <option value="Board Representative">Board Representative</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+
+        <div class="confirmation">
+          <input
+            type="checkbox"
+            id="confirmation"
+            required
+          >
+
+          <label for="confirmation">
+            I confirm that I am authorised to submit this school
+            registration application and that the information provided
+            is accurate.
+          </label>
+        </div>
+
+        <div class="notice">
+          <strong>Important:</strong>
+          Submitting an application will not automatically register
+          your school. The platform's superadmin must review and
+          approve the application first. A unique School ID will
+          be generated by the server after approval.
+        </div>
+
+        <button type="submit" disabled>
+          Registration System Not Connected Yet
+        </button>
+
+      </form>
+
+      <a href="index.html" class="back-link">
+        ← Return to Homepage
+      </a>
+
+    </section>
+
+    <footer class="footer">
+      © 2026 The Magunga High. All rights reserved.
+    </footer>
+
+  </main>
+
+  <script>
+    document
+      .getElementById("schoolRegistrationForm")
+      .addEventListener("submit", function(event) {
+        event.preventDefault();
+
+        alert(
+          "The secure registration system has not been connected yet. " +
+          "Your application has not been submitted."
+        );
+      });
+  </script>
+
+</body>
+          </html>
